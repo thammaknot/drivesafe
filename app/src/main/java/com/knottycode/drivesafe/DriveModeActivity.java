@@ -2,6 +2,7 @@ package com.knottycode.drivesafe;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -15,9 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-
-import static android.R.attr.path;
+import java.io.IOException;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -39,7 +38,7 @@ public class DriveModeActivity extends AppCompatActivity {
     private long driveModeStartTime;
     /** Time when we enter checkpoint mode. */
     private long checkpointModeStartTime;
-    private long checkpointFrequencyMillis = 15 * 1000;
+    private long checkpointFrequencyMillis = 7 * 1000;
 
     // NORMAL, CHECKPOINT, ALARM
     private String mode = "";
@@ -85,7 +84,7 @@ public class DriveModeActivity extends AppCompatActivity {
                 int minutes = seconds / 60;
                 seconds = seconds % 60;
 
-                driveModeTimer.setText(String.format("%d:%02d", minutes, seconds));
+                checkpointCountdownTimer.setText(String.format("%d:%02d", minutes, seconds));
 
                 if (checkpointElapsed >= CHECKPOINT_GRACE_PERIOD_MILLIS) {
                     displayAlarmMode();
@@ -121,7 +120,7 @@ public class DriveModeActivity extends AppCompatActivity {
         checkpointCountdownTimer = (TextView) findViewById(R.id.checkpointCountdownTimer);
         driveModeTimer = (TextView) findViewById(R.id.driveModeTimer);
         // Set up MediaPlayer
-        MediaPlayer mp = new MediaPlayer();
+        mediaPlayer = new MediaPlayer();
         startTimer();
     }
 
@@ -152,10 +151,13 @@ public class DriveModeActivity extends AppCompatActivity {
         checkpointCountdownTimer.setTextColor(Color.YELLOW);
         driveModeTimer.setTextColor(Color.YELLOW);
 
+        AssetFileDescriptor audioDescriptor = getAudioDescriptor();
         try {
-            mp.setDataSource(getAudioPath());
-            mp.prepare();
-            mp.start();
+            mediaPlayer.setDataSource(audioDescriptor.getFileDescriptor(),
+                    audioDescriptor.getStartOffset(), audioDescriptor.getLength());
+            audioDescriptor.close();
+            mediaPlayer.prepare();
+            mediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -166,9 +168,22 @@ public class DriveModeActivity extends AppCompatActivity {
         if (mode.equals(CHECKPOINT_MODE)) {
             displayNormalMode();
         } else if (mode.equals(ALARM_MODE)) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = new MediaPlayer();
             displayNormalMode();
         }
         return true;
+    }
+
+    private AssetFileDescriptor getAudioDescriptor() {
+        AssetFileDescriptor afd = null;
+        try {
+            afd = getAssets().openFd("best_wake_up_sound.mp3");
+        } catch (IOException ioe) {
+            return null;
+        }
+        return afd;
     }
 
     @Override
