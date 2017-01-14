@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DriveSafe</string>
 
-    <string name="title_activity_drive_mode">DriveModeActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_drive_mode">Drive Mode</string>
+    <string name="drive_mode_exit_warning_title">Exit Drive Mode</string>
+    <string name="drive_mode_exit_warning_text">Are you sure you want to exit drive mode?</string>
 </resources>
