@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -17,6 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -47,6 +51,8 @@ public class DriveModeActivity extends AppCompatActivity {
     private static final String ALARM_MODE = "ALARM";
 
     private MediaPlayer mediaPlayer;
+    private List<String> availableAlarmTones;
+    private Random random = new Random();
 
     private Handler timerHandler = new Handler();
     private Runnable timerRunnable = new Runnable() {
@@ -121,6 +127,17 @@ public class DriveModeActivity extends AppCompatActivity {
         driveModeTimer = (TextView) findViewById(R.id.driveModeTimer);
         // Set up MediaPlayer
         mediaPlayer = new MediaPlayer();
+        availableAlarmTones = new ArrayList<String>();
+        try {
+            String[] allTones = getAssets().list("");
+            for (int i = 0; i < allTones.length; ++i) {
+                if (allTones[i].endsWith(".mp3")) {
+                    availableAlarmTones.add(allTones[i]);
+                }
+            }
+        } catch (IOException ioe) {
+            Log.e(TAG, "Unable to access available alarm tones.");
+        }
         startTimer();
     }
 
@@ -157,6 +174,8 @@ public class DriveModeActivity extends AppCompatActivity {
                     audioDescriptor.getStartOffset(), audioDescriptor.getLength());
             audioDescriptor.close();
             mediaPlayer.prepare();
+            mediaPlayer.setLooping(true);
+            mediaPlayer.setVolume(1, 1);
             mediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,8 +197,10 @@ public class DriveModeActivity extends AppCompatActivity {
 
     private AssetFileDescriptor getAudioDescriptor() {
         AssetFileDescriptor afd = null;
+        String tone = availableAlarmTones.get(random.nextInt(availableAlarmTones.size()));
         try {
-            afd = getAssets().openFd("best_wake_up_sound.mp3");
+            Toast.makeText(this, tone, Toast.LENGTH_SHORT).show();
+            afd = getAssets().openFd(tone);
         } catch (IOException ioe) {
             return null;
         }
