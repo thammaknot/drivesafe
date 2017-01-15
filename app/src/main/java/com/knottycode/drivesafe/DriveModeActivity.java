@@ -199,7 +199,6 @@ public class DriveModeActivity extends AppCompatActivity {
         AssetFileDescriptor afd = null;
         String tone = availableAlarmTones.get(random.nextInt(availableAlarmTones.size()));
         try {
-            Toast.makeText(this, tone, Toast.LENGTH_SHORT).show();
             afd = getAssets().openFd(tone);
         } catch (IOException ioe) {
             return null;
