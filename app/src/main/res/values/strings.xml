@@ -4,4 +4,17 @@
     <string name="title_activity_drive_mode">Drive Mode</string>
     <string name="drive_mode_exit_warning_title">Exit Drive Mode</string>
     <string name="drive_mode_exit_warning_text">Are you sure you want to exit drive mode?</string>
+
+    <string name="preference_file_key">com.knottycode.DriveSafe</string>
+    <string name="adaptive_loudness_key">adaptive_loudness</string>
+    <string name="adaptive_checkpoint_frequency_key">adaptive_checkpoint_frequency</string>
+    <string name="checkpoint_frequency_key">checkpoint_frequency</string>
+    <string name="alarm_tones_key">alarm_tones</string>
+    <string name="alert_style_key">alert_style</string>
+
+    <string name="checkpoint_frequency_menu_title">Set Checkpoint Frequency</string>
+    <string name="alert_style_menu_title">Select Alert Style</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>

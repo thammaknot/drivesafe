@@ -35,7 +35,7 @@
             <TextView
                 android:text="3 mins"
                 style="@style/SettingsValue"
-                android:id="@+id/textView6"/>
+                android:id="@+id/checkpointFrequencyValue"/>
 
         </RelativeLayout>
 
@@ -67,7 +67,7 @@
             <TextView
                 android:text="Screen only"
                 style="@style/SettingsValue"
-                android:id="@+id/textView10"/>
+                android:id="@+id/alertStyleValue"/>
         </RelativeLayout>
 
         <TextView
@@ -87,7 +87,7 @@
             <TextView
                 android:text="..."
                 style="@style/SettingsValue"
-                android:id="@+id/textView12"/>
+                android:id="@+id/alarmTonesValue"/>
         </RelativeLayout>
 
         <RelativeLayout

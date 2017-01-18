@@ -1,7 +1,9 @@
 package com.knottycode.drivesafe;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -19,8 +21,10 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -36,13 +40,21 @@ public class DriveModeActivity extends AppCompatActivity {
 
     private static final int TIMER_INTERVAL_MILLIS = 100;
     private static final int CHECKPOINT_GRACE_PERIOD_MILLIS = 5 * 1000;
+    private static final int DEFAULT_CHECKPOINT_FREQUENCY = 300;  // seconds
+    private static final String DEFAULT_ALERT_STYLE = "screen";
+
     /** Time when the user last checks in at a checkpoint. */
     private long lastCheckpointTime;
     /** Time when we enter drive (NORMAL) mode. */
     private long driveModeStartTime;
     /** Time when we enter checkpoint mode. */
     private long checkpointModeStartTime;
-    private long checkpointFrequencyMillis = 7 * 1000;
+    private long checkpointFrequencyMillis;
+
+    private boolean adaptiveCheckpointFrequency = true;
+    private boolean adaptiveLoudness = true;
+    private Set<String> tones;
+    private String alertStyle;
 
     // NORMAL, CHECKPOINT, ALARM
     private String mode = "";
@@ -107,6 +119,8 @@ public class DriveModeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         driveModeStartTime = System.currentTimeMillis();
+        loadPreferences();
+
         mode = NORMAL_MODE;
         // Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -139,6 +153,24 @@ public class DriveModeActivity extends AppCompatActivity {
             Log.e(TAG, "Unable to access available alarm tones.");
         }
         startTimer();
+    }
+
+    private void loadPreferences() {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        adaptiveCheckpointFrequency = prefs.getBoolean(getString(R.string.adaptive_checkpoint_frequency_key), true);
+        adaptiveLoudness = prefs.getBoolean(getString(R.string.adaptive_loudness_key), true);
+        checkpointFrequencyMillis =
+                prefs.getInt(getString(R.string.checkpoint_frequency_key), DEFAULT_CHECKPOINT_FREQUENCY) * 1000;
+        tones = prefs.getStringSet(getString(R.string.alarm_tones_key), null);
+        alertStyle = prefs.getString(getString(R.string.alert_style_key), DEFAULT_ALERT_STYLE);
+
+        Log.d(TAG, "=====================================");
+        Log.d(TAG, "Checkpoint freq: " + checkpointFrequencyMillis);
+        Log.d(TAG, "tones:" + Arrays.toString(tones.toArray()));
+        Log.d(TAG, "alert style:" + alertStyle);
+        Log.d(TAG, "adaptive checkpoint freq:" + adaptiveCheckpointFrequency);
+        Log.d(TAG, "adaptive loudness:" + adaptiveLoudness);
     }
 
     private void startTimer() {
