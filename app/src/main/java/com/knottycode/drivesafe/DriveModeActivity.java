@@ -8,9 +8,10 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -48,7 +50,7 @@ public class DriveModeActivity extends AppCompatActivity {
     private boolean adaptiveCheckpointFrequency = true;
     private boolean adaptiveLoudness = true;
     private Set<String> tones;
-    private String alertStyle;
+    private Constants.AlertMode alertMode;
 
     // NORMAL, CHECKPOINT, ALARM
     private String mode = "";
@@ -135,17 +137,6 @@ public class DriveModeActivity extends AppCompatActivity {
         driveModeTimer = (TextView) findViewById(R.id.driveModeTimer);
         // Set up MediaPlayer
         mediaPlayer = new MediaPlayer();
-        availableAlarmTones = new ArrayList<String>();
-        try {
-            String[] allTones = getAssets().list("");
-            for (int i = 0; i < allTones.length; ++i) {
-                if (allTones[i].endsWith(".mp3")) {
-                    availableAlarmTones.add(allTones[i]);
-                }
-            }
-        } catch (IOException ioe) {
-            Log.e(TAG, "Unable to access available alarm tones.");
-        }
         startTimer();
     }
 
@@ -157,9 +148,11 @@ public class DriveModeActivity extends AppCompatActivity {
         checkpointFrequencyMillis =
                 prefs.getInt(getString(R.string.checkpoint_frequency_key),
                         Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS) * 1000;
-        tones = prefs.getStringSet(getString(R.string.alarm_tones_key), null);
-        alertStyle = prefs.getString(getString(R.string.alert_style_key),
+        availableAlarmTones =
+                new ArrayList<String>(prefs.getStringSet(getString(R.string.alarm_tones_key), new HashSet()));
+        String alertModeString = prefs.getString(getString(R.string.alert_style_key),
                 Constants.DEFAULT_ALERT_STYLE.getDisplayString());
+        alertMode = Constants.AlertMode.fromString(alertModeString);
     }
 
     private void startTimer() {
@@ -181,6 +174,56 @@ public class DriveModeActivity extends AppCompatActivity {
         wholeScreenLayout.setBackgroundColor(Color.YELLOW);
         checkpointCountdownTimer.setTextColor(Color.BLACK);
         driveModeTimer.setTextColor(Color.BLACK);
+        Toast.makeText(this, "Mode: " + alertMode.getDisplayString(), Toast.LENGTH_SHORT);
+        switch (alertMode) {
+            case SCREEN:
+                // nothing
+                break;
+            case VIBRATE:
+                vibrate();
+                break;
+            case SOUND:
+                playAlert();
+                break;
+            default:
+        }
+    }
+
+    private void vibrate() {
+        Vibrator v = (Vibrator) this.getSystemService(this.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        v.vibrate(Constants.VIBRATION_PATTERN, -1);
+    }
+
+    private void playAlert() {
+        try {
+            AssetFileDescriptor afd = getAssets().openFd(Constants.DEFAULT_ALERT_SOUND);
+            mediaPlayer.setDataSource(afd.getFileDescriptor(),
+                    afd.getStartOffset(), afd.getLength());
+            afd.close();
+            mediaPlayer.prepare();
+            mediaPlayer.setLooping(false);
+            mediaPlayer.setVolume(Constants.ALERT_VOLUME, Constants.ALERT_VOLUME);
+            new CountDownTimer(1000, 10000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    // Nothing to do
+                }
+
+                @Override
+                public void onFinish() {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                    }
+                    mediaPlayer.release();
+                    mediaPlayer = new MediaPlayer();
+                    this.cancel();
+                }
+            }.start();
+            mediaPlayer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void displayAlarmMode() {

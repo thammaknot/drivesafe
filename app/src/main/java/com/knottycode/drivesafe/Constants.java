@@ -7,8 +7,13 @@ package com.knottycode.drivesafe;
 public class Constants {
     public static final int TIMER_INTERVAL_MILLIS = 100;
     public static final int CHECKPOINT_GRACE_PERIOD_MILLIS = 5 * 1000;
-    public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 300;
+    public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 10;
     public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SCREEN;
+
+    public static final String DEFAULT_ALERT_SOUND = "alert/glitchy-tone.mp3";
+    public static final float ALERT_VOLUME = 0.8f;
+
+    public static final long[] VIBRATION_PATTERN = {0, 700, 100, 400};
 
     public enum AlertMode {
         SCREEN(1, "Screen only"),
@@ -23,7 +28,7 @@ public class Constants {
             displayString = s;
         }
 
-        AlertMode fromString(String s) {
+        static AlertMode fromString(String s) {
             for (AlertMode m : AlertMode.values()) {
                 if (m.displayString.equals(s)) {
                     return m;
