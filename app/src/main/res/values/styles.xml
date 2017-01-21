@@ -20,4 +20,40 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="SettingsTitle">
+        <item name="android:textSize">24dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="SettingsRow">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:onClick">onClick</item>
+    </style>
+
+    <style name="SettingsLabel">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textColor">#225555</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+
+    <style name="SettingsValue">
+        <item name="android:textSize">18dp</item>
+        <item name="android:textColor">#559900</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_alignParentLeft">false</item>
+    </style>
 </resources>

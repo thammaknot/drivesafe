@@ -10,4 +10,101 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.knottycode.drivesafe.SettingsActivity">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:text="Checkpoint"
+            style="@style/SettingsTitle"
+            android:id="@+id/textView2" />
+
+        <RelativeLayout
+            style="@style/SettingsRow"
+            android:id="@+id/checkpointFrequency">
+
+            <TextView
+                android:text="Frequency"
+                style="@style/SettingsLabel"
+                android:id="@+id/textView5"/>
+
+            <TextView
+                android:text="3 mins"
+                style="@style/SettingsValue"
+                android:id="@+id/checkpointFrequencyValue"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            style="@style/SettingsRow"
+            android:id="@+id/adaptiveCheckpointFrequency">
+
+            <TextView
+                android:text="Adaptive"
+                style="@style/SettingsLabel"
+                android:id="@+id/textView7"/>
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:id="@+id/adaptiveCheckpointFrequencySwitch" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            style="@style/SettingsRow"
+            android:id="@+id/alertStyle">
+
+            <TextView
+                android:text="Alert style"
+                style="@style/SettingsLabel"
+                android:id="@+id/textView9"/>
+
+            <TextView
+                android:text="Screen only"
+                style="@style/SettingsValue"
+                android:id="@+id/alertStyleValue"/>
+        </RelativeLayout>
+
+        <TextView
+            android:text="Alarm"
+            style="@style/SettingsTitle"
+            android:id="@+id/textView4" />
+
+        <RelativeLayout
+            style="@style/SettingsRow"
+            android:id="@+id/alarmTones">
+
+            <TextView
+                android:text="Choose tones"
+                style="@style/SettingsLabel"
+                android:id="@+id/textView11"/>
+
+            <TextView
+                android:text="..."
+                style="@style/SettingsValue"
+                android:id="@+id/alarmTonesValue"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            style="@style/SettingsRow"
+            android:id="@+id/adaptiveLoudness">
+
+            <TextView
+                android:text="Adaptive loudness"
+                style="@style/SettingsLabel"
+                android:id="@+id/textView13"/>
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:id="@+id/adaptiveLoudnessSwitch" />
+        </RelativeLayout>
+
+    </LinearLayout>
 </RelativeLayout>
