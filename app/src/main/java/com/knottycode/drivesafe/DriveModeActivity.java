@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -37,11 +36,6 @@ public class DriveModeActivity extends AppCompatActivity {
 
     TextView checkpointCountdownTimer;
     TextView driveModeTimer;
-
-    private static final int TIMER_INTERVAL_MILLIS = 100;
-    private static final int CHECKPOINT_GRACE_PERIOD_MILLIS = 5 * 1000;
-    private static final int DEFAULT_CHECKPOINT_FREQUENCY = 300;  // seconds
-    private static final String DEFAULT_ALERT_STYLE = "screen";
 
     /** Time when the user last checks in at a checkpoint. */
     private long lastCheckpointTime;
@@ -104,13 +98,13 @@ public class DriveModeActivity extends AppCompatActivity {
 
                 checkpointCountdownTimer.setText(String.format("%d:%02d", minutes, seconds));
 
-                if (checkpointElapsed >= CHECKPOINT_GRACE_PERIOD_MILLIS) {
+                if (checkpointElapsed >= Constants.CHECKPOINT_GRACE_PERIOD_MILLIS) {
                     displayAlarmMode();
                 }
             } else if (mode.equals(ALARM_MODE)) {
 
             }
-            timerHandler.postDelayed(this, TIMER_INTERVAL_MILLIS);
+            timerHandler.postDelayed(this, Constants.TIMER_INTERVAL_MILLIS);
         }
     };
 
@@ -161,16 +155,11 @@ public class DriveModeActivity extends AppCompatActivity {
         adaptiveCheckpointFrequency = prefs.getBoolean(getString(R.string.adaptive_checkpoint_frequency_key), true);
         adaptiveLoudness = prefs.getBoolean(getString(R.string.adaptive_loudness_key), true);
         checkpointFrequencyMillis =
-                prefs.getInt(getString(R.string.checkpoint_frequency_key), DEFAULT_CHECKPOINT_FREQUENCY) * 1000;
+                prefs.getInt(getString(R.string.checkpoint_frequency_key),
+                        Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS) * 1000;
         tones = prefs.getStringSet(getString(R.string.alarm_tones_key), null);
-        alertStyle = prefs.getString(getString(R.string.alert_style_key), DEFAULT_ALERT_STYLE);
-
-        Log.d(TAG, "=====================================");
-        Log.d(TAG, "Checkpoint freq: " + checkpointFrequencyMillis);
-        Log.d(TAG, "tones:" + Arrays.toString(tones.toArray()));
-        Log.d(TAG, "alert style:" + alertStyle);
-        Log.d(TAG, "adaptive checkpoint freq:" + adaptiveCheckpointFrequency);
-        Log.d(TAG, "adaptive loudness:" + adaptiveLoudness);
+        alertStyle = prefs.getString(getString(R.string.alert_style_key),
+                Constants.DEFAULT_ALERT_STYLE.getDisplayString());
     }
 
     private void startTimer() {
