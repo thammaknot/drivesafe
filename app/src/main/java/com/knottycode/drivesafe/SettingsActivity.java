@@ -21,14 +21,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.knottycode.drivesafe.Constants.DEFAULT_ALERT_STYLE;
+import static com.knottycode.drivesafe.Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS;
 import static com.knottycode.drivesafe.R.id.adaptiveCheckpointFrequencySwitch;
 import static com.knottycode.drivesafe.R.id.alarmTones;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "SettingsActivity";
-    private static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 300;
-    private static final String DEFAULT_ALERT_STYLE = "Screen only";
     private SharedPreferences prefs;
 
     private MediaPlayer mediaPlayer;
@@ -74,11 +74,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         TextView checkpointFrequencyTextview = (TextView) findViewById(R.id.checkpointFrequencyValue);
         checkpointFrequencyTextview.setText(
                 getCheckpointFrequencyText(prefs.getInt(getString(R.string.checkpoint_frequency_key),
-                        DEFAULT_CHECKPOINT_FREQUENCY_SECONDS)));
+                        Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS)));
 
         TextView alertStyleTextView = (TextView) findViewById(R.id.alertStyleValue);
         alertStyleTextView.setText(prefs.getString(getString(R.string.alert_style_key),
-                DEFAULT_ALERT_STYLE));
+                Constants.DEFAULT_ALERT_STYLE.getDisplayString()));
 
         TextView alarmTonesValueTextView = (TextView) findViewById(R.id.alarmTonesValue);
         Set<String> savedTones = prefs.getStringSet(getString(R.string.alarm_tones_key),
@@ -161,7 +161,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                         Log.d(TAG, "OK");
                         SharedPreferences prefs =
                                 getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                        int seconds = DEFAULT_CHECKPOINT_FREQUENCY_SECONDS;
+                        int seconds = Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS;
                         try {
                             seconds = Integer.parseInt(checkpointFrequencySecondsTextView.getText().toString());
                         } catch (NumberFormatException e) {
@@ -182,7 +182,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void showAlertStyleMenu() {
-        final String[] alertStyles = {"Screen only", "Vibration", "Audio tone"};
+        Constants.AlertMode[] modes = Constants.AlertMode.values();
+        final String[] alertStyles = new String[modes.length];
+        for (int i = 0; i < modes.length; ++i) {
+            alertStyles[i] = modes[i].getDisplayString();
+        }
         final TextView alertStyleValueTextView =
                 (TextView) findViewById(R.id.alertStyleValue);
         new AlertDialog.Builder(this)
