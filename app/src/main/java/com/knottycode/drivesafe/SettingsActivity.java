@@ -244,6 +244,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                 } else if (selected.contains(tone)) {
                                     // Else, if the item is already in the array, remove it
                                     selected.remove(tone);
+                                    resetMediaPlayer();
                                 }
                             }
                         })
