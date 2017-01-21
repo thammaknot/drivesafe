@@ -9,7 +9,9 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -19,12 +21,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.knottycode.drivesafe.R.id.adaptiveCheckpointFrequencySwitch;
 import static com.knottycode.drivesafe.R.id.alarmTones;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "SettingsActivity";
     private static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 300;
+    private static final String DEFAULT_ALERT_STYLE = "Screen only";
     private SharedPreferences prefs;
 
     private MediaPlayer mediaPlayer;
@@ -36,13 +40,64 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mediaPlayer = new MediaPlayer();
         prefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         displayCurrentPreferences();
+
+        Switch adaptiveCheckpointFrequencySwitch = (Switch) findViewById(R.id.adaptiveCheckpointFrequencySwitch);
+        adaptiveCheckpointFrequencySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton b, boolean checked) {
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putBoolean(getString(R.string.adaptive_checkpoint_frequency_key), checked);
+                editor.commit();
+            }
+        });
+
+        Switch adaptiveLoudnessSwitch = (Switch) findViewById(R.id.adaptiveLoudnessSwitch);
+        adaptiveLoudnessSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton b, boolean checked) {
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putBoolean(getString(R.string.adaptive_loudness_key), checked);
+                editor.commit();
+            }
+        });
     }
 
     private void displayCurrentPreferences() {
+        Switch adaptiveCheckpointFrequencySwitch = (Switch) findViewById(R.id.adaptiveCheckpointFrequencySwitch);
+        adaptiveCheckpointFrequencySwitch.setChecked(
+                prefs.getBoolean(getString(R.string.adaptive_checkpoint_frequency_key), true));
+
+        Switch adaptiveLoudnessSwitch = (Switch) findViewById(R.id.adaptiveLoudnessSwitch);
+        adaptiveLoudnessSwitch.setChecked(
+                prefs.getBoolean(getString(R.string.adaptive_loudness_key), true));
+
+        TextView checkpointFrequencyTextview = (TextView) findViewById(R.id.checkpointFrequencyValue);
+        checkpointFrequencyTextview.setText(
+                getCheckpointFrequencyText(prefs.getInt(getString(R.string.checkpoint_frequency_key),
+                        DEFAULT_CHECKPOINT_FREQUENCY_SECONDS)));
+
+        TextView alertStyleTextView = (TextView) findViewById(R.id.alertStyleValue);
+        alertStyleTextView.setText(prefs.getString(getString(R.string.alert_style_key),
+                DEFAULT_ALERT_STYLE));
+
+        TextView alarmTonesValueTextView = (TextView) findViewById(R.id.alarmTonesValue);
         Set<String> savedTones = prefs.getStringSet(getString(R.string.alarm_tones_key),
                 new HashSet<String>());
-        TextView alarmTonesValueTextView = (TextView) findViewById(R.id.alarmTonesValue);
-        alarmTonesValueTextView.setText(savedTones.size() + " tones selected");
+        alarmTonesValueTextView.setText(getSelectedTonesMessage(savedTones.size()));
+
+    }
+
+    private String getCheckpointFrequencyText(int frequencySeconds) {
+        String minutePart = "";
+        if (frequencySeconds > 60) {
+            minutePart = " (" + frequencySeconds / 60 + ":" + frequencySeconds % 60 + " mins)";
+        }
+        return String.valueOf(frequencySeconds) + " seconds" + minutePart;
+    }
+
+    private String getSelectedTonesMessage(int numTones) {
+        return String.valueOf(numTones) + " tone" + (numTones == 1 ? "" : "s")
+                + " selected";
     }
 
     @Override
@@ -137,7 +192,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                         SharedPreferences prefs =
                                 getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString(getString(R.string.checkpoint_frequency_key), alertStyles[which]);
+                        editor.putString(getString(R.string.alert_style_key), alertStyles[which]);
                         editor.commit();
                         alertStyleValueTextView.setText(alertStyles[which]);
                     }
@@ -196,7 +251,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putStringSet(getString(R.string.alarm_tones_key), new HashSet(selected));
                         editor.commit();
-                        alarmTonesValueTextView.setText(selected.size() + " tones selected");
+                        alarmTonesValueTextView.setText(getSelectedTonesMessage(selected.size()));
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -208,19 +263,21 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        mediaPlayer.stop();
-                        mediaPlayer.release();
-                        mediaPlayer = new MediaPlayer();
+                        resetMediaPlayer();
                     }
                 })
                 .show();
     }
 
+    private void resetMediaPlayer() {
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        mediaPlayer = new MediaPlayer();
+    }
+
     private void playTone(String name) {
         if (mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = new MediaPlayer();
+            resetMediaPlayer();
         }
         AssetFileDescriptor audioDescriptor = null;
         try {
