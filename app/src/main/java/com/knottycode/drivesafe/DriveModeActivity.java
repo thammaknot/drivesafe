@@ -10,7 +10,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -21,6 +20,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -135,17 +135,6 @@ public class DriveModeActivity extends AppCompatActivity {
         driveModeTimer = (TextView) findViewById(R.id.driveModeTimer);
         // Set up MediaPlayer
         mediaPlayer = new MediaPlayer();
-        availableAlarmTones = new ArrayList<String>();
-        try {
-            String[] allTones = getAssets().list("");
-            for (int i = 0; i < allTones.length; ++i) {
-                if (allTones[i].endsWith(".mp3")) {
-                    availableAlarmTones.add(allTones[i]);
-                }
-            }
-        } catch (IOException ioe) {
-            Log.e(TAG, "Unable to access available alarm tones.");
-        }
         startTimer();
     }
 
@@ -157,7 +146,8 @@ public class DriveModeActivity extends AppCompatActivity {
         checkpointFrequencyMillis =
                 prefs.getInt(getString(R.string.checkpoint_frequency_key),
                         Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS) * 1000;
-        tones = prefs.getStringSet(getString(R.string.alarm_tones_key), null);
+        availableAlarmTones =
+                new ArrayList<String>(prefs.getStringSet(getString(R.string.alarm_tones_key), new HashSet()));
         alertStyle = prefs.getString(getString(R.string.alert_style_key),
                 Constants.DEFAULT_ALERT_STYLE.getDisplayString());
     }
