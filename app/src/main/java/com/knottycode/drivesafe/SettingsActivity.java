@@ -8,12 +8,13 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,12 +22,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.knottycode.drivesafe.Constants.DEFAULT_ALERT_STYLE;
-import static com.knottycode.drivesafe.Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS;
-import static com.knottycode.drivesafe.R.id.adaptiveCheckpointFrequencySwitch;
+import static android.R.attr.duration;
 import static com.knottycode.drivesafe.R.id.alarmTones;
+import static com.knottycode.drivesafe.R.id.checkpointFrequency;
 
-public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
+public class SettingsActivity extends AppCompatActivity implements View.OnTouchListener {
 
     private static final String TAG = "SettingsActivity";
     private SharedPreferences prefs;
@@ -40,6 +40,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         mediaPlayer = new MediaPlayer();
         prefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         displayCurrentPreferences();
+
+        setOnTouchListeners();
 
         Switch adaptiveCheckpointFrequencySwitch = (Switch) findViewById(R.id.adaptiveCheckpointFrequencySwitch);
         adaptiveCheckpointFrequencySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -60,6 +62,23 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 editor.commit();
             }
         });
+    }
+
+    private void setOnTouchListeners() {
+        RelativeLayout checkpointFrequency = (RelativeLayout) findViewById(R.id.checkpointFrequency);
+        checkpointFrequency.setOnTouchListener(this);
+
+        RelativeLayout alertStyle = (RelativeLayout) findViewById(R.id.alertStyle);
+        alertStyle.setOnTouchListener(this);
+
+        RelativeLayout alarmTones = (RelativeLayout) findViewById(R.id.alarmTones);
+        alarmTones.setOnTouchListener(this);
+
+        RelativeLayout adaptiveCheckpoint = (RelativeLayout) findViewById(R.id.adaptiveCheckpointFrequency);
+        adaptiveCheckpoint.setOnTouchListener(this);
+
+        RelativeLayout adaptiveLoudness = (RelativeLayout) findViewById(R.id.adaptiveLoudness);
+        adaptiveLoudness.setOnTouchListener(this);
     }
 
     private void displayCurrentPreferences() {
@@ -90,7 +109,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     private String getCheckpointFrequencyText(int frequencySeconds) {
         String minutePart = "";
         if (frequencySeconds > 60) {
-            minutePart = " (" + frequencySeconds / 60 + ":" + frequencySeconds % 60 + " mins)";
+            int minutes = frequencySeconds / 60;
+            int seconds = frequencySeconds % 60;
+            minutePart = String.format(" (%d:%02d mins)", minutes, seconds);
         }
         return String.valueOf(frequencySeconds) + " seconds" + minutePart;
     }
@@ -101,9 +122,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onClick(View v) {
+    public boolean onTouch(View v, MotionEvent me) {
+        if (me.getActionMasked() != MotionEvent.ACTION_UP) {
+            return false;
+        }
         switch (v.getId()) {
-            case R.id.checkpointFrequency:
+            case checkpointFrequency:
                 showCheckpointFrequencyMenu();
                 break;
             case R.id.adaptiveCheckpointFrequency:
@@ -121,6 +145,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             default:
                 break;
         }
+        return false;
     }
 
     private void toggleAdaptiveCheckpointFrequency() {
@@ -147,6 +172,28 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void showCheckpointFrequencyMenu() {
+        final int[] timeOptions = {30, 45, 60, 90, 120, 180, 240, 300};
+        final String[] timeOptionsString = new String[timeOptions.length];
+        for (int i = 0; i < timeOptions.length; ++i) {
+            timeOptionsString[i] = String.valueOf(timeOptions[i]);
+        }
+        final TextView checkpointFrequencyTextView =
+                (TextView) findViewById(R.id.checkpointFrequencyValue);
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.checkpoint_frequency_menu_title)
+                .setItems(timeOptionsString, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        SharedPreferences prefs =
+                                getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putInt(getString(R.string.checkpoint_frequency_key), timeOptions[which]);
+                        editor.commit();
+                        checkpointFrequencyTextView.setText(
+                                SettingsActivity.this.getCheckpointFrequencyText(timeOptions[which])) ;
+                    }
+                }).show();
+
+        /*
         final View menuView = getLayoutInflater().inflate(R.layout.menu_checkpoint_frequency, null);
         final TextView checkpointFrequencySecondsTextView =
                 (TextView) menuView.findViewById(R.id.checkpointFrequencySecondsTextView);
@@ -179,6 +226,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                         Log.d(TAG, "Cancel");
                     }
                 }).show();
+                */
     }
 
     private void showAlertStyleMenu() {
