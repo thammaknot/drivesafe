@@ -46,13 +46,13 @@ public class DriveModeActivity extends AppCompatActivity {
     /** Time when we enter checkpoint mode. */
     private long checkpointModeStartTime;
     private long checkpointFrequencyMillis;
-    private long afkDurationMillis;
-    private long afkStartTimeMillis;
 
     private boolean adaptiveCheckpointFrequency = true;
     private boolean adaptiveLoudness = true;
     private Set<String> tones;
     private Constants.AlertMode alertMode;
+
+    private CheckpointManager checkpointManager;
 
     // NORMAL, CHECKPOINT, ALARM
     private String mode = "";
@@ -119,6 +119,9 @@ public class DriveModeActivity extends AppCompatActivity {
         driveModeStartTime = System.currentTimeMillis();
         loadPreferences();
 
+        checkpointManager =
+                new CheckpointManager(checkpointFrequencyMillis, adaptiveCheckpointFrequency);
+
         mode = NORMAL_MODE;
         // Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -176,6 +179,7 @@ public class DriveModeActivity extends AppCompatActivity {
     private void displayNormalMode() {
         mode = NORMAL_MODE;
         lastCheckpointTime = System.currentTimeMillis();
+        checkpointFrequencyMillis = checkpointManager.getNextFrequencyMillis();
         wholeScreenLayout.setBackgroundColor(Color.BLACK);
         checkpointCountdownTimer.setTextColor(Color.YELLOW);
         driveModeTimer.setTextColor(Color.YELLOW);
@@ -261,13 +265,17 @@ public class DriveModeActivity extends AppCompatActivity {
 
     private boolean onTouch(View v, MotionEvent me) {
         Toast.makeText(DriveModeActivity.this, "Touch detected in " + mode + " mode", Toast.LENGTH_SHORT).show();
-        if (mode.equals(CHECKPOINT_MODE)) {
+        if (mode.equals(CHECKPOINT_MODE) || mode.equals(ALARM_MODE)) {
+            if (mode.equals(ALARM_MODE)) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = new MediaPlayer();
+            }
+            long responseTimeMillis = System.currentTimeMillis() - checkpointModeStartTime;
+            checkpointManager.addResponseTime(responseTimeMillis);
             displayNormalMode();
-        } else if (mode.equals(ALARM_MODE)) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = new MediaPlayer();
-            displayNormalMode();
+        } else if (mode.equals(NORMAL_MODE)) {
+            // Do nothing.
         }
         return true;
     }
