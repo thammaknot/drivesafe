@@ -46,6 +46,8 @@ public class DriveModeActivity extends AppCompatActivity {
     /** Time when we enter checkpoint mode. */
     private long checkpointModeStartTime;
     private long checkpointFrequencyMillis;
+    private long afkDurationMillis;
+    private long afkStartTimeMillis;
 
     private boolean adaptiveCheckpointFrequency = true;
     private boolean adaptiveLoudness = true;
@@ -137,6 +139,17 @@ public class DriveModeActivity extends AppCompatActivity {
         driveModeTimer = (TextView) findViewById(R.id.driveModeTimer);
         // Set up MediaPlayer
         mediaPlayer = new MediaPlayer();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        timerHandler.removeCallbacks(timerRunnable);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         startTimer();
     }
 
@@ -268,12 +281,6 @@ public class DriveModeActivity extends AppCompatActivity {
             return null;
         }
         return afd;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        timerHandler.removeCallbacks(timerRunnable);
     }
 
     @Override
