@@ -44,7 +44,7 @@ public class CheckpointManager {
             calculateNextFrequency();
         }
     }
-    
+        
     public long getNextFrequencyMillis() {
         return nextFrequencyMillis;
     }
