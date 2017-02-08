@@ -11,7 +11,7 @@
     tools:context="com.knottycode.drivesafe.MainActivity">
 
     <Button
-        android:text="Drive"
+        android:text="@string/drive_mode"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_alignParentTop="true"
@@ -21,7 +21,7 @@
         android:id="@+id/driveButton" />
 
     <Button
-        android:text="Settings"
+        android:text="@string/setting_mode"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:id="@+id/settingsButton"

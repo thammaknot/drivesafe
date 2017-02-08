@@ -167,8 +167,8 @@ public class DriveModeActivity extends AppCompatActivity {
         availableAlarmTones =
                 new ArrayList<String>(prefs.getStringSet(getString(R.string.alarm_tones_key), new HashSet()));
         String alertModeString = prefs.getString(getString(R.string.alert_style_key),
-                Constants.DEFAULT_ALERT_STYLE.getDisplayString());
-        alertMode = Constants.AlertMode.fromString(alertModeString);
+                Constants.DEFAULT_ALERT_STYLE.getDisplayString(this));
+        alertMode = Constants.AlertMode.fromString(this, alertModeString);
     }
 
     private void startTimer() {
@@ -178,6 +178,8 @@ public class DriveModeActivity extends AppCompatActivity {
 
     private void displayNormalMode() {
         mode = NORMAL_MODE;
+        TextView message = (TextView) findViewById(R.id.timeUntilNextCheckpointTextView);
+        message.setText(R.string.time_until_next_checkpoint);
         lastCheckpointTime = System.currentTimeMillis();
         checkpointFrequencyMillis = checkpointManager.getNextFrequencyMillis();
         wholeScreenLayout.setBackgroundColor(Color.BLACK);
@@ -187,11 +189,13 @@ public class DriveModeActivity extends AppCompatActivity {
 
     private void displayCheckpointMode() {
         mode = CHECKPOINT_MODE;
+        TextView message = (TextView) findViewById(R.id.timeUntilNextCheckpointTextView);
+        message.setText(R.string.time_until_alarm);
         checkpointModeStartTime = System.currentTimeMillis();
         wholeScreenLayout.setBackgroundColor(Color.YELLOW);
         checkpointCountdownTimer.setTextColor(Color.BLACK);
         driveModeTimer.setTextColor(Color.BLACK);
-        Toast.makeText(this, "Mode: " + alertMode.getDisplayString(), Toast.LENGTH_SHORT);
+        Toast.makeText(this, "Mode: " + alertMode.getDisplayString(this), Toast.LENGTH_SHORT);
         switch (alertMode) {
             case SCREEN:
                 // nothing

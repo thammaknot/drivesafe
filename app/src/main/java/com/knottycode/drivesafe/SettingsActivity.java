@@ -97,7 +97,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
 
         TextView alertStyleTextView = (TextView) findViewById(R.id.alertStyleValue);
         alertStyleTextView.setText(prefs.getString(getString(R.string.alert_style_key),
-                Constants.DEFAULT_ALERT_STYLE.getDisplayString()));
+                Constants.DEFAULT_ALERT_STYLE.getDisplayString(this)));
 
         TextView alarmTonesValueTextView = (TextView) findViewById(R.id.alarmTonesValue);
         Set<String> savedTones = prefs.getStringSet(getString(R.string.alarm_tones_key),
@@ -117,8 +117,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
     }
 
     private String getSelectedTonesMessage(int numTones) {
-        return String.valueOf(numTones) + " tone" + (numTones == 1 ? "" : "s")
-                + " selected";
+        return String.valueOf(numTones) + " "
+                + (numTones == 1 ? getString(R.string.tone_text_singular) :
+                                   getString(R.string.tone_text_plural));
     }
 
     @Override
@@ -233,7 +234,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         Constants.AlertMode[] modes = Constants.AlertMode.values();
         final String[] alertStyles = new String[modes.length];
         for (int i = 0; i < modes.length; ++i) {
-            alertStyles[i] = modes[i].getDisplayString();
+            alertStyles[i] = modes[i].getDisplayString(this);
         }
         final TextView alertStyleValueTextView =
                 (TextView) findViewById(R.id.alertStyleValue);
