@@ -111,9 +111,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         if (frequencySeconds > 60) {
             int minutes = frequencySeconds / 60;
             int seconds = frequencySeconds % 60;
-            minutePart = String.format(" (%d:%02d mins)", minutes, seconds);
+            minutePart = String.format(" (%d:%02d " + getString(R.string.minutes)
+                    + ")", minutes, seconds);
         }
-        return String.valueOf(frequencySeconds) + " seconds" + minutePart;
+        return String.valueOf(frequencySeconds) + " " + getString(R.string.seconds) + minutePart;
     }
 
     private String getSelectedTonesMessage(int numTones) {
@@ -194,40 +195,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                     }
                 }).show();
 
-        /*
-        final View menuView = getLayoutInflater().inflate(R.layout.menu_checkpoint_frequency, null);
-        final TextView checkpointFrequencySecondsTextView =
-                (TextView) menuView.findViewById(R.id.checkpointFrequencySecondsTextView);
-        final TextView checkpointFrequencyValueTextView =
-                (TextView) findViewById(R.id.checkpointFrequencyValue);
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.checkpoint_frequency_menu_title))
-                .setView(menuView)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        Log.d(TAG, "OK");
-                        SharedPreferences prefs =
-                                getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                        int seconds = Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS;
-                        try {
-                            seconds = Integer.parseInt(checkpointFrequencySecondsTextView.getText().toString());
-                        } catch (NumberFormatException e) {
-                            // Do nothing
-                        }
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putInt(getString(R.string.checkpoint_frequency_key), seconds);
-                        editor.commit();
-                        checkpointFrequencyValueTextView.setText(String.valueOf(seconds + "s"));
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        Log.d(TAG, "Cancel");
-                    }
-                }).show();
-                */
     }
 
     private void showAlertStyleMenu() {
