@@ -15,6 +15,30 @@
     <string name="checkpoint_frequency_menu_title">Set Checkpoint Frequency (s)</string>
     <string name="alert_style_menu_title">Select Alert Style</string>
 
+    <string name="time_until_next_checkpoint">Time until next checkpoint</string>
+    <string name="time_until_alarm">Time until alarm</string>
+    <string name="time_in_drive_mode">Time in drive mode</string>
+
+    <string name="drive_mode">Drive</string>
+    <string name="setting_mode">Settings</string>
+
+    <string name="setting_checkpoint_title">Checkpoint</string>
+    <string name="setting_checkpoint_frequency">Frequency</string>
+    <string name="setting_checkpoint_adaptive">Adaptive</string>
+    <string name="setting_checkpoint_alert_style">Alert style</string>
+    <string name="setting_checkpoint_alert_style_screen">Screen only</string>
+    <string name="setting_checkpoint_alert_style_vibrate">Vibration</string>
+    <string name="setting_checkpoint_alert_style_sound">Sound</string>
+
+    <string name="setting_alarm_title">Alarm</string>
+    <string name="setting_alarm_tones">Choose tones</string>
+    <string name="tone_text_singular">tone</string>
+    <string name="tone_text_plural">tones</string>
+    <string name="setting_alarm_adaptive_loudness">Adaptive loudness</string>
+
+    <string name="seconds">seconds</string>
+    <string name="minutes">mins</string>
+
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 </resources>

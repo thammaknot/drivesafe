@@ -19,7 +19,8 @@
             android:layout_marginBottom="20dp"
             android:textColor="#FFFFFF"
             android:textSize="30dp"
-            android:text="Time until next checkpoint" />
+            android:id="@+id/timeUntilNextCheckpointTextView"
+            android:text="@string/time_until_next_checkpoint" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +42,7 @@
             android:layout_marginBottom="20dp"
             android:textColor="#FFFFFF"
             android:textSize="30dp"
-            android:text="Time in drive mode"/>
+            android:text="@string/time_in_drive_mode"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

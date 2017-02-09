@@ -19,7 +19,7 @@
         android:layout_alignParentStart="true">
 
         <TextView
-            android:text="Checkpoint"
+            android:text="@string/setting_checkpoint_title"
             style="@style/SettingsTitle"
             android:id="@+id/textView2" />
 
@@ -28,7 +28,7 @@
             android:id="@+id/checkpointFrequency">
 
             <TextView
-                android:text="Frequency"
+                android:text="@string/setting_checkpoint_frequency"
                 style="@style/SettingsLabel"
                 android:id="@+id/textView5"/>
 
@@ -44,7 +44,7 @@
             android:id="@+id/adaptiveCheckpointFrequency">
 
             <TextView
-                android:text="Adaptive"
+                android:text="@string/setting_checkpoint_adaptive"
                 style="@style/SettingsLabel"
                 android:id="@+id/textView7"/>
 
@@ -60,7 +60,7 @@
             android:id="@+id/alertStyle">
 
             <TextView
-                android:text="Alert style"
+                android:text="@string/setting_checkpoint_alert_style"
                 style="@style/SettingsLabel"
                 android:id="@+id/textView9"/>
 
@@ -71,7 +71,7 @@
         </RelativeLayout>
 
         <TextView
-            android:text="Alarm"
+            android:text="@string/setting_alarm_title"
             style="@style/SettingsTitle"
             android:id="@+id/textView4" />
 
@@ -80,7 +80,7 @@
             android:id="@+id/alarmTones">
 
             <TextView
-                android:text="Choose tones"
+                android:text="@string/setting_alarm_tones"
                 style="@style/SettingsLabel"
                 android:id="@+id/textView11"/>
 
@@ -95,7 +95,7 @@
             android:id="@+id/adaptiveLoudness">
 
             <TextView
-                android:text="Adaptive loudness"
+                android:text="@string/setting_alarm_adaptive_loudness"
                 style="@style/SettingsLabel"
                 android:id="@+id/textView13"/>
 

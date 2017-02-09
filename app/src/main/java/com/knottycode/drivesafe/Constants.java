@@ -1,5 +1,7 @@
 package com.knottycode.drivesafe;
 
+import android.content.Context;
+
 /**
  * Created by thammaknot on 1/21/17.
  */
@@ -16,33 +18,29 @@ public class Constants {
     public static final long[] VIBRATION_PATTERN = {0, 700, 100, 400};
 
     public enum AlertMode {
-        SCREEN(1, "Screen only"),
-        VIBRATE(2, "Vibration"),
-        SOUND(3, "Sound");
+        SCREEN(1, R.string.setting_checkpoint_alert_style_screen),
+        VIBRATE(2, R.string.setting_checkpoint_alert_style_vibrate),
+        SOUND(3, R.string.setting_checkpoint_alert_style_sound);
 
         private int code;
-        private String displayString;
+        private int displayString;
 
-        AlertMode(int code, String s) {
+        AlertMode(int code, int s) {
             this.code = code;
             displayString = s;
         }
 
-        static AlertMode fromString(String s) {
+        static AlertMode fromString(Context context, String s) {
             for (AlertMode m : AlertMode.values()) {
-                if (m.displayString.equals(s)) {
+                if (context.getString(m.displayString).equals(s)) {
                     return m;
                 }
             }
             return SCREEN;
         }
 
-        int getCode() {
-            return code;
-        }
-
-        String getDisplayString() {
-            return displayString;
+        String getDisplayString(Context context) {
+            return context.getString(displayString);
         }
     }
 }
