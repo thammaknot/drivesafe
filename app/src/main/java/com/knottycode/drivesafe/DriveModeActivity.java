@@ -142,6 +142,7 @@ public class DriveModeActivity extends AppCompatActivity {
         driveModeTimer = (TextView) findViewById(R.id.driveModeTimer);
         // Set up MediaPlayer
         mediaPlayer = new MediaPlayer();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
