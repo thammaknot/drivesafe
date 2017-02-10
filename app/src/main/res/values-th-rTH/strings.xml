@@ -1,0 +1,35 @@
+<resources>
+    <string name="title_activity_drive_mode">โหมดขับขี่</string>
+    <string name="drive_mode_exit_warning_title">ออกจากโหมดขับขี่</string>
+    <string name="drive_mode_exit_warning_text">แน่ใจนะว่าจะออกจากโหมดขับขี่?</string>
+
+    <string name="checkpoint_frequency_menu_title">เลือกความถี่ของเช็คพ้อยท์ (วินาที)</string>
+    <string name="alert_style_menu_title">เลือกรูปแบบการเตือน</string>
+
+    <string name="time_until_next_checkpoint">เวลาก่อนถึงเช็คพ้อยท์ถัดไป</string>
+    <string name="time_until_alarm">เวลาก่อนเข้าโหมดปลุก</string>
+    <string name="time_in_drive_mode">เวลาที่คุณได้อยู่ในโหมดขับขี่</string>
+
+    <string name="drive_mode">ขับขี่</string>
+    <string name="setting_mode">ตั้งค่า</string>
+
+    <string name="setting_checkpoint_title">เช็คพ้อยท์</string>
+    <string name="setting_checkpoint_frequency">ความถี่</string>
+    <string name="setting_checkpoint_adaptive">ปรับความถี่ิตามการตอบสนอง</string>
+    <string name="setting_checkpoint_alert_style">รูปแบบการเตือน</string>
+    <string name="setting_checkpoint_alert_style_screen">แสดงที่หน้าจอ</string>
+    <string name="setting_checkpoint_alert_style_vibrate">สั่น</string>
+    <string name="setting_checkpoint_alert_style_sound">ส่งเสียง</string>
+
+    <string name="setting_alarm_title">การปลุก</string>
+    <string name="setting_alarm_tones">เลือกเสียง</string>
+    <string name="tone_text_singular">เสียง</string>
+    <string name="tone_text_plural">เสียง</string>
+    <string name="setting_alarm_adaptive_loudness">ระดับเสียงดังขึ้นเรื่อยๆ</string>
+
+    <string name="seconds">วินาที</string>
+    <string name="minutes">นาที</string>
+
+    <string name="ok">ตกลง</string>
+    <string name="cancel">ยกเลิก</string>
+</resources>

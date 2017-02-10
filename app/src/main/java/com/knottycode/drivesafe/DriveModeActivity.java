@@ -52,6 +52,8 @@ public class DriveModeActivity extends AppCompatActivity {
     private Set<String> tones;
     private Constants.AlertMode alertMode;
 
+    private CheckpointManager checkpointManager;
+
     // NORMAL, CHECKPOINT, ALARM
     private String mode = "";
     private static final String NORMAL_MODE = "NORMAL";
@@ -117,6 +119,9 @@ public class DriveModeActivity extends AppCompatActivity {
         driveModeStartTime = System.currentTimeMillis();
         loadPreferences();
 
+        checkpointManager =
+                new CheckpointManager(checkpointFrequencyMillis, adaptiveCheckpointFrequency);
+
         mode = NORMAL_MODE;
         // Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -138,6 +143,17 @@ public class DriveModeActivity extends AppCompatActivity {
         // Set up MediaPlayer
         mediaPlayer = new MediaPlayer();
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        timerHandler.removeCallbacks(timerRunnable);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         startTimer();
     }
 
@@ -152,8 +168,8 @@ public class DriveModeActivity extends AppCompatActivity {
         availableAlarmTones =
                 new ArrayList<String>(prefs.getStringSet(getString(R.string.alarm_tones_key), new HashSet()));
         String alertModeString = prefs.getString(getString(R.string.alert_style_key),
-                Constants.DEFAULT_ALERT_STYLE.getDisplayString());
-        alertMode = Constants.AlertMode.fromString(alertModeString);
+                Constants.DEFAULT_ALERT_STYLE.getDisplayString(this));
+        alertMode = Constants.AlertMode.fromString(this, alertModeString);
     }
 
     private void startTimer() {
@@ -163,7 +179,10 @@ public class DriveModeActivity extends AppCompatActivity {
 
     private void displayNormalMode() {
         mode = NORMAL_MODE;
+        TextView message = (TextView) findViewById(R.id.timeUntilNextCheckpointTextView);
+        message.setText(R.string.time_until_next_checkpoint);
         lastCheckpointTime = System.currentTimeMillis();
+        checkpointFrequencyMillis = checkpointManager.getNextFrequencyMillis();
         wholeScreenLayout.setBackgroundColor(Color.BLACK);
         checkpointCountdownTimer.setTextColor(Color.YELLOW);
         driveModeTimer.setTextColor(Color.YELLOW);
@@ -171,11 +190,13 @@ public class DriveModeActivity extends AppCompatActivity {
 
     private void displayCheckpointMode() {
         mode = CHECKPOINT_MODE;
+        TextView message = (TextView) findViewById(R.id.timeUntilNextCheckpointTextView);
+        message.setText(R.string.time_until_alarm);
         checkpointModeStartTime = System.currentTimeMillis();
         wholeScreenLayout.setBackgroundColor(Color.YELLOW);
         checkpointCountdownTimer.setTextColor(Color.BLACK);
         driveModeTimer.setTextColor(Color.BLACK);
-        Toast.makeText(this, "Mode: " + alertMode.getDisplayString(), Toast.LENGTH_SHORT);
+        Toast.makeText(this, "Mode: " + alertMode.getDisplayString(this), Toast.LENGTH_SHORT);
         switch (alertMode) {
             case SCREEN:
                 // nothing
@@ -249,13 +270,17 @@ public class DriveModeActivity extends AppCompatActivity {
 
     private boolean onTouch(View v, MotionEvent me) {
         Toast.makeText(DriveModeActivity.this, "Touch detected in " + mode + " mode", Toast.LENGTH_SHORT).show();
-        if (mode.equals(CHECKPOINT_MODE)) {
+        if (mode.equals(CHECKPOINT_MODE) || mode.equals(ALARM_MODE)) {
+            if (mode.equals(ALARM_MODE)) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = new MediaPlayer();
+            }
+            long responseTimeMillis = System.currentTimeMillis() - checkpointModeStartTime;
+            checkpointManager.addResponseTime(responseTimeMillis);
             displayNormalMode();
-        } else if (mode.equals(ALARM_MODE)) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = new MediaPlayer();
-            displayNormalMode();
+        } else if (mode.equals(NORMAL_MODE)) {
+            // Do nothing.
         }
         return true;
     }
@@ -269,12 +294,6 @@ public class DriveModeActivity extends AppCompatActivity {
             return null;
         }
         return afd;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        timerHandler.removeCallbacks(timerRunnable);
     }
 
     @Override
