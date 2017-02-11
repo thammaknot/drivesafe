@@ -19,7 +19,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,8 +33,13 @@ import java.util.Set;
  */
 public class DriveModeActivity extends AppCompatActivity {
     private static final String TAG = "DriveModeActivity";
+    private static final int ADAPTIVE_LOUDNESS_INTERVAL_MILLIS = 3000;
+    private static final int ADAPTIVE_LOUDNESS_COUNTDOWN_DURATION = 20000;
+    private static final int ALARM_STREAM = AudioManager.STREAM_ALARM;
 
     LinearLayout wholeScreenLayout;
+
+    CountDownTimer adaptiveLoudnessTimer;
 
     TextView checkpointCountdownTimer;
     TextView driveModeTimer;
@@ -53,7 +57,10 @@ public class DriveModeActivity extends AppCompatActivity {
     private Set<String> tones;
     private Constants.AlertMode alertMode;
 
+    private AudioManager audioManager;
     private CheckpointManager checkpointManager;
+
+    private int initialVolume;
 
     // NORMAL, CHECKPOINT, ALARM
     private String mode = "";
@@ -120,6 +127,7 @@ public class DriveModeActivity extends AppCompatActivity {
         driveModeStartTime = System.currentTimeMillis();
         loadPreferences();
 
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         checkpointManager =
                 new CheckpointManager(checkpointFrequencyMillis, adaptiveCheckpointFrequency);
 
@@ -150,11 +158,14 @@ public class DriveModeActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         timerHandler.removeCallbacks(timerRunnable);
+        stopAlarm();
+        audioManager.setStreamVolume(ALARM_STREAM, initialVolume, 0);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        initialVolume = audioManager.getStreamVolume(ALARM_STREAM);
         startTimer();
     }
 
@@ -191,13 +202,13 @@ public class DriveModeActivity extends AppCompatActivity {
 
     private void displayCheckpointMode() {
         mode = CHECKPOINT_MODE;
+        validateSystemLoudness();
         TextView message = (TextView) findViewById(R.id.timeUntilNextCheckpointTextView);
         message.setText(R.string.time_until_alarm);
         checkpointModeStartTime = System.currentTimeMillis();
         wholeScreenLayout.setBackgroundColor(Color.YELLOW);
         checkpointCountdownTimer.setTextColor(Color.BLACK);
         driveModeTimer.setTextColor(Color.BLACK);
-        Toast.makeText(this, "Mode: " + alertMode.getDisplayString(this), Toast.LENGTH_SHORT);
         switch (alertMode) {
             case SCREEN:
                 // nothing
@@ -223,7 +234,7 @@ public class DriveModeActivity extends AppCompatActivity {
             AssetFileDescriptor afd = getAssets().openFd(Constants.DEFAULT_ALERT_SOUND);
             mediaPlayer.setDataSource(afd.getFileDescriptor(),
                     afd.getStartOffset(), afd.getLength());
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+            mediaPlayer.setAudioStreamType(ALARM_STREAM);
             afd.close();
             mediaPlayer.prepare();
             mediaPlayer.setLooping(false);
@@ -250,6 +261,32 @@ public class DriveModeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Checks to make sure the ALARM stream's volume is sufficiently loud.
+     */
+    private void validateSystemLoudness() {
+        int volume = audioManager.getStreamVolume(ALARM_STREAM);
+        int maxVolume = audioManager.getStreamMaxVolume(ALARM_STREAM);
+        double percent = volume * 1.0 / maxVolume;
+        if (percent < 0.5) {
+            audioManager.setStreamVolume(ALARM_STREAM, (int) Math.ceil(maxVolume / 2.0), 0);
+        }
+    }
+
+    private void startAdaptiveLoudnessTimer() {
+        adaptiveLoudnessTimer =
+                new CountDownTimer(ADAPTIVE_LOUDNESS_COUNTDOWN_DURATION, ADAPTIVE_LOUDNESS_INTERVAL_MILLIS) {
+                    @Override
+                    public void onTick(long millisTilFinished) {
+                        int volume = audioManager.getStreamVolume(ALARM_STREAM) + 1;
+                        volume = Math.min(audioManager.getStreamMaxVolume(ALARM_STREAM), volume);
+                        audioManager.setStreamVolume(ALARM_STREAM, volume, 0);
+                    }
+                    @Override
+                    public void onFinish() { this.cancel(); }
+                }.start();
+    }
+
     private void displayAlarmMode() {
         mode = ALARM_MODE;
         wholeScreenLayout.setBackgroundColor(Color.RED);
@@ -260,23 +297,34 @@ public class DriveModeActivity extends AppCompatActivity {
         try {
             mediaPlayer.setDataSource(audioDescriptor.getFileDescriptor(),
                     audioDescriptor.getStartOffset(), audioDescriptor.getLength());
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+            mediaPlayer.setAudioStreamType(ALARM_STREAM);
             audioDescriptor.close();
             mediaPlayer.prepare();
             mediaPlayer.setLooping(true);
             mediaPlayer.setVolume(1, 1);
             mediaPlayer.start();
+            if (adaptiveLoudness) {
+                startAdaptiveLoudnessTimer();
+            }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void stopAlarm() {
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        mediaPlayer = new MediaPlayer();
+        if (adaptiveLoudnessTimer != null) {
+            adaptiveLoudnessTimer.cancel();
+            audioManager.setStreamVolume(ALARM_STREAM, initialVolume, 0);
         }
     }
 
     private boolean onTouch(View v, MotionEvent me) {
         if (mode.equals(CHECKPOINT_MODE) || mode.equals(ALARM_MODE)) {
             if (mode.equals(ALARM_MODE)) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
-                mediaPlayer = new MediaPlayer();
+                stopAlarm();
             }
             long responseTimeMillis = System.currentTimeMillis() - checkpointModeStartTime;
             checkpointManager.addResponseTime(responseTimeMillis);
