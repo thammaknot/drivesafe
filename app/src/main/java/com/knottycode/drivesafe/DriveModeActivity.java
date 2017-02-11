@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -222,6 +223,7 @@ public class DriveModeActivity extends AppCompatActivity {
             AssetFileDescriptor afd = getAssets().openFd(Constants.DEFAULT_ALERT_SOUND);
             mediaPlayer.setDataSource(afd.getFileDescriptor(),
                     afd.getStartOffset(), afd.getLength());
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
             afd.close();
             mediaPlayer.prepare();
             mediaPlayer.setLooping(false);
@@ -258,6 +260,7 @@ public class DriveModeActivity extends AppCompatActivity {
         try {
             mediaPlayer.setDataSource(audioDescriptor.getFileDescriptor(),
                     audioDescriptor.getStartOffset(), audioDescriptor.getLength());
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
             audioDescriptor.close();
             mediaPlayer.prepare();
             mediaPlayer.setLooping(true);
@@ -269,7 +272,6 @@ public class DriveModeActivity extends AppCompatActivity {
     }
 
     private boolean onTouch(View v, MotionEvent me) {
-        Toast.makeText(DriveModeActivity.this, "Touch detected in " + mode + " mode", Toast.LENGTH_SHORT).show();
         if (mode.equals(CHECKPOINT_MODE) || mode.equals(ALARM_MODE)) {
             if (mode.equals(ALARM_MODE)) {
                 mediaPlayer.stop();
