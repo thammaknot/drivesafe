@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "918024319393",
+    "firebase_url": "https://drifesafe-7a99d.firebaseio.com",
+    "project_id": "drifesafe-7a99d",
+    "storage_bucket": "drifesafe-7a99d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918024319393:android:a4d88c6080278bbc",
+        "android_client_info": {
+          "package_name": "com.knottycode.drivesafe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918024319393-q1uvlrin5lf7jcp56ghrblcf0kstv63m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqHnDWTeajPJQ7lx4dS8QVjBN3zZRsoFk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
