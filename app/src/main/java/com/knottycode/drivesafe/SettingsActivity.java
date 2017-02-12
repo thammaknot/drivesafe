@@ -28,9 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static android.os.Build.ID;
 import static com.knottycode.drivesafe.R.id.alarmTones;
 import static com.knottycode.drivesafe.R.id.checkpointFrequency;
+import static com.knottycode.drivesafe.R.id.recordTone;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnTouchListener {
 
@@ -116,6 +116,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         RelativeLayout adaptiveCheckpoint = (RelativeLayout) findViewById(R.id.adaptiveCheckpointFrequency);
         adaptiveCheckpoint.setOnTouchListener(this);
 
+        RelativeLayout recordTone = (RelativeLayout) findViewById(R.id.recordTone);
+        recordTone.setOnTouchListener(this);
+
         RelativeLayout adaptiveLoudness = (RelativeLayout) findViewById(R.id.adaptiveLoudness);
         adaptiveLoudness.setOnTouchListener(this);
     }
@@ -179,6 +182,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                 break;
             case alarmTones:
                 showAlarmTonesMenu();
+                break;
+            case recordTone:
+                showRecordNewToneDialog();
                 break;
             case R.id.adaptiveLoudness:
                 toggleAdaptiveLoudness();
@@ -334,6 +340,24 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         resetMediaPlayer();
+                    }
+                })
+                .show();
+    }
+
+    private void showRecordNewToneDialog() {
+        Log.d(TAG, "Showing ==========================");
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.record_new_tone_menu_title)
+                .setView(R.layout.menu_record_new_tone)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Log.d(TAG, "OK OK OK");
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Log.d(TAG, "NOT OK OK OK");
                     }
                 })
                 .show();

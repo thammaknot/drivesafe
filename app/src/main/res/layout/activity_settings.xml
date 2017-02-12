@@ -92,7 +92,8 @@
         </RelativeLayout>
 
         <RelativeLayout
-            style="@style/SettingsRow">
+            style="@style/SettingsRow"
+            android:id="@+id/recordTone">
 
             <TextView
                 android:text="Record new alarm tone"

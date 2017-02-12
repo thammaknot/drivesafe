@@ -14,6 +14,7 @@
 
     <string name="checkpoint_frequency_menu_title">Set Checkpoint Frequency (s)</string>
     <string name="alert_style_menu_title">Select Alert Style</string>
+    <string name="record_new_tone_menu_title">Record a new alarm</string>
 
     <string name="time_until_next_checkpoint">Time until next checkpoint</string>
     <string name="time_until_alarm">Time until alarm</string>
