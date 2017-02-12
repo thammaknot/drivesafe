@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -346,10 +347,26 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
     }
 
     private void showRecordNewToneDialog() {
-        Log.d(TAG, "Showing ==========================");
+        View menuView = getLayoutInflater().inflate(R.layout.menu_record_new_tone, null);
+        ImageButton recordButton = (ImageButton) menuView.findViewById(R.id.recordButton);
+        ImageButton playButton = (ImageButton) menuView.findViewById(R.id.playButton);
+
+        recordButton.setOnTouchListener((v, me) -> {
+            if (me.getActionMasked() != MotionEvent.ACTION_UP) {
+                return false;
+            }
+            Log.d(TAG, "Record ======="); return true;
+        });
+        playButton.setOnTouchListener((v, me) -> {
+            if (me.getActionMasked() != MotionEvent.ACTION_UP) {
+                return false;
+            }
+            Log.d(TAG, "Play ======="); return true;
+        });
+
         new AlertDialog.Builder(this)
                 .setTitle(R.string.record_new_tone_menu_title)
-                .setView(R.layout.menu_record_new_tone)
+                .setView(menuView)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Log.d(TAG, "OK OK OK");
@@ -357,7 +374,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Log.d(TAG, "NOT OK OK OK");
+                        // Do nothing.
                     }
                 })
                 .show();
