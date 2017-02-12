@@ -32,4 +32,12 @@
 
     <string name="ok">ตกลง</string>
     <string name="cancel">ยกเลิก</string>
+
+    <string name="tone_best_wake_up_sound">ตื่นๆๆ</string>
+    <string name="tone_car_alarm">กันขโมยรถ</string>
+    <string name="tone_emergency_alert">เหตุฉุกเฉิน!</string>
+    <string name="tone_fore_truck_siren">หวอรถ</string>
+    <string name="tone_funny_alarm">นาฬิกาปลุก</string>
+    <string name="tone_pager_tone">บี๊บๆๆ</string>
+    <string name="tone_rooster_alarm">ไก่ขัน</string>
 </resources>

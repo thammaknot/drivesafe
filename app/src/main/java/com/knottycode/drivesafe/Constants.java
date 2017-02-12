@@ -14,6 +14,7 @@ public class Constants {
 
     public static final String DEFAULT_ALERT_SOUND = "alert/glitchy-tone.mp3";
     public static final float ALERT_VOLUME = 0.8f;
+    public static final String ALARM_PATH_PREFIX = "alarm";
 
     public static final long[] VIBRATION_PATTERN = {0, 700, 100, 400};
 

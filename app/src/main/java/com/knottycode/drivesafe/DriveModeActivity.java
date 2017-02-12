@@ -339,7 +339,7 @@ public class DriveModeActivity extends AppCompatActivity {
         AssetFileDescriptor afd = null;
         String tone = availableAlarmTones.get(random.nextInt(availableAlarmTones.size()));
         try {
-            afd = getAssets().openFd(tone);
+            afd = getAssets().openFd(Constants.ALARM_PATH_PREFIX + "/" + tone);
         } catch (IOException ioe) {
             return null;
         }

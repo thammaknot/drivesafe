@@ -41,4 +41,12 @@
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+
+    <string name="tone_best_wake_up_sound">Wake Me Up</string>
+    <string name="tone_car_alarm">Car Alarm</string>
+    <string name="tone_emergency_alert">Emergency Emergency!</string>
+    <string name="tone_fore_truck_siren">Siren</string>
+    <string name="tone_funny_alarm">Alarm Clocks</string>
+    <string name="tone_pager_tone">Beeps</string>
+    <string name="tone_rooster_alarm">Rooster</string>
 </resources>

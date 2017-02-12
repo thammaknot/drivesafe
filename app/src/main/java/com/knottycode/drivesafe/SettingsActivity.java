@@ -5,24 +5,30 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import static android.R.attr.duration;
+import static android.os.Build.ID;
 import static com.knottycode.drivesafe.R.id.alarmTones;
 import static com.knottycode.drivesafe.R.id.checkpointFrequency;
 
@@ -33,10 +39,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
 
     private MediaPlayer mediaPlayer;
 
+    // "filename (e.g., .mp3)" -> "string resource name"
+    private Map<String, String> toneDisplayNames;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        loadToneDisplayNames();
+
         mediaPlayer = new MediaPlayer();
         prefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         displayCurrentPreferences();
@@ -62,6 +74,33 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                 editor.commit();
             }
         });
+    }
+
+    private void loadToneDisplayNames() {
+        toneDisplayNames = new HashMap<String, String>();
+        AssetManager am = getAssets();
+        InputStream is;
+        try {
+            is = am.open(Constants.ALARM_PATH_PREFIX + "/tone_index.txt");
+        } catch (IOException io) {
+            // Leave the map empty.
+            return;
+        }
+        BufferedReader r = new BufferedReader(new InputStreamReader(is));
+        String line;
+        try {
+            while ((line = r.readLine()) != null) {
+                String[] tokens = line.split("\t");
+                if (tokens.length != 2) {
+                    Log.w(TAG, "Malformed line in tone index file: " + line);
+                    continue;
+                }
+                toneDisplayNames.put(tokens[0], tokens[1]);
+            }
+        } catch (IOException io) {
+            Log.e(TAG, "Exception while reading tone index file.");
+            io.printStackTrace();
+        }
     }
 
     private void setOnTouchListeners() {
@@ -220,13 +259,15 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
     }
 
     private void showAlarmTonesMenu() {
+        // List of (mp3) filenames found in asset directory.
         final List<String> availableAlarmTones = new ArrayList<>();
         Set<String> savedTones = prefs.getStringSet(getString(R.string.alarm_tones_key),
                 new HashSet<String>());
         try {
-            String[] allTones = getAssets().list("");
+            String[] allTones = getAssets().list(Constants.ALARM_PATH_PREFIX);
             for (int i = 0; i < allTones.length; ++i) {
                 if (allTones[i].endsWith(".mp3")) {
+                    // String displayName = getDisplayToneName(allTones[i]);
                     availableAlarmTones.add(allTones[i]);
                 }
             }
@@ -235,24 +276,32 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         }
         boolean[] selectedBoolean = new boolean[availableAlarmTones.size()];
         int i = 0;
+        final String[] toneLocalizedDisplayStrings = new String[availableAlarmTones.size()];
         for (String tone : availableAlarmTones) {
             if (savedTones.contains(tone)) {
                 selectedBoolean[i] = true;
             }
+            String stringId = toneDisplayNames.get(tone);
+            String displayString = tone;
+            if (stringId != null) {
+                int resId = getResources().getIdentifier(stringId, "string", this.getClass().getPackage().getName());
+                if (resId > 0) {
+                    displayString = getString(resId);
+                }
+            }
+            toneLocalizedDisplayStrings[i] = displayString;
             ++i;
         }
         final List<String> selected = new ArrayList<>(savedTones);
         final TextView alarmTonesValueTextView = (TextView) findViewById(R.id.alarmTonesValue);
-        final String[] toneArray = new String[availableAlarmTones.size()];
-        availableAlarmTones.toArray(toneArray);
         new AlertDialog.Builder(this)
                 .setTitle(R.string.alert_style_menu_title)
-                .setMultiChoiceItems(toneArray, selectedBoolean,
+                .setMultiChoiceItems(toneLocalizedDisplayStrings, selectedBoolean,
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which,
                                                 boolean isChecked) {
-                                String tone = toneArray[which];
+                                String tone = availableAlarmTones.get(which);
                                 if (isChecked) {
                                     // If the user checked the item, add it to the selected items
                                     selected.add(tone);
@@ -302,9 +351,9 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         }
         AssetFileDescriptor audioDescriptor = null;
         try {
-            audioDescriptor = getAssets().openFd(name);
+            audioDescriptor = getAssets().openFd(Constants.ALARM_PATH_PREFIX + "/" + name);
         } catch (IOException ioe) {
-
+            Log.e(TAG, "Unable to open audio descriptor for " + name);
         }
         try {
             mediaPlayer.setDataSource(audioDescriptor.getFileDescriptor(),
