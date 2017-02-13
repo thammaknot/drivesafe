@@ -7,7 +7,9 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,6 +21,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static android.R.attr.name;
 import static com.knottycode.drivesafe.R.id.alarmTones;
 import static com.knottycode.drivesafe.R.id.checkpointFrequency;
 import static com.knottycode.drivesafe.R.id.recordTone;
@@ -36,12 +40,17 @@ import static com.knottycode.drivesafe.R.id.recordTone;
 public class SettingsActivity extends AppCompatActivity implements View.OnTouchListener {
 
     private static final String TAG = "SettingsActivity";
+    private static final String RECORDED_TONE_PATH = "/drivesafe/recorded_alarm.3gp";
     private SharedPreferences prefs;
 
     private MediaPlayer mediaPlayer;
 
     // "filename (e.g., .mp3)" -> "string resource name"
     private Map<String, String> toneDisplayNames;
+
+    private MediaRecorder mediaRecorder;
+    private boolean isRecording = false;
+    private boolean isPlaying = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -351,17 +360,53 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         ImageButton recordButton = (ImageButton) menuView.findViewById(R.id.recordButton);
         ImageButton playButton = (ImageButton) menuView.findViewById(R.id.playButton);
 
+        TextView statusTextView = (TextView) menuView.findViewById(R.id.statusIndicatorTextView);
+
         recordButton.setOnTouchListener((v, me) -> {
             if (me.getActionMasked() != MotionEvent.ACTION_UP) {
                 return false;
             }
-            Log.d(TAG, "Record ======="); return true;
+
+            if (!isRecording) {
+                File audioDirectory = getFilesDir();
+                mediaRecorder = new MediaRecorder();
+                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                mediaRecorder.setOutputFile(audioDirectory.getPath() + File.separator + "recorded_tone.3gp");
+                try {
+                    mediaRecorder.prepare();
+                    isRecording = !isRecording;
+                    statusTextView.setText("Recording");
+                    mediaRecorder.start();
+                } catch (IOException io) {
+                    Log.e(TAG, "Error recording media");
+                    io.printStackTrace();
+                }
+            } else {
+                isRecording = !isRecording;
+                mediaRecorder.stop();
+                mediaRecorder.release();
+                mediaRecorder = null;
+                statusTextView.setText("NOT Recording");
+            }
+            return true;
         });
         playButton.setOnTouchListener((v, me) -> {
             if (me.getActionMasked() != MotionEvent.ACTION_UP) {
                 return false;
             }
-            Log.d(TAG, "Play ======="); return true;
+            if (!isPlaying) {
+                isPlaying = !isPlaying;
+                statusTextView.setText("Playing");
+                File audioDirectory = getFilesDir();
+                playSound(audioDirectory.getPath() + File.separator + "recorded_tone.3gp");
+            } else {
+                isPlaying = !isPlaying;
+                statusTextView.setText("Stopping play");
+                resetMediaPlayer();
+            }
+            return true;
         });
 
         new AlertDialog.Builder(this)
@@ -384,6 +429,21 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         mediaPlayer.stop();
         mediaPlayer.release();
         mediaPlayer = new MediaPlayer();
+    }
+
+    private void playSound(String path) {
+        if (mediaPlayer.isPlaying()) {
+            resetMediaPlayer();
+        }
+        try {
+            mediaPlayer.setDataSource(path);
+            mediaPlayer.prepare();
+            mediaPlayer.setLooping(false);
+            mediaPlayer.setVolume(1, 1);
+            mediaPlayer.start();
+        } catch (IOException ioe) {
+
+        }
     }
 
     private void playTone(String name) {
