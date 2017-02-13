@@ -45,6 +45,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
 
     private static final String TAG = "SettingsActivity";
     private static String TEMP_RECORDING_FILEPATH = null;
+    private static final String MP3_FILE_EXTENSION = ".mp3";
     private SharedPreferences prefs;
 
     private MediaPlayer mediaPlayer;
@@ -347,8 +348,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         try {
             String[] allTones = getAssets().list(Constants.ALARM_PATH_PREFIX);
             for (int i = 0; i < allTones.length; ++i) {
-                if (allTones[i].endsWith(".mp3")) {
-                    // String displayName = getDisplayToneName(allTones[i]);
+                if (allTones[i].endsWith(MP3_FILE_EXTENSION)) {
                     availableAlarmTones.add(allTones[i]);
                 }
             }
@@ -473,7 +473,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                     }
                 })
                 .setOnDismissListener(dialog -> {
-                    Log.d(TAG, "##### DISMISSED #####");
                     stopRecording();
                     resetMediaPlayer();
                 })
@@ -541,18 +540,5 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
             }
             playSoundFromDescriptor(audioDescriptor.getFileDescriptor());
         }
-        /*
-        try {
-            mediaPlayer.setDataSource(audioDescriptor.getFileDescriptor(),
-                    audioDescriptor.getStartOffset(), audioDescriptor.getLength());
-            audioDescriptor.close();
-            mediaPlayer.prepare();
-            mediaPlayer.setLooping(false);
-            mediaPlayer.setVolume(1, 1);
-            mediaPlayer.start();
-        } catch (IOException ioe) {
-
-        }
-        */
     }
 }

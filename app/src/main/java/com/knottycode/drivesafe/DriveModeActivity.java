@@ -303,7 +303,6 @@ public class DriveModeActivity extends AppCompatActivity {
         FileDescriptor audioDescriptor = getAudioDescriptor();
         try {
             mediaPlayer.setDataSource(audioDescriptor);
-    //                    audioDescriptor.getStartOffset(), audioDescriptor.getLength());
             mediaPlayer.setAudioStreamType(ALARM_STREAM);
             mediaPlayer.prepare();
             mediaPlayer.setLooping(true);
@@ -350,7 +349,7 @@ public class DriveModeActivity extends AppCompatActivity {
                 FileInputStream fis = new FileInputStream(f);
                 return fis.getFD();
             } catch (IOException ioe) {
-                
+
             }
         } else {
             try {
