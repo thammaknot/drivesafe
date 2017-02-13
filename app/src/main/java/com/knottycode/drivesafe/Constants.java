@@ -38,8 +38,19 @@ public class Constants {
                     return m;
                 }
             }
-            return SCREEN;
+            return SOUND;
         }
+
+        static AlertMode fromCode(int c) {
+            for (AlertMode m : AlertMode.values()) {
+                if (m.code == c) {
+                    return m;
+                }
+            }
+            return SOUND;
+        }
+
+        int getCode() { return code; }
 
         String getDisplayString(Context context) {
             return context.getString(displayString);

@@ -214,8 +214,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                         Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS)));
 
         TextView alertStyleTextView = (TextView) findViewById(R.id.alertStyleValue);
-        alertStyleTextView.setText(prefs.getString(getString(R.string.alert_style_key),
-                Constants.DEFAULT_ALERT_STYLE.getDisplayString(this)));
+        Constants.AlertMode mode =
+                Constants.AlertMode.fromCode(prefs.getInt("alert_style",
+                        Constants.AlertMode.SOUND.getCode()));
+        alertStyleTextView.setText(mode.getDisplayString(this));
 
         TextView alarmTonesValueTextView = (TextView) findViewById(R.id.alarmTonesValue);
         Set<String> savedTones = prefs.getStringSet(getString(R.string.alarm_tones_key),
@@ -333,7 +335,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                         SharedPreferences prefs =
                                 getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString(getString(R.string.alert_style_key), alertStyles[which]);
+                        editor.putInt(getString(R.string.alert_style_key), modes[which].getCode());
                         editor.commit();
                         alertStyleValueTextView.setText(alertStyles[which]);
                     }
