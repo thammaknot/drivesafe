@@ -88,6 +88,21 @@
                 android:text="..."
                 style="@style/SettingsValue"
                 android:id="@+id/alarmTonesValue"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            style="@style/SettingsRow"
+            android:id="@+id/recordTone">
+
+            <TextView
+                android:text="@string/record_new_tone_menu_title"
+                style="@style/SettingsLabel"
+                android:id="@+id/textView13" />
+            <TextView
+                android:text="..."
+                style="@style/SettingsValue"
+                android:id="@+id/recordAlarmToneValue"/>
         </RelativeLayout>
 
         <RelativeLayout
@@ -97,13 +112,14 @@
             <TextView
                 android:text="@string/setting_alarm_adaptive_loudness"
                 style="@style/SettingsLabel"
-                android:id="@+id/textView13"/>
+                android:id="@+id/textView14"/>
 
             <Switch
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:id="@+id/adaptiveLoudnessSwitch" />
+
         </RelativeLayout>
 
     </LinearLayout>

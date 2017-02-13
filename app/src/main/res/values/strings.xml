@@ -14,6 +14,8 @@
 
     <string name="checkpoint_frequency_menu_title">Set Checkpoint Frequency (s)</string>
     <string name="alert_style_menu_title">Select Alert Style</string>
+    <string name="record_new_tone_menu_title">Record a new alarm</string>
+    <string name="recorded_tone_display_name">Your recording</string>
 
     <string name="time_until_next_checkpoint">Time until next checkpoint</string>
     <string name="time_until_alarm">Time until alarm</string>
@@ -41,4 +43,12 @@
 
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+
+    <string name="tone_best_wake_up_sound">Wake Me Up</string>
+    <string name="tone_car_alarm">Car Alarm</string>
+    <string name="tone_emergency_alert">Emergency Emergency!</string>
+    <string name="tone_fore_truck_siren">Siren</string>
+    <string name="tone_funny_alarm">Alarm Clocks</string>
+    <string name="tone_pager_tone">Beeps</string>
+    <string name="tone_rooster_alarm">Rooster</string>
 </resources>
