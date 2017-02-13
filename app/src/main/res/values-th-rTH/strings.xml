@@ -6,6 +6,7 @@
     <string name="checkpoint_frequency_menu_title">เลือกความถี่ของเช็คพ้อยท์ (วินาที)</string>
     <string name="alert_style_menu_title">เลือกรูปแบบการเตือน</string>
     <string name="record_new_tone_menu_title">บันทึกเสียงปลุกใหม่</string>
+    <string name="recorded_tone_display_name">เสียงที่คุณบันทึก</string>
 
     <string name="time_until_next_checkpoint">เวลาก่อนถึงเช็คพ้อยท์ถัดไป</string>
     <string name="time_until_alarm">เวลาก่อนเข้าโหมดปลุก</string>

@@ -20,6 +20,9 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -287,18 +290,21 @@ public class DriveModeActivity extends AppCompatActivity {
                 }.start();
     }
 
+    private String getRecordedToneFilePath() {
+        return getFilesDir() + File.separator + Constants.RECORDED_TONE_FILENAME;
+    }
+
     private void displayAlarmMode() {
         mode = ALARM_MODE;
         wholeScreenLayout.setBackgroundColor(Color.RED);
         checkpointCountdownTimer.setTextColor(Color.YELLOW);
         driveModeTimer.setTextColor(Color.YELLOW);
 
-        AssetFileDescriptor audioDescriptor = getAudioDescriptor();
+        FileDescriptor audioDescriptor = getAudioDescriptor();
         try {
-            mediaPlayer.setDataSource(audioDescriptor.getFileDescriptor(),
-                    audioDescriptor.getStartOffset(), audioDescriptor.getLength());
+            mediaPlayer.setDataSource(audioDescriptor);
+    //                    audioDescriptor.getStartOffset(), audioDescriptor.getLength());
             mediaPlayer.setAudioStreamType(ALARM_STREAM);
-            audioDescriptor.close();
             mediaPlayer.prepare();
             mediaPlayer.setLooping(true);
             mediaPlayer.setVolume(1, 1);
@@ -335,13 +341,23 @@ public class DriveModeActivity extends AppCompatActivity {
         return true;
     }
 
-    private AssetFileDescriptor getAudioDescriptor() {
-        AssetFileDescriptor afd = null;
+    private FileDescriptor getAudioDescriptor() {
+        FileDescriptor afd = null;
         String tone = availableAlarmTones.get(random.nextInt(availableAlarmTones.size()));
-        try {
-            afd = getAssets().openFd(Constants.ALARM_PATH_PREFIX + "/" + tone);
-        } catch (IOException ioe) {
-            return null;
+        if (tone.equals(Constants.RECORDED_TONE_FILENAME)) {
+            try {
+                File f = new File(getRecordedToneFilePath());
+                FileInputStream fis = new FileInputStream(f);
+                return fis.getFD();
+            } catch (IOException ioe) {
+                
+            }
+        } else {
+            try {
+                afd = getAssets().openFd(Constants.ALARM_PATH_PREFIX + "/" + tone).getFileDescriptor();
+            } catch (IOException ioe) {
+                return null;
+            }
         }
         return afd;
     }

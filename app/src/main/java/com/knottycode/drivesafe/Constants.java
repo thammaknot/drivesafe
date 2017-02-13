@@ -13,6 +13,7 @@ public class Constants {
     public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SCREEN;
 
     public static final String DEFAULT_ALERT_SOUND = "alert/glitchy-tone.mp3";
+    public static final String RECORDED_TONE_FILENAME = "recorded_tone.3gp";
     public static final float ALERT_VOLUME = 0.8f;
     public static final String ALARM_PATH_PREFIX = "alarm";
 

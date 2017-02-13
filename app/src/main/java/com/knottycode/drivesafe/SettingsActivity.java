@@ -9,7 +9,6 @@ import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -22,9 +21,13 @@ import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,15 +35,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static android.R.attr.name;
 import static com.knottycode.drivesafe.R.id.alarmTones;
 import static com.knottycode.drivesafe.R.id.checkpointFrequency;
+import static com.knottycode.drivesafe.R.id.playButton;
+import static com.knottycode.drivesafe.R.id.recordButton;
 import static com.knottycode.drivesafe.R.id.recordTone;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnTouchListener {
 
     private static final String TAG = "SettingsActivity";
-    private static final String RECORDED_TONE_PATH = "/drivesafe/recorded_alarm.3gp";
+    private static String TEMP_RECORDING_FILEPATH = null;
     private SharedPreferences prefs;
 
     private MediaPlayer mediaPlayer;
@@ -52,10 +56,15 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
     private boolean isRecording = false;
     private boolean isPlaying = false;
 
+    private View menuView;
+    private ImageButton recordButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        TEMP_RECORDING_FILEPATH = getFilesDir() + File.separator + "tmp_audio.3gp";
 
         loadToneDisplayNames();
 
@@ -63,6 +72,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         prefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         displayCurrentPreferences();
 
+        setupRecordNewToneMenu();
         setOnTouchListeners();
 
         Switch adaptiveCheckpointFrequencySwitch = (Switch) findViewById(R.id.adaptiveCheckpointFrequencySwitch);
@@ -111,6 +121,61 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
             Log.e(TAG, "Exception while reading tone index file.");
             io.printStackTrace();
         }
+    }
+
+    private void setupRecordNewToneMenu() {
+        menuView = getLayoutInflater().inflate(R.layout.menu_record_new_tone, null);
+        recordButton = (ImageButton) menuView.findViewById(R.id.recordButton);
+        ImageButton playButton = (ImageButton) menuView.findViewById(R.id.playButton);
+
+        TextView statusTextView = (TextView) menuView.findViewById(R.id.statusIndicatorTextView);
+
+        playButton.setEnabled(false);
+        recordButton.setOnTouchListener((v, me) -> {
+            if (me.getActionMasked() != MotionEvent.ACTION_UP) {
+                return false;
+            }
+
+            if (!isRecording) {
+                mediaRecorder = new MediaRecorder();
+                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                mediaRecorder.setOutputFile(TEMP_RECORDING_FILEPATH);
+                try {
+                    mediaRecorder.prepare();
+                    isRecording = true;
+                    statusTextView.setText("Recording");
+                    playButton.setEnabled(false);
+                    mediaRecorder.start();
+                } catch (IOException io) {
+                    Log.e(TAG, "Error recording media");
+                    io.printStackTrace();
+                }
+            } else {
+                stopRecording();
+                playButton.setEnabled(true);
+                statusTextView.setText("NOT Recording");
+            }
+            return true;
+        });
+        playButton.setOnTouchListener((v, me) -> {
+            if (me.getActionMasked() != MotionEvent.ACTION_UP) {
+                return false;
+            }
+            if (!isPlaying) {
+                isPlaying = true;
+                statusTextView.setText("Playing");
+                recordButton.setEnabled(false);
+                playSound(TEMP_RECORDING_FILEPATH);
+            } else {
+                isPlaying = false;
+                statusTextView.setText("Stopping play");
+                resetMediaPlayer();
+                recordButton.setEnabled(true);
+            }
+            return true;
+        });
     }
 
     private void setOnTouchListeners() {
@@ -290,6 +355,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         } catch (IOException ioe) {
             // Nothing.
         }
+        File recordedTone = new File(getRecordedToneFilePath());
+        if (recordedTone.exists()) {
+            availableAlarmTones.add(Constants.RECORDED_TONE_FILENAME);
+        }
         boolean[] selectedBoolean = new boolean[availableAlarmTones.size()];
         int i = 0;
         final String[] toneLocalizedDisplayStrings = new String[availableAlarmTones.size()];
@@ -304,6 +373,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                 if (resId > 0) {
                     displayString = getString(resId);
                 }
+            } else if (tone.equals(Constants.RECORDED_TONE_FILENAME)) {
+                displayString = getString(R.string.recorded_tone_display_name);
             }
             toneLocalizedDisplayStrings[i] = displayString;
             ++i;
@@ -355,72 +426,56 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                 .show();
     }
 
+    private void stopRecording() {
+        if (mediaRecorder != null) {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+        }
+        isRecording = false;
+    }
+
+    private void copyFile(File src, File dst) throws IOException {
+        InputStream in = new FileInputStream(src);
+        OutputStream out = new FileOutputStream(dst);
+
+        // Transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
+    }
+
+    private String getRecordedToneFilePath() {
+        return getFilesDir() + File.separator + Constants.RECORDED_TONE_FILENAME;
+    }
+
     private void showRecordNewToneDialog() {
-        View menuView = getLayoutInflater().inflate(R.layout.menu_record_new_tone, null);
-        ImageButton recordButton = (ImageButton) menuView.findViewById(R.id.recordButton);
-        ImageButton playButton = (ImageButton) menuView.findViewById(R.id.playButton);
-
-        TextView statusTextView = (TextView) menuView.findViewById(R.id.statusIndicatorTextView);
-
-        recordButton.setOnTouchListener((v, me) -> {
-            if (me.getActionMasked() != MotionEvent.ACTION_UP) {
-                return false;
-            }
-
-            if (!isRecording) {
-                File audioDirectory = getFilesDir();
-                mediaRecorder = new MediaRecorder();
-                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-                mediaRecorder.setOutputFile(audioDirectory.getPath() + File.separator + "recorded_tone.3gp");
-                try {
-                    mediaRecorder.prepare();
-                    isRecording = !isRecording;
-                    statusTextView.setText("Recording");
-                    mediaRecorder.start();
-                } catch (IOException io) {
-                    Log.e(TAG, "Error recording media");
-                    io.printStackTrace();
-                }
-            } else {
-                isRecording = !isRecording;
-                mediaRecorder.stop();
-                mediaRecorder.release();
-                mediaRecorder = null;
-                statusTextView.setText("NOT Recording");
-            }
-            return true;
-        });
-        playButton.setOnTouchListener((v, me) -> {
-            if (me.getActionMasked() != MotionEvent.ACTION_UP) {
-                return false;
-            }
-            if (!isPlaying) {
-                isPlaying = !isPlaying;
-                statusTextView.setText("Playing");
-                File audioDirectory = getFilesDir();
-                playSound(audioDirectory.getPath() + File.separator + "recorded_tone.3gp");
-            } else {
-                isPlaying = !isPlaying;
-                statusTextView.setText("Stopping play");
-                resetMediaPlayer();
-            }
-            return true;
-        });
-
         new AlertDialog.Builder(this)
                 .setTitle(R.string.record_new_tone_menu_title)
                 .setView(menuView)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Log.d(TAG, "OK OK OK");
+                        File tempFile = new File(TEMP_RECORDING_FILEPATH);
+                        File f = new File(getRecordedToneFilePath());
+                        try {
+                            copyFile(tempFile, f);
+                        } catch (IOException ioe) {
+                            ioe.printStackTrace();
+                        }
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Do nothing.
                     }
+                })
+                .setOnDismissListener(dialog -> {
+                    Log.d(TAG, "##### DISMISSED #####");
+                    stopRecording();
+                    resetMediaPlayer();
                 })
                 .show();
     }
@@ -429,6 +484,22 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         mediaPlayer.stop();
         mediaPlayer.release();
         mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnCompletionListener(mp -> {
+            isPlaying = false;
+            recordButton.setEnabled(true);
+        });
+    }
+
+    private void playSoundFromDescriptor(FileDescriptor fd) {
+        try {
+            mediaPlayer.setDataSource(fd);
+            mediaPlayer.prepare();
+            mediaPlayer.setLooping(false);
+            mediaPlayer.setVolume(1, 1);
+            mediaPlayer.start();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
     }
 
     private void playSound(String path) {
@@ -450,12 +521,27 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         if (mediaPlayer.isPlaying()) {
             resetMediaPlayer();
         }
-        AssetFileDescriptor audioDescriptor = null;
-        try {
-            audioDescriptor = getAssets().openFd(Constants.ALARM_PATH_PREFIX + "/" + name);
-        } catch (IOException ioe) {
-            Log.e(TAG, "Unable to open audio descriptor for " + name);
+        if (name.equals(Constants.RECORDED_TONE_FILENAME)) {
+            FileDescriptor fd = null;
+            try {
+                File file = new File(getRecordedToneFilePath());
+                FileInputStream fis = new FileInputStream(file);
+                fd = fis.getFD();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+                return;
+            }
+            playSoundFromDescriptor(fd);
+        } else {
+            AssetFileDescriptor audioDescriptor = null;
+            try {
+                audioDescriptor = getAssets().openFd(Constants.ALARM_PATH_PREFIX + "/" + name);
+            } catch (IOException ioe) {
+                Log.e(TAG, "Unable to open audio descriptor for " + name);
+            }
+            playSoundFromDescriptor(audioDescriptor.getFileDescriptor());
         }
+        /*
         try {
             mediaPlayer.setDataSource(audioDescriptor.getFileDescriptor(),
                     audioDescriptor.getStartOffset(), audioDescriptor.getLength());
@@ -467,5 +553,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         } catch (IOException ioe) {
 
         }
+        */
     }
 }

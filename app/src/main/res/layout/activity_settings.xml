@@ -96,7 +96,7 @@
             android:id="@+id/recordTone">
 
             <TextView
-                android:text="Record new alarm tone"
+                android:text="@string/record_new_tone_menu_title"
                 style="@style/SettingsLabel"
                 android:id="@+id/textView13" />
             <TextView
