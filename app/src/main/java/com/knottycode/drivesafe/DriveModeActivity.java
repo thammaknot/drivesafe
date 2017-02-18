@@ -3,6 +3,7 @@ package com.knottycode.drivesafe;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
@@ -154,7 +155,7 @@ public class DriveModeActivity extends AppCompatActivity {
         driveModeTimer = (TextView) findViewById(R.id.driveModeTimer);
         // Set up MediaPlayer
         mediaPlayer = new MediaPlayer();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        // getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -295,6 +296,9 @@ public class DriveModeActivity extends AppCompatActivity {
     }
 
     private void displayAlarmMode() {
+        Intent intent = new Intent(this, AlarmModeActivity.class);
+        startActivity(intent);
+        /*
         mode = ALARM_MODE;
         wholeScreenLayout.setBackgroundColor(Color.RED);
         checkpointCountdownTimer.setTextColor(Color.YELLOW);
@@ -314,6 +318,7 @@ public class DriveModeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
     }
 
     private void stopAlarm() {
