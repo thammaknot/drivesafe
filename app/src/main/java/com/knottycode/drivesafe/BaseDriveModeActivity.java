@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -43,6 +45,8 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
     protected AudioManager audioManager;
     protected CheckpointManager checkpointManager;
 
+    protected SpeechRecognizer recognizer;
+    protected ASRListener asrListener;
     protected int initialVolume;
 
     protected Handler timerHandler = new Handler();
@@ -70,12 +74,17 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
         checkpointFrequencyMillis = checkpointManager.getNextFrequencyMillis();
         mediaPlayer = new MediaPlayer();
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        asrListener = new ASRListener(this);
         startTimer();
     }
 
     @Override
     public void onPause() {
         audioManager.setStreamVolume(ALARM_STREAM, initialVolume, 0);
+        if (recognizer != null) {
+            recognizer.stopListening();
+            recognizer.destroy();
+        }
         super.onPause();
     }
 
@@ -112,6 +121,24 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
     abstract protected void updateDisplay(long now);
 
     abstract protected boolean proceedToNextStep(long now);
+
+    public void onASRResultsReady(List<String> results) {}
+
+    /**
+     * Fire an intent to start the voice recognition activity.
+     */
+    protected void startVoiceRecognitionActivity() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "th-TH");
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "th-TH");
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
+                this.getPackageName());
+        recognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        recognizer.setRecognitionListener(asrListener);
+        recognizer.startListening(intent);
+    }
 
     /**
      * Checks to make sure the ALARM stream's volume is sufficiently loud.

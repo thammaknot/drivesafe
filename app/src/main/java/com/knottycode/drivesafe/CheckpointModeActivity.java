@@ -5,11 +5,14 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.List;
 
 /**
  * Created by thammaknot on 2/18/17.
@@ -42,6 +45,7 @@ public class CheckpointModeActivity extends BaseDriveModeActivity {
         });
 
         executeAlert();
+        startVoiceRecognitionActivity();
     }
 
     @Override
@@ -69,6 +73,17 @@ public class CheckpointModeActivity extends BaseDriveModeActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onASRResultsReady(List<String> results) {
+        if (results.contains(Constants.SAFE_PHRASE)) {
+            long responseTimeMillis = System.currentTimeMillis() - checkpointModeStartTime;
+            checkpointManager.addResponseTime(responseTimeMillis);
+            startDriveMode();
+        } else {
+            Log.d(TAG, "##### SAFETY PHRASE not found!!!!");
+        }
     }
 
     public boolean onTouch(View v, MotionEvent me) {
