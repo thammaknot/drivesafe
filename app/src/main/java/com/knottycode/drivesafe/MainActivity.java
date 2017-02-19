@@ -1,6 +1,8 @@
 package com.knottycode.drivesafe;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,6 +16,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize screen state receiver.
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        BroadcastReceiver mReceiver = ScreenStateReceiver.getInstance();
+        registerReceiver(mReceiver, filter);
+
         setContentView(R.layout.activity_main);
 
         driveButton = (Button) findViewById(R.id.driveButton);

@@ -6,10 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.hardware.display.DisplayManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Display;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -60,12 +65,6 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
     };
 
     protected void init() {
-        // Initialize screen state receiver.
-        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        BroadcastReceiver mReceiver = new ScreenStateReceiver();
-        registerReceiver(mReceiver, filter);
-
         // Remove title bar
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         // Remove notification bar
@@ -74,32 +73,45 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
 
         loadPreferences();
         checkpointManager = CheckpointManager.getInstance(checkpointFrequencyMillis,
-                adaptiveCheckpointFrequency);
+                adaptiveCheckpointFrequency, System.currentTimeMillis());
+        checkpointFrequencyMillis = checkpointManager.getNextFrequencyMillis();
         mediaPlayer = new MediaPlayer();
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        startTimer();
     }
 
     @Override
     public void onPause() {
-        if (false && ScreenStateReceiver.screenOn) {
-            // Screen about to turn off.
-        } else {
-            stopTimer();
-            audioManager.setStreamVolume(ALARM_STREAM, initialVolume, 0);
-        }
+        audioManager.setStreamVolume(ALARM_STREAM, initialVolume, 0);
         super.onPause();
     }
 
     @Override
     public void onResume() {
-        if (false && !ScreenStateReceiver.screenOn) {
-            // Screen about to turn on.
-        } else {
-            initialVolume = audioManager.getStreamVolume(ALARM_STREAM);
-            validateSystemLoudness();
-            startTimer();
-        }
+        initialVolume = audioManager.getStreamVolume(ALARM_STREAM);
+        validateSystemLoudness();
         super.onResume();
+    }
+
+    /**
+     * Is the screen of the device on.
+     * @param context the context
+     * @return true when (at least one) screen is on
+     */
+    public boolean isScreenOn() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            DisplayManager dm = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
+            boolean screenOn = false;
+            for (Display display : dm.getDisplays()) {
+                if (display.getState() != Display.STATE_OFF) {
+                    screenOn = true;
+                }
+            }
+            return screenOn;
+        } else {
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            return pm.isInteractive();
+        }
     }
 
     private void startTimer() {
@@ -142,21 +154,25 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
     }
 
     protected void startAlarmMode() {
+        stopTimer();
         Intent intent = new Intent(this, AlarmModeActivity.class);
         startActivity(intent);
     }
 
     protected void startCheckpointMode() {
+        stopTimer();
         Intent intent = new Intent(this, CheckpointModeActivity.class);
         startActivity(intent);
     }
 
     protected void startDriveMode() {
+        stopTimer();
         Intent intent = new Intent(this, DriveModeActivity.class);
         startActivity(intent);
     }
 
     private void goBackToMainActivity() {
+        stopTimer();
         checkpointManager.invalidateSingletonInstance();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);

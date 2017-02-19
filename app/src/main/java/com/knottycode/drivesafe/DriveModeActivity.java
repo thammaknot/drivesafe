@@ -16,19 +16,14 @@ public class DriveModeActivity extends BaseDriveModeActivity {
 
     /** Time when the user last checks in at a checkpoint. */
     private long lastCheckpointTime;
-    /** Time when we enter drive (NORMAL) mode. */
-    private long driveModeStartTime;
-
-    private long checkpointFrequencyMillis;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mode = NORMAL_MODE;
         TAG = "DriveSafe: DriveModeActivity";
+        lastCheckpointTime = System.currentTimeMillis();
         init();
-
-        driveModeStartTime = System.currentTimeMillis();
 
         setContentView(R.layout.activity_drive_mode);
 
@@ -42,13 +37,6 @@ public class DriveModeActivity extends BaseDriveModeActivity {
     }
 
     @Override
-    public void onResume() {
-        lastCheckpointTime = System.currentTimeMillis();
-        checkpointFrequencyMillis = checkpointManager.getNextFrequencyMillis();
-        super.onResume();
-    }
-
-    @Override
     protected void updateDisplay(long now) {
         long millis = now - lastCheckpointTime;
         millis = checkpointFrequencyMillis - millis;
@@ -58,7 +46,7 @@ public class DriveModeActivity extends BaseDriveModeActivity {
 
         checkpointCountdownTimer.setText(String.format("%d:%02d", minutes, seconds));
 
-        long timeSinceStart = now - driveModeStartTime;
+        long timeSinceStart = now - checkpointManager.getDriveModeStartTime();
         seconds = (int) (timeSinceStart / 1000);
         minutes = seconds / 60;
         seconds = seconds % 60;
