@@ -3,6 +3,7 @@ package com.knottycode.drivesafe;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -41,7 +42,6 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
         wholeScreenLayout.setOnTouchListener((v, me) -> {
             return AlarmModeActivity.this.onTouch(v, me);
         });
-
         startAlarm();
     }
 

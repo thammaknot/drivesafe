@@ -3,7 +3,6 @@ package com.knottycode.drivesafe;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class ScreenStateReceiver extends BroadcastReceiver {
     private static final String TAG = "DriveSafe: ScreenStateReceiver";
@@ -20,6 +19,7 @@ public class ScreenStateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        /*
         Log.d(TAG, "onRecieved!");
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
             Log.d(TAG, "SCREEN OFF");
@@ -28,6 +28,7 @@ public class ScreenStateReceiver extends BroadcastReceiver {
             Log.d(TAG, "SCREEN ON");
             screenOn = true;
         }
+        */
     }
 
 }
