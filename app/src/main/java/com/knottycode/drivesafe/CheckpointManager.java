@@ -1,5 +1,6 @@
 package com.knottycode.drivesafe;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import java.util.List;
  * Created by thammaknot on 2/6/17.
  */
 
-public class CheckpointManager {
+public class CheckpointManager implements Serializable {
     private static String TAG = "CheckpointManager##";
 
     List<Long> responseTimeMillis = new ArrayList<>();
