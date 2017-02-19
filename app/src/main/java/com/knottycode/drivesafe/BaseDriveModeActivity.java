@@ -1,20 +1,13 @@
 package com.knottycode.drivesafe;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.hardware.display.DisplayManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Display;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -91,27 +84,6 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
         initialVolume = audioManager.getStreamVolume(ALARM_STREAM);
         validateSystemLoudness();
         super.onResume();
-    }
-
-    /**
-     * Is the screen of the device on.
-     * @param context the context
-     * @return true when (at least one) screen is on
-     */
-    public boolean isScreenOn() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            DisplayManager dm = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
-            boolean screenOn = false;
-            for (Display display : dm.getDisplays()) {
-                if (display.getState() != Display.STATE_OFF) {
-                    screenOn = true;
-                }
-            }
-            return screenOn;
-        } else {
-            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            return pm.isInteractive();
-        }
     }
 
     private void startTimer() {
