@@ -11,10 +11,13 @@ import java.util.List;
 public class CheckpointManager implements Serializable {
     private static String TAG = "CheckpointManager##";
 
+    private static CheckpointManager singletonInstance = null;
+
     List<Long> responseTimeMillis = new ArrayList<>();
     private long initFrequencyMillis;
     private long nextFrequencyMillis;
     private boolean adaptive;
+    private String text;
 
     private static final int MIN_FREQUENCY_MILLIS = 30 * 1000;
     private static final int MAX_FREQUENCY_MILLIS = 5 * 60 * 1000;
@@ -26,6 +29,20 @@ public class CheckpointManager implements Serializable {
         this.nextFrequencyMillis = initFrequencyMillis;
         this.adaptive = adaptive;
     }
+
+    public static CheckpointManager getInstance(long initFrequencyMillis, boolean adaptive) {
+        if (singletonInstance == null) {
+            singletonInstance = new CheckpointManager(initFrequencyMillis, adaptive);
+        }
+        return singletonInstance;
+    }
+
+    public static void invalidateSingletonInstance() {
+        singletonInstance = null;
+    }
+
+    public void setText(String s) { text = s; }
+    public String getText() { return text; }
 
     private long calculateNextFrequency() {
         long lastResponseTime = responseTimeMillis.get(responseTimeMillis.size() - 1);

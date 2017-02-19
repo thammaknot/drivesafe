@@ -1,6 +1,10 @@
 package com.knottycode.drivesafe;
 
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -36,6 +40,8 @@ public class CheckpointModeActivity extends BaseDriveModeActivity {
         wholeScreenLayout.setOnTouchListener((v, me) -> {
             return CheckpointModeActivity.this.onTouch(v, me);
         });
+
+        executeAlert();
     }
 
     @Override
@@ -66,9 +72,65 @@ public class CheckpointModeActivity extends BaseDriveModeActivity {
     }
 
     public boolean onTouch(View v, MotionEvent me) {
+        if (me.getActionMasked() != MotionEvent.ACTION_UP) {
+            return false;
+        }
         long responseTimeMillis = System.currentTimeMillis() - checkpointModeStartTime;
-        // checkpointManager.addResponseTime(responseTimeMillis);
+        checkpointManager.addResponseTime(responseTimeMillis);
         startDriveMode();
         return true;
+    }
+
+    private void vibrate() {
+        Vibrator v = (Vibrator) this.getSystemService(this.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        v.vibrate(Constants.VIBRATION_PATTERN, -1);
+    }
+
+    private void playAlert() {
+        try {
+            AssetFileDescriptor afd = getAssets().openFd(Constants.DEFAULT_ALERT_SOUND);
+            mediaPlayer.setDataSource(afd.getFileDescriptor(),
+                    afd.getStartOffset(), afd.getLength());
+            mediaPlayer.setAudioStreamType(ALARM_STREAM);
+            afd.close();
+            mediaPlayer.prepare();
+            mediaPlayer.setLooping(false);
+            mediaPlayer.setVolume(Constants.ALERT_VOLUME, Constants.ALERT_VOLUME);
+            new CountDownTimer(1000, 10000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    // Nothing to do
+                }
+
+                @Override
+                public void onFinish() {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                    }
+                    mediaPlayer.release();
+                    mediaPlayer = new MediaPlayer();
+                    this.cancel();
+                }
+            }.start();
+            mediaPlayer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void executeAlert() {
+        switch (alertMode) {
+            case SCREEN:
+                break;
+            case SOUND:
+                playAlert();
+                break;
+            case VIBRATE:
+                vibrate();
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -390,9 +390,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                             @Override
                             public void onClick(DialogInterface dialog, int which,
                                                 boolean isChecked) {
+                                Log.d(TAG, "### Onclick menu: " + which);
                                 String tone = availableAlarmTones.get(which);
                                 if (isChecked) {
                                     // If the user checked the item, add it to the selected items
+                                    Log.d(TAG, "#### Playing tone: " + tone);
                                     selected.add(tone);
                                     playTone(tone);
                                 } else if (selected.contains(tone)) {
@@ -536,6 +538,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         } else {
             AssetFileDescriptor audioDescriptor = null;
             try {
+                Log.d(TAG, "$$$$$$$ playing " + Constants.ALARM_PATH_PREFIX + "/" + name);
                 audioDescriptor = getAssets().openFd(Constants.ALARM_PATH_PREFIX + "/" + name);
             } catch (IOException ioe) {
                 Log.e(TAG, "Unable to open audio descriptor for " + name);

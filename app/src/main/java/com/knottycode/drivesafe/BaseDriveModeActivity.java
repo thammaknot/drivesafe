@@ -10,7 +10,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -44,6 +43,7 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
 
     protected MediaPlayer mediaPlayer;
     protected AudioManager audioManager;
+    protected CheckpointManager checkpointManager;
 
     protected int initialVolume;
 
@@ -51,53 +51,11 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
     protected Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "********* Inside runnable");
             long now = System.currentTimeMillis();
             updateDisplay(now);
             if (!proceedToNextStep(now)) {
                 timerHandler.postDelayed(this, Constants.TIMER_INTERVAL_MILLIS);
             }
-            /*
-            if (mode.equals(NORMAL_MODE)) {
-                long millis = now - lastCheckpointTime;
-                millis = checkpointFrequencyMillis - millis;
-                int seconds = (int) (millis / 1000);
-                int minutes = seconds / 60;
-                seconds = seconds % 60;
-
-                checkpointCountdownTimer.setText(String.format("%d:%02d", minutes, seconds));
-
-                long timeSinceStart = now - driveModeStartTime;
-                seconds = (int) (timeSinceStart / 1000);
-                minutes = seconds / 60;
-                seconds = seconds % 60;
-                int hours = minutes / 60;
-                minutes = minutes % 60;
-
-                if (hours > 0) {
-                    driveModeTimer.setText(String.format("%d:%02d:%02d", hours, minutes, seconds));
-                } else {
-                    driveModeTimer.setText(String.format("%d:%02d", minutes, seconds));
-                }
-
-                if (millis <= 0) {
-                    displayCheckpointMode();
-                }
-            } else if (mode.equals(CHECKPOINT_MODE)) {
-                long checkpointElapsed = now - checkpointModeStartTime;
-                int seconds = (int) (checkpointElapsed / 1000);
-                int minutes = seconds / 60;
-                seconds = seconds % 60;
-
-                checkpointCountdownTimer.setText(String.format("%d:%02d", minutes, seconds));
-
-                if (checkpointElapsed >= Constants.CHECKPOINT_GRACE_PERIOD_MILLIS) {
-                    displayAlarmMode();
-                }
-            } else if (mode.equals(ALARM_MODE)) {
-
-            }
-            */
         }
     };
 
@@ -115,17 +73,17 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         loadPreferences();
+        checkpointManager = CheckpointManager.getInstance(checkpointFrequencyMillis,
+                adaptiveCheckpointFrequency);
         mediaPlayer = new MediaPlayer();
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
     }
 
     @Override
     public void onPause() {
-        Log.d(TAG, "@@@ Inside onPause... screen on is " + ScreenStateReceiver.screenOn);
         if (false && ScreenStateReceiver.screenOn) {
             // Screen about to turn off.
         } else {
-            Log.d(TAG, "@@@ Inside onPause...STOPPING TIMER");
             stopTimer();
             audioManager.setStreamVolume(ALARM_STREAM, initialVolume, 0);
         }
@@ -134,12 +92,10 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        Log.d(TAG, "@@@ Inside onResume");
         if (false && !ScreenStateReceiver.screenOn) {
             // Screen about to turn on.
         } else {
             initialVolume = audioManager.getStreamVolume(ALARM_STREAM);
-            Log.d(TAG, "@@@ Inside onResume: STARTING TIMER");
             validateSystemLoudness();
             startTimer();
         }
@@ -151,7 +107,6 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
     }
 
     private void stopTimer() {
-        Log.d(TAG, "### stopping timer!!!!");
         timerHandler.removeCallbacks(timerRunnable);
     }
 
@@ -202,6 +157,7 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
     }
 
     private void goBackToMainActivity() {
+        checkpointManager.invalidateSingletonInstance();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

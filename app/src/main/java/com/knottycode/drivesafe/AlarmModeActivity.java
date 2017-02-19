@@ -23,6 +23,8 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
     private MediaPlayer mediaPlayer;
     CountDownTimer adaptiveLoudnessTimer;
 
+    private long alarmModeStartTime;
+
     private Random random = new Random();
 
     @Override
@@ -40,14 +42,27 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
             return AlarmModeActivity.this.onTouch(v, me);
         });
 
-        try {
-            startAlarm();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        startAlarm();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopAlarm();
+    }
+
+    @Override
+    public void onResume() {
+        alarmModeStartTime = System.currentTimeMillis();
+        super.onResume();
     }
 
     private boolean onTouch(View v, MotionEvent me) {
+        if (me.getActionMasked() != MotionEvent.ACTION_UP) {
+            return false;
+        }
+        long responseTimeMillis = System.currentTimeMillis() - alarmModeStartTime;
+        checkpointManager.addResponseTime(responseTimeMillis);
         stopAlarm();
         startDriveMode();
         return true;
@@ -114,9 +129,11 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
 
     private void stopAlarm() {
         if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = new MediaPlayer();
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = new MediaPlayer();
+            }
         }
         if (adaptiveLoudnessTimer != null) {
             adaptiveLoudnessTimer.cancel();
