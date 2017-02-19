@@ -536,11 +536,21 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         } else {
             AssetFileDescriptor audioDescriptor = null;
             try {
-                audioDescriptor = getAssets().openFd(Constants.ALARM_PATH_PREFIX + "/" + name);
+                audioDescriptor = getAssets().openFd(Constants.ALARM_PATH_PREFIX + File.separator + name);
             } catch (IOException ioe) {
-                Log.e(TAG, "Unable to open audio descriptor for " + name);
+
             }
-            playSoundFromDescriptor(audioDescriptor.getFileDescriptor());
+            try {
+                mediaPlayer.setDataSource(audioDescriptor.getFileDescriptor(),
+                            audioDescriptor.getStartOffset(), audioDescriptor.getLength());
+                audioDescriptor.close();
+                mediaPlayer.prepare();
+                mediaPlayer.setLooping(false);
+                mediaPlayer.setVolume(1, 1);
+                mediaPlayer.start();
+            } catch (IOException ioe) {
+
+            }
         }
     }
 }
