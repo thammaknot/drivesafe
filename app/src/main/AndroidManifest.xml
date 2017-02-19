@@ -21,6 +21,8 @@
             android:label="@string/title_activity_drive_mode"
             android:theme="@style/FullscreenTheme" />
         <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".CheckpointModeActivity"></activity>
+        <activity android:name=".AlarmModeActivity"></activity>
     </application>
 
     <uses-permission android:name="android.permission.VIBRATE" />
