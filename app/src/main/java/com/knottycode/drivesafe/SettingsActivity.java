@@ -350,7 +350,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         try {
             String[] allTones = getAssets().list(Constants.ALARM_PATH_PREFIX);
             for (int i = 0; i < allTones.length; ++i) {
-                Log.d(TAG, "@@@ listing all tones: " + allTones[i]);
                 if (allTones[i].endsWith(MP3_FILE_EXTENSION)) {
                     availableAlarmTones.add(allTones[i]);
                 }
