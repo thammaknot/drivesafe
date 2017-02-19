@@ -7,6 +7,8 @@ import android.content.Context;
  */
 
 public class Constants {
+    public static final String SAFE_PHRASE = "ระนองระยองยะลา";
+
     public static final int TIMER_INTERVAL_MILLIS = 100;
     public static final int CHECKPOINT_GRACE_PERIOD_MILLIS = 5 * 1000;
     public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 10;

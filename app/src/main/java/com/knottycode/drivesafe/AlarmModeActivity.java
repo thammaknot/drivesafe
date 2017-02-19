@@ -4,6 +4,7 @@ import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -42,6 +44,7 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
             return AlarmModeActivity.this.onTouch(v, me);
         });
         startAlarm();
+        startVoiceRecognitionActivity();
     }
 
     @Override
@@ -60,7 +63,8 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
         if (me.getActionMasked() != MotionEvent.ACTION_UP) {
             return false;
         }
-        long responseTimeMillis = System.currentTimeMillis() - alarmModeStartTime;
+        long responseTimeMillis = System.currentTimeMillis() - alarmModeStartTime
+                + Constants.CHECKPOINT_GRACE_PERIOD_MILLIS;
         checkpointManager.addResponseTime(responseTimeMillis);
         stopAlarm();
         startDriveMode();
@@ -141,4 +145,18 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
 
     @Override
     protected boolean proceedToNextStep(long now) { return false; }
+
+    @Override
+    public void onASRResultsReady(List<String> results) {
+        if (results.contains(Constants.SAFE_PHRASE)) {
+            long responseTimeMillis = System.currentTimeMillis() - alarmModeStartTime
+                    + Constants.CHECKPOINT_GRACE_PERIOD_MILLIS;
+            checkpointManager.addResponseTime(responseTimeMillis);
+            stopAlarm();
+            startDriveMode();
+        } else {
+            Log.d(TAG, "##### SAFETY PHRASE not found!!!!");
+        }
+    }
+
 }
