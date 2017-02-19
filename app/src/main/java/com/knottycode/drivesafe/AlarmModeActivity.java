@@ -1,16 +1,15 @@
 package com.knottycode.drivesafe;
 
+import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Random;
@@ -72,27 +71,6 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
         return getFilesDir() + File.separator + Constants.RECORDED_TONE_FILENAME;
     }
 
-    private FileDescriptor getAudioDescriptor() {
-        FileDescriptor afd = null;
-        String tone = availableAlarmTones.get(random.nextInt(availableAlarmTones.size()));
-        if (tone.equals(Constants.RECORDED_TONE_FILENAME)) {
-            try {
-                File f = new File(getRecordedToneFilePath());
-                FileInputStream fis = new FileInputStream(f);
-                return fis.getFD();
-            } catch (IOException ioe) {
-
-            }
-        } else {
-            try {
-                afd = getAssets().openFd(Constants.ALARM_PATH_PREFIX + "/" + tone).getFileDescriptor();
-            } catch (IOException ioe) {
-                return null;
-            }
-        }
-        return afd;
-    }
-
     private void startAdaptiveLoudnessTimer() {
         adaptiveLoudnessTimer =
                 new CountDownTimer(ADAPTIVE_LOUDNESS_COUNTDOWN_DURATION, ADAPTIVE_LOUDNESS_INTERVAL_MILLIS) {
@@ -108,22 +86,39 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
     }
 
     private void startAlarm() {
-        FileDescriptor audioDescriptor = getAudioDescriptor();
         if (mediaPlayer == null) {
             mediaPlayer = new MediaPlayer();
         }
+        String tone = availableAlarmTones.get(random.nextInt(availableAlarmTones.size()));
+
+        if (tone.equals(Constants.RECORDED_TONE_FILENAME)) {
+            try {
+                File f = new File(getRecordedToneFilePath());
+                FileInputStream fis = new FileInputStream(f);
+                mediaPlayer.setDataSource(fis.getFD());
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        } else {
+            try {
+                AssetFileDescriptor afd = getAssets().openFd(Constants.ALARM_PATH_PREFIX + "/" + tone);
+                mediaPlayer.setDataSource(afd.getFileDescriptor(),
+                        afd.getStartOffset(), afd.getLength());
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
         try {
-            mediaPlayer.setDataSource(audioDescriptor);
             mediaPlayer.setAudioStreamType(ALARM_STREAM);
             mediaPlayer.prepare();
             mediaPlayer.setLooping(true);
             mediaPlayer.setVolume(1, 1);
             mediaPlayer.start();
-            if (adaptiveLoudness) {
-                startAdaptiveLoudnessTimer();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        if (adaptiveLoudness) {
+            startAdaptiveLoudnessTimer();
         }
     }
 

@@ -350,6 +350,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         try {
             String[] allTones = getAssets().list(Constants.ALARM_PATH_PREFIX);
             for (int i = 0; i < allTones.length; ++i) {
+                Log.d(TAG, "@@@ listing all tones: " + allTones[i]);
                 if (allTones[i].endsWith(MP3_FILE_EXTENSION)) {
                     availableAlarmTones.add(allTones[i]);
                 }
@@ -536,11 +537,21 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         } else {
             AssetFileDescriptor audioDescriptor = null;
             try {
-                audioDescriptor = getAssets().openFd(Constants.ALARM_PATH_PREFIX + "/" + name);
+                audioDescriptor = getAssets().openFd(Constants.ALARM_PATH_PREFIX + File.separator + name);
             } catch (IOException ioe) {
-                Log.e(TAG, "Unable to open audio descriptor for " + name);
+
             }
-            playSoundFromDescriptor(audioDescriptor.getFileDescriptor());
+            try {
+                mediaPlayer.setDataSource(audioDescriptor.getFileDescriptor(),
+                            audioDescriptor.getStartOffset(), audioDescriptor.getLength());
+                audioDescriptor.close();
+                mediaPlayer.prepare();
+                mediaPlayer.setLooping(false);
+                mediaPlayer.setVolume(1, 1);
+                mediaPlayer.start();
+            } catch (IOException ioe) {
+
+            }
         }
     }
 }
