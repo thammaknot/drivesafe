@@ -83,7 +83,6 @@ public class CheckpointModeActivity extends BaseDriveModeActivity {
 
     private void vibrate() {
         Vibrator v = (Vibrator) this.getSystemService(this.VIBRATOR_SERVICE);
-        // Vibrate for 500 milliseconds
         v.vibrate(Constants.VIBRATION_PATTERN, -1);
     }
 
