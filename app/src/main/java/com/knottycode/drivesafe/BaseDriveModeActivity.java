@@ -26,7 +26,7 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
     protected String TAG = "BaseDriveModeActivity";
     protected static final int ADAPTIVE_LOUDNESS_INTERVAL_MILLIS = 3000;
     protected static final int ADAPTIVE_LOUDNESS_COUNTDOWN_DURATION = 20000;
-    protected static final int ALARM_STREAM = AudioManager.STREAM_ALARM;
+    protected static final int ALARM_STREAM = AudioManager.STREAM_MUSIC;
 
     // NORMAL, CHECKPOINT, ALARM
     protected String mode = "";
