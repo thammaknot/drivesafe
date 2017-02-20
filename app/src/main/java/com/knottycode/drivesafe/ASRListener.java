@@ -43,7 +43,6 @@ public class ASRListener implements RecognitionListener {
     }
 
     public void onRmsChanged(float rmsdB) {
-        Log.d(TAG, "onRmsChanged");
     }
 
     public void onBufferReceived(byte[] buffer) {

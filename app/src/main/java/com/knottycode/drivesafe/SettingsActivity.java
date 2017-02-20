@@ -297,7 +297,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
     }
 
     private void showCheckpointFrequencyMenu() {
-        final int[] timeOptions = {30, 45, 60, 90, 120, 180, 240, 300};
+        final int[] timeOptions = {10, 30, 45, 60, 90, 120, 180, 240, 300};
         final String[] timeOptionsString = new String[timeOptions.length];
         for (int i = 0; i < timeOptions.length; ++i) {
             timeOptionsString[i] = String.valueOf(timeOptions[i]);
