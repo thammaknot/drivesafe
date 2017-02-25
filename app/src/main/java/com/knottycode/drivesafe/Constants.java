@@ -2,6 +2,9 @@ package com.knottycode.drivesafe;
 
 import android.content.Context;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Created by thammaknot on 1/21/17.
  */
@@ -18,6 +21,18 @@ public class Constants {
     public static final String RECORDED_TONE_FILENAME = "recorded_tone.3gp";
     public static final float ALERT_VOLUME = 0.8f;
     public static final String ALARM_PATH_PREFIX = "alarm";
+
+    public static final Set<String> allAlarmTones = new HashSet<String>();
+
+    static {
+        allAlarmTones.add("best_wake_up_sound.mp3");
+        allAlarmTones.add("car_alarm.mp3");
+        allAlarmTones.add("emergency_alert.mp3");
+        allAlarmTones.add("fore_truck_siren.mp3");
+        allAlarmTones.add("funny_alarm.mp3");
+        allAlarmTones.add("pager_tone_112.mp3");
+        allAlarmTones.add("rooster_alarm.mp3");
+    }
 
     public static final long[] VIBRATION_PATTERN = {0, 700, 100, 400};
 
