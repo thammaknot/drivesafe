@@ -61,6 +61,37 @@
         android:layout_height="30dp"
         android:layout_above="@+id/checkpointFrequencyDisplay"
         android:layout_centerHorizontal="true"
+        android:gravity="center"
         android:id="@+id/optionIconLayout">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="2dp"
+            android:id="@+id/icon1"
+            android:background="@drawable/icon1"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="2dp"
+            android:id="@+id/icon2"
+            android:background="@drawable/icon2"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="2dp"
+            android:id="@+id/icon3"
+            android:background="@drawable/icon3"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="2dp"
+            android:id="@+id/icon4"
+            android:background="@drawable/icon4"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="2dp"
+            android:id="@+id/icon5"
+            android:background="@drawable/icon5"/>
     </LinearLayout>
 </RelativeLayout>
