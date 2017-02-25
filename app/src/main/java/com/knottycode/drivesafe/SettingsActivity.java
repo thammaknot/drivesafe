@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -216,12 +217,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         TextView alertStyleTextView = (TextView) findViewById(R.id.alertStyleValue);
         Constants.AlertMode mode =
                 Constants.AlertMode.fromCode(prefs.getInt("alert_style",
-                        Constants.AlertMode.SOUND.getCode()));
+                        Constants.DEFAULT_ALERT_STYLE.getCode()));
         alertStyleTextView.setText(mode.getDisplayString(this));
 
         TextView alarmTonesValueTextView = (TextView) findViewById(R.id.alarmTonesValue);
         Set<String> savedTones = prefs.getStringSet(getString(R.string.alarm_tones_key),
-                new HashSet<String>());
+                Constants.allAlarmTones);
         alarmTonesValueTextView.setText(getSelectedTonesMessage(savedTones.size()));
 
     }
@@ -396,8 +397,14 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                                     selected.add(tone);
                                     playTone(tone);
                                 } else if (selected.contains(tone)) {
-                                    // Else, if the item is already in the array, remove it
-                                    selected.remove(tone);
+                                    if (selected.size() == 1) {
+                                        selectedBoolean[which] = true;
+                                        Toast.makeText(SettingsActivity.this, R.string.zero_tone_warning,
+                                                Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        // Else, if the item is already in the array, remove it
+                                        selected.remove(tone);
+                                    }
                                     resetMediaPlayer();
                                 }
                             }
