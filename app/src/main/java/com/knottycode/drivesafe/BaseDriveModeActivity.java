@@ -82,12 +82,6 @@ abstract public class BaseDriveModeActivity extends Activity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        // inside your activity (if you did not enable transitions in your theme)
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-        // set an exit transition
-        getWindow().setEnterTransition(new Fade());
-        getWindow().setExitTransition(new Fade());
-
         loadPreferences();
         checkpointManager = CheckpointManager.getInstance(checkpointFrequencyMillis,
                 adaptiveCheckpointFrequency, System.currentTimeMillis());
