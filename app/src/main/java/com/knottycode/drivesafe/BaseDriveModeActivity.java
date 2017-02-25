@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,6 +17,7 @@ import android.view.WindowManager;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -48,6 +50,16 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
     protected SpeechRecognizer recognizer;
     protected ASRListener asrListener;
     protected int initialVolume;
+
+    protected TextToSpeech tts = null;
+
+    private void initTTS() {
+        tts = new TextToSpeech(this, x -> {
+            tts.setLanguage(new Locale("th", "th"));
+            tts.speak("ระนอง ระยอง ยะลา", TextToSpeech.QUEUE_ADD, null, "");
+            tts.speak("ยักษ์ใหญ่ไล่ยักษ์เล็ก", TextToSpeech.QUEUE_ADD, null, "");
+        });
+    }
 
     protected Handler timerHandler = new Handler();
     protected Runnable timerRunnable = new Runnable() {
