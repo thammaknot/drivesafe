@@ -217,7 +217,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         TextView alertStyleTextView = (TextView) findViewById(R.id.alertStyleValue);
         Constants.AlertMode mode =
                 Constants.AlertMode.fromCode(prefs.getInt("alert_style",
-                        Constants.AlertMode.SOUND.getCode()));
+                        Constants.DEFAULT_ALERT_STYLE.getCode()));
         alertStyleTextView.setText(mode.getDisplayString(this));
 
         TextView alarmTonesValueTextView = (TextView) findViewById(R.id.alarmTonesValue);

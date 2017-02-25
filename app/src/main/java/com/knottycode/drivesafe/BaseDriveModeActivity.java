@@ -126,7 +126,7 @@ abstract public class BaseDriveModeActivity extends Activity {
                 prefs.getInt(getString(R.string.checkpoint_frequency_key),
                         Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS) * 1000;
         availableAlarmTones =
-                new ArrayList<String>(prefs.getStringSet(getString(R.string.alarm_tones_key), new HashSet()));
+                new ArrayList<String>(prefs.getStringSet(getString(R.string.alarm_tones_key), Constants.allAlarmTones));
         int alertModeCode = prefs.getInt(getString(R.string.alert_style_key),
                 Constants.DEFAULT_ALERT_STYLE.getCode());
         alertMode = Constants.AlertMode.fromCode(alertModeCode);

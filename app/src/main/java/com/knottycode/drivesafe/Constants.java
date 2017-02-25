@@ -15,7 +15,7 @@ public class Constants {
     public static final int TIMER_INTERVAL_MILLIS = 100;
     public static final int CHECKPOINT_GRACE_PERIOD_MILLIS = 5 * 1000;
     public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 10;
-    public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SCREEN;
+    public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SOUND;
 
     public static final String DEFAULT_ALERT_SOUND = "alert/glitchy-tone.mp3";
     public static final String RECORDED_TONE_FILENAME = "recorded_tone.3gp";
