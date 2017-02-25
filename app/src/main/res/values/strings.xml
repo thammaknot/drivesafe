@@ -51,4 +51,6 @@
     <string name="tone_funny_alarm">Alarm Clocks</string>
     <string name="tone_pager_tone">Beeps</string>
     <string name="tone_rooster_alarm">Rooster</string>
+
+    <string name="checkpoint_frequency_label">Checkpoint frequency</string>
 </resources>
