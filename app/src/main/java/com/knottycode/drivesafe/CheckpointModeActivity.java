@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -23,7 +24,6 @@ public class CheckpointModeActivity extends BaseDriveModeActivity {
     /** Time when we enter checkpoint mode. */
     private long checkpointModeStartTime;
 
-    TextView driveModeTimer;
     TextView checkpointCountdownTimer;
 
     @Override
@@ -37,9 +37,8 @@ public class CheckpointModeActivity extends BaseDriveModeActivity {
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         setContentView(R.layout.activity_checkpoint_mode);
         checkpointCountdownTimer = (TextView) findViewById(R.id.checkpointCountdownTimer);
-        driveModeTimer = (TextView) findViewById(R.id.driveModeTimer);
 
-        LinearLayout wholeScreenLayout = (LinearLayout) findViewById(R.id.wholeScreenLayout);
+        RelativeLayout wholeScreenLayout = (RelativeLayout) findViewById(R.id.wholeScreenLayout);
         wholeScreenLayout.setOnTouchListener((v, me) -> {
             return CheckpointModeActivity.this.onTouch(v, me);
         });

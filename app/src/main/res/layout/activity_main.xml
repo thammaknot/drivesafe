@@ -8,25 +8,59 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/start_background"
     tools:context="com.knottycode.drivesafe.MainActivity">
 
     <Button
-        android:text="@string/drive_mode"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:onClick="enterDriveMode"
-        android:id="@+id/driveButton" />
-
-    <Button
-        android:text="@string/setting_mode"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:background="@drawable/setting_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/settingsButton"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:onClick="enterSettings" />
+
+    <Button
+        android:background="@drawable/start_button_definition"
+        android:layout_width="200dp"
+        android:layout_height="46.69dp"
+        android:onClick="enterDriveMode"
+        android:id="@+id/driveButton"
+        android:layout_marginTop="134dp"
+        android:layout_below="@+id/settingsButton"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="00:30"
+        android:textSize="70dp"
+        android:fontFamily="sans-serif-condensed"
+        android:textColor="#B9678A"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:id="@+id/checkpointFrequencyDisplay" />
+
+    <TextView
+        android:text="@string/checkpoint_frequency_label"
+        android:fontFamily="sans-serif"
+        android:textSize="16dp"
+        android:textColor="#A7A9AB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:id="@+id/textView3" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="200dp"
+        android:layout_height="30dp"
+        android:layout_above="@+id/checkpointFrequencyDisplay"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/optionIconLayout">
+    </LinearLayout>
 </RelativeLayout>

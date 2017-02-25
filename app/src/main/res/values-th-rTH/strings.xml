@@ -42,4 +42,6 @@
     <string name="tone_funny_alarm">นาฬิกาปลุก</string>
     <string name="tone_pager_tone">บี๊บๆๆ</string>
     <string name="tone_rooster_alarm">ไก่ขัน</string>
+
+    <string name="checkpoint_frequency_label">ความถี่ของเช็คพ้อยท์</string>
 </resources>

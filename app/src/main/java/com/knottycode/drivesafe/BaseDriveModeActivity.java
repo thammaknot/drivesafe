@@ -1,16 +1,18 @@
 package com.knottycode.drivesafe;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
-import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -24,7 +26,7 @@ import java.util.Set;
  * Created by thammaknot on 2/18/17.
  */
 
-abstract public class BaseDriveModeActivity extends AppCompatActivity {
+abstract public class BaseDriveModeActivity extends Activity {
     protected String TAG = "BaseDriveModeActivity";
     protected static final int ADAPTIVE_LOUDNESS_INTERVAL_MILLIS = 3000;
     protected static final int ADAPTIVE_LOUDNESS_COUNTDOWN_DURATION = 20000;
@@ -79,6 +81,12 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
         // Remove notification bar
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        // inside your activity (if you did not enable transitions in your theme)
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        // set an exit transition
+        getWindow().setEnterTransition(new Fade());
+        getWindow().setExitTransition(new Fade());
 
         loadPreferences();
         checkpointManager = CheckpointManager.getInstance(checkpointFrequencyMillis,
@@ -168,18 +176,21 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
         stopTimer();
         Intent intent = new Intent(this, AlarmModeActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     protected void startCheckpointMode() {
         stopTimer();
         Intent intent = new Intent(this, CheckpointModeActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     protected void startDriveMode() {
         stopTimer();
         Intent intent = new Intent(this, DriveModeActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     private void goBackToMainActivity() {
@@ -187,6 +198,7 @@ abstract public class BaseDriveModeActivity extends AppCompatActivity {
         checkpointManager.invalidateSingletonInstance();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
 
     @Override

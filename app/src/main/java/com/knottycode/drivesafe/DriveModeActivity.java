@@ -3,7 +3,7 @@ package com.knottycode.drivesafe;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -12,7 +12,6 @@ import android.widget.TextView;
  */
 public class DriveModeActivity extends BaseDriveModeActivity {
     TextView checkpointCountdownTimer;
-    TextView driveModeTimer;
 
     /** Time when the user last checks in at a checkpoint. */
     private long lastCheckpointTime;
@@ -27,13 +26,12 @@ public class DriveModeActivity extends BaseDriveModeActivity {
 
         setContentView(R.layout.activity_drive_mode);
 
-        LinearLayout wholeScreenLayout = (LinearLayout) findViewById(R.id.wholeScreenLayout);
+        RelativeLayout wholeScreenLayout = (RelativeLayout) findViewById(R.id.wholeScreenLayout);
         wholeScreenLayout.setOnTouchListener((v, me) -> {
             return DriveModeActivity.this.onTouch(v, me);
         });
 
         checkpointCountdownTimer = (TextView) findViewById(R.id.checkpointCountdownTimer);
-        driveModeTimer = (TextView) findViewById(R.id.driveModeTimer);
     }
 
     @Override
@@ -45,19 +43,6 @@ public class DriveModeActivity extends BaseDriveModeActivity {
         seconds = seconds % 60;
 
         checkpointCountdownTimer.setText(String.format("%d:%02d", minutes, seconds));
-
-        long timeSinceStart = now - checkpointManager.getDriveModeStartTime();
-        seconds = (int) (timeSinceStart / 1000);
-        minutes = seconds / 60;
-        seconds = seconds % 60;
-        int hours = minutes / 60;
-        minutes = minutes % 60;
-
-        if (hours > 0) {
-            driveModeTimer.setText(String.format("%d:%02d:%02d", hours, minutes, seconds));
-        } else {
-            driveModeTimer.setText(String.format("%d:%02d", minutes, seconds));
-        }
     }
 
     @Override
