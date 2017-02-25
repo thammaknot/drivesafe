@@ -399,7 +399,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                                 } else if (selected.contains(tone)) {
                                     if (selected.size() == 1) {
                                         selectedBoolean[which] = true;
-                                        Toast.makeText(SettingsActivity.this, "Cannot deselect", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(SettingsActivity.this, R.string.zero_tone_warning,
+                                                Toast.LENGTH_SHORT).show();
                                     } else {
                                         // Else, if the item is already in the array, remove it
                                         selected.remove(tone);
