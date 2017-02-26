@@ -1,8 +1,12 @@
 package com.knottycode.drivesafe;
 
+import android.content.Context;
+import android.speech.tts.TextToSpeech;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by thammaknot on 2/6/17.
@@ -19,29 +23,36 @@ public class CheckpointManager implements Serializable {
     private boolean adaptive;
     private String text;
     private long driveModeStartTime = -1;
+    private TextToSpeech tts;
 
     private static final int MIN_FREQUENCY_MILLIS = 30 * 1000;
     private static final int MAX_FREQUENCY_MILLIS = 5 * 60 * 1000;
     private static final int RESPONSE_TIME_CUTOFF_MILLIS = 2 * 1000;
     private static final int FREQUENCY_INCREMENT_MILLIS = 15 * 1000;
 
-    public CheckpointManager(long initFrequencyMillis, boolean adaptive, long startTime) {
+    public CheckpointManager(long initFrequencyMillis, boolean adaptive, long startTime, Context context) {
         this.initFrequencyMillis = initFrequencyMillis;
         this.nextFrequencyMillis = initFrequencyMillis;
         this.adaptive = adaptive;
         this.driveModeStartTime = startTime;
+        tts = new TextToSpeech(context, null);
+        tts.setLanguage(new Locale("th", "th"));
     }
 
     public static CheckpointManager getInstance(long initFrequencyMillis, boolean adaptive,
-                                                long startTime) {
+                                                long startTime, Context context) {
         if (singletonInstance == null) {
-            singletonInstance = new CheckpointManager(initFrequencyMillis, adaptive, startTime);
+            singletonInstance = new CheckpointManager(initFrequencyMillis, adaptive, startTime, context);
         }
         return singletonInstance;
     }
 
     public static void invalidateSingletonInstance() {
         singletonInstance = null;
+    }
+
+    public TextToSpeech getTts() {
+        return tts;
     }
 
     public long getDriveModeStartTime() {

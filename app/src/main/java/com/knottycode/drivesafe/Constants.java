@@ -14,13 +14,16 @@ public class Constants {
 
     public static final int TIMER_INTERVAL_MILLIS = 100;
     public static final int CHECKPOINT_GRACE_PERIOD_MILLIS = 5 * 1000;
+    public static final int QUESTION_ANSWER_GRACE_PERIOD_MILLIS = 5 * 1000;
     public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 10;
     public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SOUND;
+    public static final int UNIT_SILENCE_DURATION_MILLIS = 500;
 
     public static final String DEFAULT_ALERT_SOUND = "alert/glitchy-tone.mp3";
     public static final String RECORDED_TONE_FILENAME = "recorded_tone.3gp";
     public static final float ALERT_VOLUME = 0.8f;
     public static final String ALARM_PATH_PREFIX = "alarm";
+    public static final String QUESTION_PATH_PREFIX = "questions";
 
     public static final Set<String> allAlarmTones = new HashSet<String>();
 
@@ -32,6 +35,22 @@ public class Constants {
         allAlarmTones.add("funny_alarm.mp3");
         allAlarmTones.add("pager_tone_112.mp3");
         allAlarmTones.add("rooster_alarm.mp3");
+    }
+
+    public static final String QUESTION_UTT_ID = "00000000";
+    public static final String ANSWER_KEYWORD_UTT_ID = "00000001";
+    public static final String ANSWER_UTT_ID = "00000002";
+    public static final String SILENCE_UTT_ID = "00000003";
+    public static final String CORRECT_KEYWORD_UTT_ID = "00000004";
+
+    public static final String ANSWER_KEYWORD = "เฉลย";
+    public static final String CORRECT_KEYWORD = "ถูกต้องนะค้า";
+    public static final Set<String> SKIP_WORDS = new HashSet<String>();
+
+    static {
+        SKIP_WORDS.add("ผ่าน");
+        SKIP_WORDS.add("ข้าม");
+        SKIP_WORDS.add("ไม่รู้");
     }
 
     public static final long[] VIBRATION_PATTERN = {0, 700, 100, 400};
