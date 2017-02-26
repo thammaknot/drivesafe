@@ -33,7 +33,7 @@
 
     <TextView
         android:text="00:30"
-        android:textSize="70dp"
+        android:textSize="90dp"
         android:fontFamily="sans-serif-condensed"
         android:textColor="#B9678A"
         android:layout_width="wrap_content"
@@ -41,12 +41,13 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
+        android:onClick="showCheckpointFrequencyMenu"
         android:id="@+id/checkpointFrequencyDisplay" />
 
     <TextView
         android:text="@string/checkpoint_frequency_label"
         android:fontFamily="sans-serif"
-        android:textSize="16dp"
+        android:textSize="20dp"
         android:textColor="#A7A9AB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,41 +58,46 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="200dp"
-        android:layout_height="30dp"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
         android:layout_above="@+id/checkpointFrequencyDisplay"
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:id="@+id/optionIconLayout">
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_margin="2dp"
-            android:id="@+id/icon1"
-            android:background="@drawable/icon1"/>
+            android:id="@+id/adaptiveCheckpointFrequencIcon"
+            android:onClick="toggleAdaptiveCheckpointFrequency"
+            android:background="@drawable/adaptive_checkpoint_icon"/>
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_margin="2dp"
-            android:id="@+id/icon2"
-            android:background="@drawable/icon2"/>
+            android:id="@+id/alertTypeIcon"
+            android:onClick="showAlertTypeMenu"
+            android:background="@drawable/alert_type_sound_icon"/>
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_margin="2dp"
-            android:id="@+id/icon3"
-            android:background="@drawable/icon3"/>
+            android:id="@+id/selectToneIcon"
+            android:onClick="showToneSelectionMenu"
+            android:background="@drawable/select_tone_icon"/>
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_margin="2dp"
-            android:id="@+id/icon4"
-            android:background="@drawable/icon4"/>
+            android:id="@+id/recordNewToneIcon"
+            android:onClick="showRecordNewToneMenu"
+            android:background="@drawable/record_new_tone_icon"/>
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_margin="2dp"
-            android:id="@+id/icon5"
-            android:background="@drawable/icon5"/>
+            android:id="@+id/adaptiveLoudnessIcon"
+            android:onClick="toggleAdaptiveLoudness"
+            android:background="@drawable/adaptive_loudness_icon"/>
     </LinearLayout>
 </RelativeLayout>
