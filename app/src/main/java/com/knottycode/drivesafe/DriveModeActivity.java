@@ -53,7 +53,8 @@ public class DriveModeActivity extends BaseDriveModeActivity {
         long millis = now - lastCheckpointTime;
 
         if (millis >= checkpointFrequencyMillis) {
-            startCheckpointMode();
+            // startCheckpointMode();
+            startQuestionAnswerMode();
             return true;
         }
         return false;

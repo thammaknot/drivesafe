@@ -22,6 +22,7 @@
             android:theme="@style/FullscreenTheme" />
         <activity android:name=".SettingsActivity"></activity>
         <activity android:name=".CheckpointModeActivity"></activity>
+        <activity android:name=".QuestionAnswerActivity"></activity>
         <activity android:name=".AlarmModeActivity"></activity>
     </application>
 

@@ -14,15 +14,20 @@ public class Constants {
 
     public static final int TIMER_INTERVAL_MILLIS = 100;
     public static final int CHECKPOINT_GRACE_PERIOD_MILLIS = 5 * 1000;
+    public static final int QUESTION_ANSWER_GRACE_PERIOD_MILLIS = 5 * 1000;
     public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 10;
     public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SOUND;
+    public static final int UNIT_SILENCE_DURATION_MILLIS = 500;
 
     public static final String DEFAULT_ALERT_SOUND = "alert/glitchy-tone.mp3";
     public static final String RECORDED_TONE_FILENAME = "recorded_tone.3gp";
     public static final float ALERT_VOLUME = 0.8f;
     public static final String ALARM_PATH_PREFIX = "alarm";
+    public static final String QUESTION_PATH_PREFIX = "questions";
 
     public static final Set<String> allAlarmTones = new HashSet<String>();
+
+    public static final String ANSWER_KEYWORD = "เฉลย";
 
     static {
         allAlarmTones.add("best_wake_up_sound.mp3");

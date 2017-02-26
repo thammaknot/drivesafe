@@ -2,29 +2,23 @@ package com.knottycode.drivesafe;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.os.Bundle;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
-import android.transition.Fade;
+import android.speech.tts.UtteranceProgressListener;
 import android.view.Window;
 import android.view.WindowManager;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
-
-import static android.R.attr.x;
 
 /**
  * Created by thammaknot on 2/18/17.
@@ -41,6 +35,7 @@ abstract public class BaseDriveModeActivity extends Activity {
     protected static final String NORMAL_MODE = "NORMAL";
     protected static final String CHECKPOINT_MODE = "CHECKPOINT";
     protected static final String ALARM_MODE = "ALARM";
+    protected static final String QUESTION_ANSWER_MODE = "QA";
 
     protected long checkpointFrequencyMillis;
     protected boolean adaptiveCheckpointFrequency = true;
@@ -58,17 +53,6 @@ abstract public class BaseDriveModeActivity extends Activity {
     protected int initialVolume;
 
     protected TextToSpeech tts = null;
-
-    private void initTTS() {
-        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
-                tts.setLanguage(new Locale("th", "th"));
-                tts.speak("ระนอง ระยอง ยะลา", TextToSpeech.QUEUE_ADD, null, "");
-                tts.speak("ยักษ์ใหญ่ไล่ยักษ์เล็ก", TextToSpeech.QUEUE_ADD, null, "");
-            }
-        });
-    }
 
     protected Handler timerHandler = new Handler();
     protected Runnable timerRunnable = new Runnable() {
@@ -143,6 +127,15 @@ abstract public class BaseDriveModeActivity extends Activity {
 
     abstract protected boolean proceedToNextStep(long now);
 
+    protected void speak() {
+        tts = new TextToSpeech(this, getOnInitListener());
+        tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
+    }
+
+    protected TextToSpeech.OnInitListener getOnInitListener() { return null; }
+
+    protected UtteranceProgressListener getOnUtteranceProgressListener() { return null; }
+
     public void onASRResultsReady(List<String> results) {}
 
     /**
@@ -169,7 +162,11 @@ abstract public class BaseDriveModeActivity extends Activity {
         int maxVolume = audioManager.getStreamMaxVolume(ALARM_STREAM);
         double percent = volume * 1.0 / maxVolume;
         if (percent < 0.5) {
-            audioManager.setStreamVolume(ALARM_STREAM, (int) Math.ceil(maxVolume / 2.0), 0);
+            if (adaptiveLoudness) {
+                audioManager.setStreamVolume(ALARM_STREAM, (int) Math.ceil(maxVolume / 2.0), 0);
+            } else {
+                audioManager.setStreamVolume(ALARM_STREAM, maxVolume);
+            }
         }
     }
 
@@ -183,6 +180,13 @@ abstract public class BaseDriveModeActivity extends Activity {
     protected void startCheckpointMode() {
         stopTimer();
         Intent intent = new Intent(this, CheckpointModeActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+    }
+
+    protected void startQuestionAnswerMode() {
+        stopTimer();
+        Intent intent = new Intent(this, QuestionAnswerActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
     }
