@@ -27,8 +27,11 @@ public class DriveModeActivity extends BaseDriveModeActivity {
         setContentView(R.layout.activity_drive_mode);
 
         RelativeLayout wholeScreenLayout = (RelativeLayout) findViewById(R.id.wholeScreenLayout);
-        wholeScreenLayout.setOnTouchListener((v, me) -> {
-            return DriveModeActivity.this.onTouch(v, me);
+        wholeScreenLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent me) {
+                return DriveModeActivity.this.onTouch(v, me);
+            }
         });
 
         checkpointCountdownTimer = (TextView) findViewById(R.id.checkpointCountdownTimer);

@@ -1,5 +1,9 @@
 package com.knottycode.drivesafe;
 
+import android.view.View;
+
+import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,7 +13,6 @@ import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,8 +41,6 @@ import java.util.Set;
 
 import static com.knottycode.drivesafe.R.id.alarmTones;
 import static com.knottycode.drivesafe.R.id.checkpointFrequency;
-import static com.knottycode.drivesafe.R.id.playButton;
-import static com.knottycode.drivesafe.R.id.recordButton;
 import static com.knottycode.drivesafe.R.id.recordTone;
 
 public class SettingsActivity extends AppCompatActivity implements View.OnTouchListener {
@@ -128,55 +129,61 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
     private void setupRecordNewToneMenu() {
         menuView = getLayoutInflater().inflate(R.layout.menu_record_new_tone, null);
         recordButton = (ImageButton) menuView.findViewById(R.id.recordButton);
-        ImageButton playButton = (ImageButton) menuView.findViewById(R.id.playButton);
+        final ImageButton playButton = (ImageButton) menuView.findViewById(R.id.playButton);
 
-        TextView statusTextView = (TextView) menuView.findViewById(R.id.statusIndicatorTextView);
+        final TextView statusTextView = (TextView) menuView.findViewById(R.id.statusIndicatorTextView);
 
         playButton.setEnabled(false);
-        recordButton.setOnTouchListener((v, me) -> {
-            if (me.getActionMasked() != MotionEvent.ACTION_UP) {
-                return false;
-            }
-
-            if (!isRecording) {
-                mediaRecorder = new MediaRecorder();
-                mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-                mediaRecorder.setOutputFile(TEMP_RECORDING_FILEPATH);
-                try {
-                    mediaRecorder.prepare();
-                    isRecording = true;
-                    statusTextView.setText("Recording");
-                    playButton.setEnabled(false);
-                    mediaRecorder.start();
-                } catch (IOException io) {
-                    Log.e(TAG, "Error recording media");
-                    io.printStackTrace();
+        recordButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent me) {
+                if (me.getActionMasked() != MotionEvent.ACTION_UP) {
+                    return false;
                 }
-            } else {
-                stopRecording();
-                playButton.setEnabled(true);
-                statusTextView.setText("NOT Recording");
+
+                if (!isRecording) {
+                    mediaRecorder = new MediaRecorder();
+                    mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                    mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                    mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                    mediaRecorder.setOutputFile(TEMP_RECORDING_FILEPATH);
+                    try {
+                        mediaRecorder.prepare();
+                        isRecording = true;
+                        statusTextView.setText("Recording");
+                        playButton.setEnabled(false);
+                        mediaRecorder.start();
+                    } catch (IOException io) {
+                        Log.e(TAG, "Error recording media");
+                        io.printStackTrace();
+                    }
+                } else {
+                    stopRecording();
+                    playButton.setEnabled(true);
+                    statusTextView.setText("NOT Recording");
+                }
+                return true;
             }
-            return true;
         });
-        playButton.setOnTouchListener((v, me) -> {
-            if (me.getActionMasked() != MotionEvent.ACTION_UP) {
-                return false;
+        playButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent me) {
+                if (me.getActionMasked() != MotionEvent.ACTION_UP) {
+                    return false;
+                }
+                if (!isPlaying) {
+                    isPlaying = true;
+                    statusTextView.setText("Playing");
+                    recordButton.setEnabled(false);
+                    playSound(TEMP_RECORDING_FILEPATH);
+                } else {
+                    isPlaying = false;
+                    statusTextView.setText("Stopping play");
+                    resetMediaPlayer();
+                    recordButton.setEnabled(true);
+                }
+                return true;
             }
-            if (!isPlaying) {
-                isPlaying = true;
-                statusTextView.setText("Playing");
-                recordButton.setEnabled(false);
-                playSound(TEMP_RECORDING_FILEPATH);
-            } else {
-                isPlaying = false;
-                statusTextView.setText("Stopping play");
-                resetMediaPlayer();
-                recordButton.setEnabled(true);
-            }
-            return true;
         });
     }
 
@@ -322,7 +329,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
     }
 
     private void showAlertStyleMenu() {
-        Constants.AlertMode[] modes = Constants.AlertMode.values();
+        final Constants.AlertMode[] modes = Constants.AlertMode.values();
         final String[] alertStyles = new String[modes.length];
         for (int i = 0; i < modes.length; ++i) {
             alertStyles[i] = modes[i].getDisplayString(this);
@@ -362,7 +369,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         if (recordedTone.exists()) {
             availableAlarmTones.add(Constants.RECORDED_TONE_FILENAME);
         }
-        boolean[] selectedBoolean = new boolean[availableAlarmTones.size()];
+        final boolean[] selectedBoolean = new boolean[availableAlarmTones.size()];
         int i = 0;
         final String[] toneLocalizedDisplayStrings = new String[availableAlarmTones.size()];
         for (String tone : availableAlarmTones) {
@@ -481,9 +488,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                     public void onClick(DialogInterface dialog, int id) {
                     }
                 })
-                .setOnDismissListener(dialog -> {
-                    stopRecording();
-                    resetMediaPlayer();
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        stopRecording();
+                        resetMediaPlayer();
+                    }
                 })
                 .show();
     }
@@ -492,9 +502,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         mediaPlayer.stop();
         mediaPlayer.release();
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setOnCompletionListener(mp -> {
-            isPlaying = false;
-            recordButton.setEnabled(true);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                isPlaying = false;
+                recordButton.setEnabled(true);
+            }
         });
     }
 
