@@ -27,8 +27,6 @@ public class Constants {
 
     public static final Set<String> allAlarmTones = new HashSet<String>();
 
-    public static final String ANSWER_KEYWORD = "เฉลย";
-
     static {
         allAlarmTones.add("best_wake_up_sound.mp3");
         allAlarmTones.add("car_alarm.mp3");
@@ -37,6 +35,22 @@ public class Constants {
         allAlarmTones.add("funny_alarm.mp3");
         allAlarmTones.add("pager_tone_112.mp3");
         allAlarmTones.add("rooster_alarm.mp3");
+    }
+
+    public static final String QUESTION_UTT_ID = "00000000";
+    public static final String ANSWER_KEYWORD_UTT_ID = "00000001";
+    public static final String ANSWER_UTT_ID = "00000002";
+    public static final String SILENCE_UTT_ID = "00000003";
+    public static final String CORRECT_KEYWORD_UTT_ID = "00000004";
+
+    public static final String ANSWER_KEYWORD = "เฉลย";
+    public static final String CORRECT_KEYWORD = "ถูกต้องนะค้า";
+    public static final Set<String> SKIP_WORDS = new HashSet<String>();
+
+    static {
+        SKIP_WORDS.add("ผ่าน");
+        SKIP_WORDS.add("ข้าม");
+        SKIP_WORDS.add("ไม่รู้");
     }
 
     public static final long[] VIBRATION_PATTERN = {0, 700, 100, 400};

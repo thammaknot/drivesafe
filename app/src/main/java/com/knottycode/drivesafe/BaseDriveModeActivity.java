@@ -11,8 +11,6 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -52,8 +50,6 @@ abstract public class BaseDriveModeActivity extends Activity {
     protected ASRListener asrListener;
     protected int initialVolume;
 
-    protected TextToSpeech tts = null;
-
     protected Handler timerHandler = new Handler();
     protected Runnable timerRunnable = new Runnable() {
         @Override
@@ -75,7 +71,7 @@ abstract public class BaseDriveModeActivity extends Activity {
 
         loadPreferences();
         checkpointManager = CheckpointManager.getInstance(checkpointFrequencyMillis,
-                adaptiveCheckpointFrequency, System.currentTimeMillis());
+                adaptiveCheckpointFrequency, System.currentTimeMillis(), this);
         checkpointFrequencyMillis = checkpointManager.getNextFrequencyMillis();
         mediaPlayer = new MediaPlayer();
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -127,15 +123,6 @@ abstract public class BaseDriveModeActivity extends Activity {
 
     abstract protected boolean proceedToNextStep(long now);
 
-    protected void speak() {
-        tts = new TextToSpeech(this, getOnInitListener());
-        tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
-    }
-
-    protected TextToSpeech.OnInitListener getOnInitListener() { return null; }
-
-    protected UtteranceProgressListener getOnUtteranceProgressListener() { return null; }
-
     public void onASRResultsReady(List<String> results) {}
 
     /**
@@ -165,7 +152,7 @@ abstract public class BaseDriveModeActivity extends Activity {
             if (adaptiveLoudness) {
                 audioManager.setStreamVolume(ALARM_STREAM, (int) Math.ceil(maxVolume / 2.0), 0);
             } else {
-                audioManager.setStreamVolume(ALARM_STREAM, maxVolume);
+                audioManager.setStreamVolume(ALARM_STREAM, maxVolume, 0);
             }
         }
     }

@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
@@ -36,6 +35,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     private QuestionAnswer currentQuestion;
 
     private Random random = new Random();
+    private TextToSpeech tts;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,8 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                 return QuestionAnswerActivity.this.onTouch(v, me);
             }
         });
+        tts = checkpointManager.getTts();
+        tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
         loadQuestions();
         startQuestion();
     }
@@ -115,20 +117,6 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         return questions.get(r);
     }
 
-    @Override
-    protected TextToSpeech.OnInitListener getOnInitListener() {
-        return new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
-                tts.setLanguage(new Locale("th", "th"));
-                QuestionAnswer qa = currentQuestion;
-                tts.setSpeechRate(1.0f);
-                tts.speak(qa.getQuestion(), TextToSpeech.QUEUE_ADD, null, "");
-            }
-        };
-    }
-
-    @Override
     protected UtteranceProgressListener getOnUtteranceProgressListener() {
         return new UtteranceProgressListener() {
             @Override
@@ -138,12 +126,23 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             public void onError(String s) {}
 
             @Override
-            public void onDone(String s) {
+            public void onDone(final String uttId) {
                 answerPhaseStartTime = System.currentTimeMillis();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        startVoiceRecognitionActivity();
+                        if (uttId.equals(Constants.QUESTION_UTT_ID)) {
+                            startVoiceRecognitionActivity();
+                        } else if (uttId.equals(Constants.ANSWER_UTT_ID)) {
+                            stopQuestion();
+                            startDriveMode();
+                        } else if (uttId.equals(Constants.CORRECT_KEYWORD_UTT_ID)) {
+                            tts.setSpeechRate(1.0f);
+                            stopQuestion();
+                            startDriveMode();
+                        } else {
+                            Log.d(TAG, "*** Doing nothing!!!!! ***");
+                        }
                     }
                 });
             }
@@ -152,7 +151,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     private void startQuestion() {
         currentQuestion = getQuestionAnswer();
-        speak();
+        tts.speak(currentQuestion.getQuestion(), TextToSpeech.QUEUE_ADD, null, Constants.QUESTION_UTT_ID);
     }
 
     private void stopQuestion() {
@@ -162,9 +161,14 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     }
 
     private void speakAnswer() {
-        tts.speak(Constants.ANSWER_KEYWORD, TextToSpeech.QUEUE_ADD, null, "");
-        tts.playSilentUtterance(Constants.UNIT_SILENCE_DURATION_MILLIS, TextToSpeech.QUEUE_ADD, "");
-        tts.speak(currentQuestion.getAnswer(), TextToSpeech.QUEUE_ADD, null, "");
+        tts.speak(Constants.ANSWER_KEYWORD, TextToSpeech.QUEUE_ADD, null, Constants.ANSWER_KEYWORD_UTT_ID);
+        tts.playSilentUtterance(Constants.UNIT_SILENCE_DURATION_MILLIS, TextToSpeech.QUEUE_ADD, Constants.SILENCE_UTT_ID);
+        tts.speak(currentQuestion.getAnswer(), TextToSpeech.QUEUE_ADD, null, Constants.ANSWER_UTT_ID);
+    }
+
+    private void acknowledgeCorrectAnswer() {
+        tts.setSpeechRate(2.0f);
+        tts.speak(Constants.CORRECT_KEYWORD, TextToSpeech.QUEUE_ADD, null, Constants.CORRECT_KEYWORD_UTT_ID);
     }
 
     @Override
@@ -177,6 +181,15 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         if (checkpointElapsed >= Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS) {
             speakAnswer();
             return true;
+        }
+        return false;
+    }
+
+    private boolean isSkipWord(List<String> results) {
+        for (String result : results) {
+            if (Constants.SKIP_WORDS.contains(result)) {
+                return true;
+            }
         }
         return false;
     }
@@ -200,11 +213,13 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     @Override
     public void onASRResultsReady(List<String> results) {
-        if (hasCorrectAnswer(results)) {
+        if (isSkipWord(results)) {
+            Log.d(TAG, "******* SKIP WORD FOUND ==========");
+            speakAnswer();
+        } else if (hasCorrectAnswer(results)) {
             long responseTimeMillis = System.currentTimeMillis() - qaModeStartTime;
             checkpointManager.addResponseTime(responseTimeMillis);
-            stopQuestion();
-            startDriveMode();
+            acknowledgeCorrectAnswer();
         } else {
             Log.d(TAG, "##### SAFETY PHRASE not found!!!!");
         }
