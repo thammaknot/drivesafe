@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,10 +38,12 @@ public class CheckpointModeActivity extends BaseDriveModeActivity {
         checkpointCountdownTimer = (TextView) findViewById(R.id.checkpointCountdownTimer);
 
         RelativeLayout wholeScreenLayout = (RelativeLayout) findViewById(R.id.wholeScreenLayout);
-        wholeScreenLayout.setOnTouchListener((v, me) -> {
-            return CheckpointModeActivity.this.onTouch(v, me);
+        wholeScreenLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent me) {
+                return CheckpointModeActivity.this.onTouch(v, me);
+            }
         });
-
         executeAlert();
         startVoiceRecognitionActivity();
     }

@@ -40,8 +40,11 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
                              WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         setContentView(R.layout.activity_alarm_mode);
         RelativeLayout wholeScreenLayout = (RelativeLayout) findViewById(R.id.wholeScreenLayout);
-        wholeScreenLayout.setOnTouchListener((v, me) -> {
-            return AlarmModeActivity.this.onTouch(v, me);
+        wholeScreenLayout.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent me) {
+                return AlarmModeActivity.this.onTouch(v, me);
+            }
         });
         startAlarm();
         startVoiceRecognitionActivity();

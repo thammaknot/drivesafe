@@ -2,7 +2,9 @@ package com.knottycode.drivesafe;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
@@ -21,6 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+
+import static android.R.attr.x;
 
 /**
  * Created by thammaknot on 2/18/17.
@@ -56,10 +60,13 @@ abstract public class BaseDriveModeActivity extends Activity {
     protected TextToSpeech tts = null;
 
     private void initTTS() {
-        tts = new TextToSpeech(this, x -> {
-            tts.setLanguage(new Locale("th", "th"));
-            tts.speak("ระนอง ระยอง ยะลา", TextToSpeech.QUEUE_ADD, null, "");
-            tts.speak("ยักษ์ใหญ่ไล่ยักษ์เล็ก", TextToSpeech.QUEUE_ADD, null, "");
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                tts.setLanguage(new Locale("th", "th"));
+                tts.speak("ระนอง ระยอง ยะลา", TextToSpeech.QUEUE_ADD, null, "");
+                tts.speak("ยักษ์ใหญ่ไล่ยักษ์เล็ก", TextToSpeech.QUEUE_ADD, null, "");
+            }
         });
     }
 
@@ -200,10 +207,15 @@ abstract public class BaseDriveModeActivity extends Activity {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.drive_mode_exit_warning_title)
                 .setMessage(R.string.drive_mode_exit_warning_text)
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
                         goBackToMainActivity();
+                    }
                 })
-                .setNegativeButton(android.R.string.no, (dialog, which) -> { })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) { }})
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
