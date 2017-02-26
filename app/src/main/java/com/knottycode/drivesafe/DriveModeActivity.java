@@ -63,4 +63,8 @@ public class DriveModeActivity extends BaseDriveModeActivity {
     private boolean onTouch(View v, MotionEvent me) {
         return true;
     }
+
+    public void onClose(View v) {
+        onBackPressed();
+    }
 }
