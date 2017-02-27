@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     private MediaPlayer mediaPlayer;
     CountDownTimer adaptiveLoudnessTimer;
+    TextView asrOutputTextView;
 
     private long qaModeStartTime;
     private long answerPhaseStartTime = -1;
@@ -55,6 +57,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                 return QuestionAnswerActivity.this.onTouch(v, me);
             }
         });
+        asrOutputTextView = (TextView) findViewById(R.id.asrOutputTextView);
         tts = checkpointManager.getTts();
         tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
         loadQuestions();
@@ -214,6 +217,11 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     @Override
     public void onASRResultsReady(List<String> results) {
+        if (results.size() == 0) {
+            return;
+        }
+        String topResult = results.get(0);
+        asrOutputTextView.setText(topResult);
         if (isSkipWord(results)) {
             Log.d(TAG, "******* SKIP WORD FOUND ==========");
             speakAnswer();

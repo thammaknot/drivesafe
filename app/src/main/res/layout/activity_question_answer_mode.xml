@@ -34,4 +34,16 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="30dp"
         android:text="@string/time_until_alarm" />
+
+    <TextView
+        android:text=""
+        android:fontFamily="bold"
+        android:textSize="40dp"
+        android:textColor="#54258B"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/asrOutputTextView"
+        android:layout_above="@+id/checkpointCountdownTimer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp" />
 </RelativeLayout>
