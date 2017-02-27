@@ -219,7 +219,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         TextView checkpointFrequencyTextview = (TextView) findViewById(R.id.checkpointFrequencyValue);
         checkpointFrequencyTextview.setText(
                 getCheckpointFrequencyText(prefs.getInt(getString(R.string.checkpoint_frequency_key),
-                        Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS)));
+                        Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS),
+                        this));
 
         TextView alertStyleTextView = (TextView) findViewById(R.id.alertStyleValue);
         Constants.AlertMode mode =
@@ -234,15 +235,15 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
 
     }
 
-    private String getCheckpointFrequencyText(int frequencySeconds) {
+    protected static String getCheckpointFrequencyText(int frequencySeconds, Context context) {
         String minutePart = "";
         if (frequencySeconds > 60) {
             int minutes = frequencySeconds / 60;
             int seconds = frequencySeconds % 60;
-            minutePart = String.format(" (%d:%02d " + getString(R.string.minutes)
+            minutePart = String.format(" (%d:%02d " + context.getString(R.string.minutes)
                     + ")", minutes, seconds);
         }
-        return String.valueOf(frequencySeconds) + " " + getString(R.string.seconds) + minutePart;
+        return String.valueOf(frequencySeconds) + " " + context.getString(R.string.seconds) + minutePart;
     }
 
     private String getSelectedTonesMessage(int numTones) {
@@ -322,7 +323,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                         editor.putInt(getString(R.string.checkpoint_frequency_key), timeOptions[which]);
                         editor.commit();
                         checkpointFrequencyTextView.setText(
-                                SettingsActivity.this.getCheckpointFrequencyText(timeOptions[which])) ;
+                                SettingsActivity.getCheckpointFrequencyText(timeOptions[which],
+                                        SettingsActivity.this)) ;
                     }
                 }).show();
 
