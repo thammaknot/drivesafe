@@ -33,7 +33,8 @@ public class CheckpointModeActivity extends BaseDriveModeActivity {
         init();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_checkpoint_mode);
         checkpointCountdownTimer = (TextView) findViewById(R.id.checkpointCountdownTimer);
 
