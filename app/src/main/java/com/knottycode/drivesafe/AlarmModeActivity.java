@@ -37,7 +37,8 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
         init();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                             WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                             WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                             WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_alarm_mode);
         RelativeLayout wholeScreenLayout = (RelativeLayout) findViewById(R.id.wholeScreenLayout);
         wholeScreenLayout.setOnTouchListener(new View.OnTouchListener() {
