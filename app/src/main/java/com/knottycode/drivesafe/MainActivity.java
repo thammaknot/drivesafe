@@ -6,23 +6,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.nhaarman.supertooltips.ToolTip;
+import com.nhaarman.supertooltips.ToolTipRelativeLayout;
+import com.nhaarman.supertooltips.ToolTipView;
+
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-import static com.google.android.gms.internal.zzs.TAG;
-import static com.knottycode.drivesafe.R.id.alarmTones;
-import static com.knottycode.drivesafe.R.id.checkpointFrequency;
 import static com.knottycode.drivesafe.R.id.checkpointFrequencyDisplay;
-import static com.knottycode.drivesafe.R.id.recordTone;
 
 public class MainActivity extends Activity {
 
@@ -160,6 +158,17 @@ public class MainActivity extends Activity {
 
     public void showRecordNewToneMenu(View v) {
         new AlertDialog.Builder(this).setTitle("555").show();
+    }
+
+    private void runTutorialSequence() {
+        ToolTipRelativeLayout toolTipRelativeLayout = (ToolTipRelativeLayout) findViewById(R.id.settingButtonToolTip);
+        ToolTip toolTip = new ToolTip()
+                .withText("1. Click here to adjust settings")
+                .withColor(Color.RED)
+                .withTextColor(Color.YELLOW)
+                .withAnimationType(ToolTip.AnimationType.FROM_MASTER_VIEW);
+        toolTipRelativeLayout.showToolTipForView(toolTip, findViewById(R.id.settingsButton));
+
     }
 
     @Override
