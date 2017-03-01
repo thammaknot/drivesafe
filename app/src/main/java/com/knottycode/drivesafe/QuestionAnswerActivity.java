@@ -112,7 +112,8 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         long responseTimeMillis = System.currentTimeMillis() - qaModeStartTime;
         checkpointManager.addResponseTime(responseTimeMillis);
         stopQuestion();
-        startDriveMode();
+        // startDriveMode();
+        startAlarmMode();
         return true;
     }
 
@@ -124,10 +125,29 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     protected UtteranceProgressListener getOnUtteranceProgressListener() {
         return new UtteranceProgressListener() {
             @Override
-            public void onStart(String s) {}
+            public void onStart(String s) {
+                Log.d(TAG, "############### START SPEAKING QUESTION ################# tts = " + tts);
+            }
+
+
+            public void onAudioAvailable(String utteranceId, byte[] audio) {
+                Log.d(TAG, "##### Audio available!!!!!");
+            }
+
+
+            public void onBeginSynthesis(String utteranceId, int sampleRateInHz, int audioFormat, int channelCount) {
+                Log.d(TAG, "######## on begin synthesis !!!!");
+            }
 
             @Override
-            public void onError(String s) {}
+            public void onError(String s, int errorCode) {
+                Log.d(TAG, "############### error QUESTION2 #################");
+            }
+
+            @Override
+            public void onError(String s) {
+                Log.d(TAG, "############### error QUESTION #################");
+            }
 
             @Override
             public void onDone(final String uttId) {
@@ -135,6 +155,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        Log.d(TAG, "############### DONE*** QUESTION #################");
                         if (uttId.equals(Constants.QUESTION_UTT_ID)) {
                             startVoiceRecognitionActivity();
                         } else if (uttId.equals(Constants.ANSWER_UTT_ID)) {
@@ -155,6 +176,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     private void startQuestion() {
         currentQuestion = getQuestionAnswer();
+        Log.d(TAG, "############### SPEAKING QUESTION #################");
         tts.speak(currentQuestion.getQuestion(), TextToSpeech.QUEUE_ADD, null, Constants.QUESTION_UTT_ID);
     }
 

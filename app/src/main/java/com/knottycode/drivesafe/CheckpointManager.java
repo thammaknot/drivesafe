@@ -2,6 +2,7 @@ package com.knottycode.drivesafe;
 
 import android.content.Context;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class CheckpointManager implements Serializable {
         this.nextFrequencyMillis = initFrequencyMillis;
         this.adaptive = adaptive;
         this.driveModeStartTime = startTime;
+        Log.d(TAG, "%%%%%% Starting new checkpoint manager %%%%%%");
         tts = new TextToSpeech(context, null);
         tts.setLanguage(new Locale("th", "th"));
     }
