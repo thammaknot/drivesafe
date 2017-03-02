@@ -194,6 +194,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     @Override
     protected boolean proceedToNextStep(long now) {
         if (answerPhaseStartTime == -1) { return false; }
+        if (asrListener.isListening()) { return false; }
         long checkpointElapsed = now - answerPhaseStartTime;
         if (checkpointElapsed >= Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS) {
             speakAnswer();
