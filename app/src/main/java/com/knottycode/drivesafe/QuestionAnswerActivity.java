@@ -117,8 +117,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         long responseTimeMillis = System.currentTimeMillis() - qaModeStartTime;
         checkpointManager.addResponseTime(responseTimeMillis);
         stopQuestion();
-        // startDriveMode();
-        startAlarmMode();
+        startDriveMode();
         return true;
     }
 
