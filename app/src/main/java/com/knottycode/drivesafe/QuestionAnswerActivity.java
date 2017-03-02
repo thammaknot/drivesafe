@@ -110,6 +110,12 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         stopQuestion();
     }
 
+    @Override
+    public void onResume() {
+        qaModeStartTime = System.currentTimeMillis();
+        super.onResume();
+    }
+
     private boolean onTouch(View v, MotionEvent me) {
         if (me.getActionMasked() != MotionEvent.ACTION_UP) {
             return false;
