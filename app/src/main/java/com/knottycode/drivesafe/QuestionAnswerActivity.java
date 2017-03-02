@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
@@ -58,10 +59,20 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             }
         });
         asrOutputTextView = (TextView) findViewById(R.id.asrOutputTextView);
-        tts = checkpointManager.getTts();
-        tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
         loadQuestions();
-        startQuestion();
+        initTTS();
+    }
+
+    private void initTTS() {
+        qaModeStartTime = System.currentTimeMillis();
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                startQuestion();
+            }
+        });
+        tts.setLanguage(new Locale("th", "th"));
+        tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
     }
 
     private void loadQuestions() {
@@ -99,12 +110,6 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         stopQuestion();
     }
 
-    @Override
-    public void onResume() {
-        qaModeStartTime = System.currentTimeMillis();
-        super.onResume();
-    }
-
     private boolean onTouch(View v, MotionEvent me) {
         if (me.getActionMasked() != MotionEvent.ACTION_UP) {
             return false;
@@ -126,27 +131,10 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         return new UtteranceProgressListener() {
             @Override
             public void onStart(String s) {
-                Log.d(TAG, "############### START SPEAKING QUESTION ################# tts = " + tts);
-            }
-
-
-            public void onAudioAvailable(String utteranceId, byte[] audio) {
-                Log.d(TAG, "##### Audio available!!!!!");
-            }
-
-
-            public void onBeginSynthesis(String utteranceId, int sampleRateInHz, int audioFormat, int channelCount) {
-                Log.d(TAG, "######## on begin synthesis !!!!");
-            }
-
-            @Override
-            public void onError(String s, int errorCode) {
-                Log.d(TAG, "############### error QUESTION2 #################");
             }
 
             @Override
             public void onError(String s) {
-                Log.d(TAG, "############### error QUESTION #################");
             }
 
             @Override
@@ -155,7 +143,6 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "############### DONE*** QUESTION #################");
                         if (uttId.equals(Constants.QUESTION_UTT_ID)) {
                             startVoiceRecognitionActivity();
                         } else if (uttId.equals(Constants.ANSWER_UTT_ID)) {
@@ -176,7 +163,6 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     private void startQuestion() {
         currentQuestion = getQuestionAnswer();
-        Log.d(TAG, "############### SPEAKING QUESTION #################");
         tts.speak(currentQuestion.getQuestion(), TextToSpeech.QUEUE_ADD, null, Constants.QUESTION_UTT_ID);
     }
 
