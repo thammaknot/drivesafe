@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
@@ -58,10 +59,20 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             }
         });
         asrOutputTextView = (TextView) findViewById(R.id.asrOutputTextView);
-        tts = checkpointManager.getTts();
-        tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
         loadQuestions();
-        startQuestion();
+        initTTS();
+    }
+
+    private void initTTS() {
+        qaModeStartTime = System.currentTimeMillis();
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                startQuestion();
+            }
+        });
+        tts.setLanguage(new Locale("th", "th"));
+        tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
     }
 
     private void loadQuestions() {
@@ -124,10 +135,12 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     protected UtteranceProgressListener getOnUtteranceProgressListener() {
         return new UtteranceProgressListener() {
             @Override
-            public void onStart(String s) {}
+            public void onStart(String s) {
+            }
 
             @Override
-            public void onError(String s) {}
+            public void onError(String s) {
+            }
 
             @Override
             public void onDone(final String uttId) {
