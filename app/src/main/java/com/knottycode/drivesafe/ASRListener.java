@@ -32,7 +32,6 @@ public class ASRListener implements RecognitionListener {
     }
 
     public void onBeginningOfSpeech() {
-        Log.d(TAG, "##############################\nonBeginningOfSpeech\n#####################");
         isListening = true;
     }
 
@@ -43,11 +42,9 @@ public class ASRListener implements RecognitionListener {
     public void onRmsChanged(float rmsdB) {}
 
     public void onBufferReceived(byte[] buffer) {
-        Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>>>\nonBufferReceived\n>>>>>>>>>>>>>>>>>>>>>>>(" + buffer.length + ")");
     }
 
     public void onEndOfSpeech() {
-        Log.d(TAG, "******************************\nonEndofSpeech\n*************************");
         isListening = false;
     }
 

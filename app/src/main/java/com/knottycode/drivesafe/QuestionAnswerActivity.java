@@ -154,7 +154,6 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                     @Override
                     public void run() {
                         if (uttId.equals(Constants.QUESTION_UTT_ID)) {
-                            Log.d(TAG, "&&&&&&&&&&& QUESTION DONE...STARTING ASR");
                             startVoiceRecognitionActivity();
                         } else if (uttId.equals(Constants.ANSWER_UTT_ID)) {
                             stopQuestion();
