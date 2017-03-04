@@ -49,6 +49,7 @@ abstract public class BaseDriveModeActivity extends Activity {
     protected SpeechRecognizer recognizer;
     protected ASRListener asrListener;
     protected int initialVolume;
+    protected boolean activeASR = false;
 
     protected Handler timerHandler = new Handler();
     protected Runnable timerRunnable = new Runnable() {
@@ -83,6 +84,7 @@ abstract public class BaseDriveModeActivity extends Activity {
     public void onPause() {
         audioManager.setStreamVolume(ALARM_STREAM, initialVolume, 0);
         if (recognizer != null) {
+            activeASR = false;
             recognizer.stopListening();
             recognizer.destroy();
         }
@@ -138,6 +140,7 @@ abstract public class BaseDriveModeActivity extends Activity {
                 this.getPackageName());
         recognizer = SpeechRecognizer.createSpeechRecognizer(this);
         recognizer.setRecognitionListener(asrListener);
+        activeASR = true;
         recognizer.startListening(intent);
     }
 

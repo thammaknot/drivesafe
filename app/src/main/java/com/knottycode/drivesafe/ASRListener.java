@@ -21,10 +21,6 @@ public class ASRListener implements RecognitionListener {
         this.activity = activity;
     }
 
-    public List<String> getResults() {
-        return results;
-    }
-
     public void onResults(Bundle bundle) {
         Log.d(TAG, "onResults " + bundle);
         results = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
@@ -36,7 +32,7 @@ public class ASRListener implements RecognitionListener {
     }
 
     public void onBeginningOfSpeech() {
-        Log.d(TAG, "onBeginningOfSpeech");
+        Log.d(TAG, "##############################\nonBeginningOfSpeech\n#####################");
         isListening = true;
     }
 
@@ -47,11 +43,11 @@ public class ASRListener implements RecognitionListener {
     public void onRmsChanged(float rmsdB) {}
 
     public void onBufferReceived(byte[] buffer) {
-        Log.d(TAG, "onBufferReceived");
+        Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>>>\nonBufferReceived\n>>>>>>>>>>>>>>>>>>>>>>>(" + buffer.length + ")");
     }
 
     public void onEndOfSpeech() {
-        Log.d(TAG, "onEndofSpeech");
+        Log.d(TAG, "******************************\nonEndofSpeech\n*************************");
         isListening = false;
     }
 

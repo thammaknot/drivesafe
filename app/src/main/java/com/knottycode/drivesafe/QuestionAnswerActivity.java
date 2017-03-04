@@ -23,6 +23,10 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
+import static com.knottycode.drivesafe.R.id.debugTime;
+import static com.knottycode.drivesafe.R.string.minutes;
+import static com.knottycode.drivesafe.R.string.seconds;
+
 /**
  * Created by thammaknot on 2/18/17.
  */
@@ -39,6 +43,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     private Random random = new Random();
     private TextToSpeech tts;
+    private boolean delayedAnswer = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -149,6 +154,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                     @Override
                     public void run() {
                         if (uttId.equals(Constants.QUESTION_UTT_ID)) {
+                            Log.d(TAG, "&&&&&&&&&&& QUESTION DONE...STARTING ASR");
                             startVoiceRecognitionActivity();
                         } else if (uttId.equals(Constants.ANSWER_UTT_ID)) {
                             stopQuestion();
@@ -189,16 +195,28 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     }
 
     @Override
-    protected void updateDisplay(long now) { }
+    protected void updateDisplay(long now) {
+        if (answerPhaseStartTime == -1) { return; }
+        TextView debugTime = (TextView) findViewById(R.id.debugTime);
+        long elapsed = (now - answerPhaseStartTime) / 1000;
+        long seconds = elapsed % 60;
+        // long minutes = elapsed / 60;
+        debugTime.setText(String.format("00:%02d [%s]", seconds, asrListener.isListening() ? "listen" : "not listen"));
+    }
 
     @Override
     protected boolean proceedToNextStep(long now) {
         if (answerPhaseStartTime == -1) { return false; }
-        if (asrListener.isListening()) { return false; }
         long checkpointElapsed = now - answerPhaseStartTime;
         if (checkpointElapsed >= Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS) {
-            speakAnswer();
-            return true;
+            if (asrListener.isListening()) {
+                delayedAnswer = true;
+                return false;
+            }
+            if (!delayedAnswer) {
+                speakAnswer();
+                return true;
+            }
         }
         return false;
     }
@@ -231,6 +249,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     @Override
     public void onASRResultsReady(List<String> results) {
+        delayedAnswer = false;
         if (results.size() == 0) {
             return;
         }
