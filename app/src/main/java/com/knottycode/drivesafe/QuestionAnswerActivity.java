@@ -140,20 +140,18 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     protected UtteranceProgressListener getOnUtteranceProgressListener() {
         return new UtteranceProgressListener() {
             @Override
-            public void onStart(String s) {
-            }
+            public void onStart(String s) {}
 
             @Override
-            public void onError(String s) {
-            }
+            public void onError(String s) {}
 
             @Override
             public void onDone(final String uttId) {
-                answerPhaseStartTime = System.currentTimeMillis();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (uttId.equals(Constants.QUESTION_UTT_ID)) {
+                            answerPhaseStartTime = System.currentTimeMillis();
                             startVoiceRecognitionActivity();
                         } else if (uttId.equals(Constants.ANSWER_UTT_ID)) {
                             stopQuestion();
@@ -162,6 +160,8 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                             tts.setSpeechRate(1.0f);
                             stopQuestion();
                             startDriveMode();
+                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)) {
+                            asrListener.startRecognition();
                         } else {
                             Log.d(TAG, "*** Doing nothing!!!!! ***");
                         }
@@ -191,6 +191,10 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     private void acknowledgeCorrectAnswer() {
         tts.setSpeechRate(2.0f);
         tts.speak(Constants.CORRECT_KEYWORD, TextToSpeech.QUEUE_ADD, null, Constants.CORRECT_KEYWORD_UTT_ID);
+    }
+
+    private void tryAgain() {
+        tts.speak(Constants.TRY_AGAIN_KEYWORD, TextToSpeech.QUEUE_ADD, null, Constants.TRY_AGAIN_UTT_ID);
     }
 
     @Override
@@ -246,6 +250,14 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         return false;
     }
 
+    private long getTimeRemainingInMillis() {
+        if (answerPhaseStartTime == -1) {
+            return Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS;
+        }
+        return Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS -
+                (System.currentTimeMillis() - answerPhaseStartTime);
+    }
+
     @Override
     public void onASRResultsReady(List<String> results) {
         delayedAnswer = false;
@@ -262,7 +274,14 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             checkpointManager.addResponseTime(responseTimeMillis);
             acknowledgeCorrectAnswer();
         } else {
-            Log.d(TAG, "##### SAFETY PHRASE not found!!!!");
+            // Incorrect answer.
+            // If there is sufficient time, start ASR again.
+            // If not, just go straight to answer.
+            if (getTimeRemainingInMillis() >= Constants.MIN_TIME_TO_RESTART_ASR_MILLIS) {
+                tryAgain();
+            } else {
+                speakAnswer();
+            }
         }
     }
 

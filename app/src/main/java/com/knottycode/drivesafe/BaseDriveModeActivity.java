@@ -11,6 +11,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -84,9 +85,8 @@ abstract public class BaseDriveModeActivity extends Activity {
     public void onPause() {
         audioManager.setStreamVolume(ALARM_STREAM, initialVolume, 0);
         if (recognizer != null) {
-            activeASR = false;
-            recognizer.stopListening();
-            recognizer.destroy();
+            Log.d(TAG, "ASR Listener:: calling stopRecognition from onPause");
+            asrListener.stopRecognition();
         }
         super.onPause();
     }
@@ -140,8 +140,10 @@ abstract public class BaseDriveModeActivity extends Activity {
                 this.getPackageName());
         recognizer = SpeechRecognizer.createSpeechRecognizer(this);
         recognizer.setRecognitionListener(asrListener);
+        asrListener.setRecognizer(recognizer, intent);
         activeASR = true;
-        recognizer.startListening(intent);
+        // recognizer.startListening(intent);
+        asrListener.startRecognition();
     }
 
     /**
@@ -154,9 +156,10 @@ abstract public class BaseDriveModeActivity extends Activity {
         if (percent < 0.5) {
             if (adaptiveLoudness) {
                 audioManager.setStreamVolume(ALARM_STREAM, (int) Math.ceil(maxVolume / 2.0), 0);
-            } else {
-                audioManager.setStreamVolume(ALARM_STREAM, maxVolume, 0);
             }
+        }
+        if (!adaptiveLoudness) {
+            audioManager.setStreamVolume(ALARM_STREAM, maxVolume, 0);
         }
     }
 

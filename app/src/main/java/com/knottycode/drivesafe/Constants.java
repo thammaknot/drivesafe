@@ -14,7 +14,8 @@ public class Constants {
 
     public static final int TIMER_INTERVAL_MILLIS = 100;
     public static final int CHECKPOINT_GRACE_PERIOD_MILLIS = 5 * 1000;
-    public static final int QUESTION_ANSWER_GRACE_PERIOD_MILLIS = 5 * 1000;
+    public static final int QUESTION_ANSWER_GRACE_PERIOD_MILLIS = 15 * 1000;
+    public static final int MIN_TIME_TO_RESTART_ASR_MILLIS = 4 * 1000;
     public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 10;
     public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SOUND;
     public static final int UNIT_SILENCE_DURATION_MILLIS = 500;
@@ -42,9 +43,11 @@ public class Constants {
     public static final String ANSWER_UTT_ID = "00000002";
     public static final String SILENCE_UTT_ID = "00000003";
     public static final String CORRECT_KEYWORD_UTT_ID = "00000004";
+    public static final String TRY_AGAIN_UTT_ID = "00000005";
 
     public static final String ANSWER_KEYWORD = "เฉลย";
     public static final String CORRECT_KEYWORD = "ถูกต้องนะค้า";
+    public static final String TRY_AGAIN_KEYWORD = "ลองอีกทีนะ";
     public static final Set<String> SKIP_WORDS = new HashSet<String>();
 
     static {

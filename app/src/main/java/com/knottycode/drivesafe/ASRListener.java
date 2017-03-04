@@ -1,5 +1,6 @@
 package com.knottycode.drivesafe;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.SpeechRecognizer;
@@ -15,14 +16,19 @@ public class ASRListener implements RecognitionListener {
 
     private List<String> results;
     private BaseDriveModeActivity activity;
+    private boolean asrActive = false;
     private boolean isListening = false;
+    // Whether to continue listening for ASR.
+    private boolean continuousAsr = true;
+    private SpeechRecognizer recognizer;
+    private Intent intent;
 
     public ASRListener(BaseDriveModeActivity activity) {
         this.activity = activity;
     }
 
     public void onResults(Bundle bundle) {
-        Log.d(TAG, "onResults " + bundle);
+        Log.d(TAG, "onResults inside ASR Listener");
         results = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         for (int i = 0; i < results.size(); i++)
         {
@@ -50,6 +56,10 @@ public class ASRListener implements RecognitionListener {
 
     public void onError(int error) {
         Log.d(TAG,  "error " +  error);
+        if (error == SpeechRecognizer.ERROR_NO_MATCH) {
+            // Possibly empty input audio, restart ASR.
+            startRecognition();
+        }
     }
 
     public void onPartialResults(Bundle partialResults) {
@@ -62,5 +72,28 @@ public class ASRListener implements RecognitionListener {
 
     public boolean isListening() {
         return isListening;
+    }
+
+    public void setRecognizer(SpeechRecognizer recognizer, Intent intent) {
+        this.recognizer = recognizer;
+        this.intent = intent;
+    }
+
+    public void startRecognition() {
+        if (asrActive) {
+            recognizer.stopListening();
+        }
+        asrActive = true;
+        recognizer.startListening(intent);
+    }
+
+    public void stopRecognition() {
+        asrActive = false;
+        recognizer.stopListening();
+        recognizer.cancel();
+    }
+
+    public boolean isAsrActive() {
+        return asrActive;
     }
 }
