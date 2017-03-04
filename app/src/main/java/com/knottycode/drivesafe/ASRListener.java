@@ -15,13 +15,10 @@ public class ASRListener implements RecognitionListener {
 
     private List<String> results;
     private BaseDriveModeActivity activity;
+    private boolean isListening = false;
 
     public ASRListener(BaseDriveModeActivity activity) {
         this.activity = activity;
-    }
-
-    public List<String> getResults() {
-        return results;
     }
 
     public void onResults(Bundle bundle) {
@@ -35,22 +32,20 @@ public class ASRListener implements RecognitionListener {
     }
 
     public void onBeginningOfSpeech() {
-        Log.d(TAG, "onBeginningOfSpeech");
+        isListening = true;
     }
 
     public void onReadyForSpeech(Bundle params) {
         Log.d(TAG, "onReadyForSpeech");
     }
 
-    public void onRmsChanged(float rmsdB) {
-    }
+    public void onRmsChanged(float rmsdB) {}
 
     public void onBufferReceived(byte[] buffer) {
-        Log.d(TAG, "onBufferReceived");
     }
 
     public void onEndOfSpeech() {
-        Log.d(TAG, "onEndofSpeech");
+        isListening = false;
     }
 
     public void onError(int error) {
@@ -63,5 +58,9 @@ public class ASRListener implements RecognitionListener {
 
     public void onEvent(int eventType, Bundle params) {
         Log.d(TAG, "onEvent " + eventType);
+    }
+
+    public boolean isListening() {
+        return isListening;
     }
 }
