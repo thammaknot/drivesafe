@@ -44,6 +44,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     private Random random = new Random();
     private TextToSpeech tts;
     private boolean delayedAnswer = false;
+    private boolean hasSpeechAnswer = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -211,13 +212,24 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     protected boolean proceedToNextStep(long now) {
         if (answerPhaseStartTime == -1) { return false; }
         long checkpointElapsed = now - answerPhaseStartTime;
-        if (checkpointElapsed >= Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS) {
+        if (checkpointElapsed >= Constants.QUESTION_ANSWER_MAX_GRACE_PERIOD_MILLIS) {
+            if (hasSpeechAnswer) {
+                speakAnswer();
+            } else {
+                startAlarmMode();
+            }
+            return true;
+        }else if (checkpointElapsed >= Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS) {
             if (asrListener.isListening()) {
                 delayedAnswer = true;
                 return false;
             }
             if (!delayedAnswer) {
-                speakAnswer();
+                if (hasSpeechAnswer) {
+                    speakAnswer();
+                } else {
+                    startAlarmMode();
+                }
                 return true;
             }
         }
@@ -264,6 +276,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         if (results.size() == 0) {
             return;
         }
+        hasSpeechAnswer = true;
         String topResult = results.get(0);
         asrOutputTextView.setText(topResult);
         if (isSkipWord(results)) {
