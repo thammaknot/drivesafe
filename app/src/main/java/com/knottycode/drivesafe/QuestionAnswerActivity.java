@@ -191,11 +191,15 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     private void acknowledgeCorrectAnswer() {
         tts.setSpeechRate(2.0f);
-        tts.speak(Constants.CORRECT_KEYWORD, TextToSpeech.QUEUE_ADD, null, Constants.CORRECT_KEYWORD_UTT_ID);
+        int index = random.nextInt(Constants.CORRECT_KEYWORDS.size());
+        String correctKeyword = Constants.CORRECT_KEYWORDS.get(index);
+        tts.speak(correctKeyword, TextToSpeech.QUEUE_ADD, null, Constants.CORRECT_KEYWORD_UTT_ID);
     }
 
     private void tryAgain() {
-        tts.speak(Constants.TRY_AGAIN_KEYWORD, TextToSpeech.QUEUE_ADD, null, Constants.TRY_AGAIN_UTT_ID);
+        int index = random.nextInt(Constants.TRY_AGAIN_KEYWORDS.size());
+        String tryAgainKeyword = Constants.TRY_AGAIN_KEYWORDS.get(index);
+        tts.speak(tryAgainKeyword, TextToSpeech.QUEUE_ADD, null, Constants.TRY_AGAIN_UTT_ID);
     }
 
     @Override
