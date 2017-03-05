@@ -2,7 +2,9 @@ package com.knottycode.drivesafe;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -47,14 +49,24 @@ public class Constants {
     public static final String TRY_AGAIN_UTT_ID = "00000005";
 
     public static final String ANSWER_KEYWORD = "เฉลย";
-    public static final String CORRECT_KEYWORD = "ถูกต้องนะค้า";
-    public static final String TRY_AGAIN_KEYWORD = "ลองอีกทีนะ";
+    public static final List<String> CORRECT_KEYWORDS = new ArrayList<>();
+    public static final List<String> TRY_AGAIN_KEYWORDS = new ArrayList<>();
     public static final Set<String> SKIP_WORDS = new HashSet<String>();
 
     static {
         SKIP_WORDS.add("ผ่าน");
         SKIP_WORDS.add("ข้าม");
         SKIP_WORDS.add("ไม่รู้");
+        SKIP_WORDS.add("ยอมแพ้");
+
+        CORRECT_KEYWORDS.add("ถูกต้องนะค้า");
+        CORRECT_KEYWORDS.add("ยอดเยี่ยมไปเลย");
+        CORRECT_KEYWORDS.add("เก่งมากนะค้า");
+
+        TRY_AGAIN_KEYWORDS.add("ลองอีกทีนะ");
+        TRY_AGAIN_KEYWORDS.add("ยังไม่ถูกนะค้า");
+        TRY_AGAIN_KEYWORDS.add("ให้โอกาสอีกทีค่ะ");
+        TRY_AGAIN_KEYWORDS.add("ให้ลองอีกทีนะ");
     }
 
     public static final long[] VIBRATION_PATTERN = {0, 700, 100, 400};
