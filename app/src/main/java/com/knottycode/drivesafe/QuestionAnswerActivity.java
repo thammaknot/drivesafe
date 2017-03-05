@@ -250,17 +250,19 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     }
 
     private boolean hasCorrectAnswer(List<String> results) {
-        Set<String> answerKeywords = currentQuestion.getAnswerKeywords();
-        for (String result : results) {
-            boolean match = true;
-            for (String key : answerKeywords) {
-                if (!result.contains(key)) {
-                    match = false;
-                    break;
+        List<Set<String>> allAnswers = currentQuestion.getAllAnswers();
+        for (Set<String> answer : allAnswers) {
+            for (String result : results) {
+                boolean match = true;
+                for (String key : answer) {
+                    if (!result.contains(key)) {
+                        match = false;
+                        break;
+                    }
                 }
-            }
-            if (match) {
-                return true;
+                if (match) {
+                    return true;
+                }
             }
         }
         return false;
