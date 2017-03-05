@@ -18,7 +18,6 @@ public class CheckpointManager implements Serializable {
     List<Long> responseTimeMillis = new ArrayList<>();
     private long initFrequencyMillis;
     private long nextFrequencyMillis;
-    private boolean adaptive;
     private long driveModeStartTime = -1;
 
     private static final int MIN_FREQUENCY_MILLIS = 30 * 1000;
@@ -26,17 +25,16 @@ public class CheckpointManager implements Serializable {
     private static final int RESPONSE_TIME_CUTOFF_MILLIS = 2 * 1000;
     private static final int FREQUENCY_INCREMENT_MILLIS = 15 * 1000;
 
-    public CheckpointManager(long initFrequencyMillis, boolean adaptive, long startTime, Context context) {
+    public CheckpointManager(long initFrequencyMillis, long startTime, Context context) {
         this.initFrequencyMillis = initFrequencyMillis;
         this.nextFrequencyMillis = initFrequencyMillis;
-        this.adaptive = adaptive;
         this.driveModeStartTime = startTime;
     }
 
-    public static CheckpointManager getInstance(long initFrequencyMillis, boolean adaptive,
+    public static CheckpointManager getInstance(long initFrequencyMillis,
                                                 long startTime, Context context) {
         if (singletonInstance == null) {
-            singletonInstance = new CheckpointManager(initFrequencyMillis, adaptive, startTime, context);
+            singletonInstance = new CheckpointManager(initFrequencyMillis, startTime, context);
         }
         return singletonInstance;
     }
@@ -63,9 +61,6 @@ public class CheckpointManager implements Serializable {
 
     public void addResponseTime(long t) {
         responseTimeMillis.add(t);
-        if (adaptive) {
-            calculateNextFrequency();
-        }
     }
     
     public long getNextFrequencyMillis() {

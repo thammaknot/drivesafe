@@ -44,6 +44,8 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="zero_tone_warning">Must select at least one tone</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
 
     <string name="tone_best_wake_up_sound">Wake Me Up</string>
     <string name="tone_car_alarm">Car Alarm</string>

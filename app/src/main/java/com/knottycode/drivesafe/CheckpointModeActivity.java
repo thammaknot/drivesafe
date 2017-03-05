@@ -45,7 +45,6 @@ public class CheckpointModeActivity extends BaseDriveModeActivity {
                 return CheckpointModeActivity.this.onTouch(v, me);
             }
         });
-        executeAlert();
         startVoiceRecognitionActivity();
     }
 
@@ -131,21 +130,6 @@ public class CheckpointModeActivity extends BaseDriveModeActivity {
             mediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void executeAlert() {
-        switch (alertMode) {
-            case SCREEN:
-                break;
-            case SOUND:
-                playAlert();
-                break;
-            case VIBRATE:
-                vibrate();
-                break;
-            default:
-                break;
         }
     }
 }
