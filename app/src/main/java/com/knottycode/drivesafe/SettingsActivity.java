@@ -1,5 +1,6 @@
 package com.knottycode.drivesafe;
 
+import android.content.Intent;
 import android.view.View;
 
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -39,11 +42,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static com.knottycode.drivesafe.R.id.adaptiveCheckpointFrequency;
+import static com.knottycode.drivesafe.R.id.adaptiveCheckpointFrequencyValue;
 import static com.knottycode.drivesafe.R.id.alarmTones;
 import static com.knottycode.drivesafe.R.id.checkpointFrequency;
 import static com.knottycode.drivesafe.R.id.recordTone;
 
-public class SettingsActivity extends AppCompatActivity implements View.OnTouchListener {
+public class SettingsActivity extends Activity implements View.OnTouchListener {
 
     private static final String TAG = "SettingsActivity";
     private static String TEMP_RECORDING_FILEPATH = null;
@@ -65,6 +70,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_settings);
 
         TEMP_RECORDING_FILEPATH = getFilesDir() + File.separator + "tmp_audio.3gp";
@@ -78,25 +89,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         setupRecordNewToneMenu();
         setOnTouchListeners();
 
-        Switch adaptiveCheckpointFrequencySwitch = (Switch) findViewById(R.id.adaptiveCheckpointFrequencySwitch);
-        adaptiveCheckpointFrequencySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton b, boolean checked) {
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean(getString(R.string.adaptive_checkpoint_frequency_key), checked);
-                editor.commit();
-            }
-        });
-
-        Switch adaptiveLoudnessSwitch = (Switch) findViewById(R.id.adaptiveLoudnessSwitch);
-        adaptiveLoudnessSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton b, boolean checked) {
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean(getString(R.string.adaptive_loudness_key), checked);
-                editor.commit();
-            }
-        });
+        TextView adaptiveCheckpointFrequencySwitch = (TextView) findViewById(adaptiveCheckpointFrequencyValue);
+        TextView adaptiveLoudnessSwitch = (TextView) findViewById(R.id.adaptiveLoudnessValue);
     }
 
     private void loadToneDisplayNames() {
@@ -197,7 +191,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         RelativeLayout alarmTones = (RelativeLayout) findViewById(R.id.alarmTones);
         alarmTones.setOnTouchListener(this);
 
-        RelativeLayout adaptiveCheckpoint = (RelativeLayout) findViewById(R.id.adaptiveCheckpointFrequency);
+        RelativeLayout adaptiveCheckpoint = (RelativeLayout) findViewById(adaptiveCheckpointFrequency);
         adaptiveCheckpoint.setOnTouchListener(this);
 
         RelativeLayout recordTone = (RelativeLayout) findViewById(R.id.recordTone);
@@ -208,13 +202,13 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
     }
 
     private void displayCurrentPreferences() {
-        Switch adaptiveCheckpointFrequencySwitch = (Switch) findViewById(R.id.adaptiveCheckpointFrequencySwitch);
-        adaptiveCheckpointFrequencySwitch.setChecked(
-                prefs.getBoolean(getString(R.string.adaptive_checkpoint_frequency_key), true));
+        TextView adaptiveCheckpointFrequencyTextView = (TextView) findViewById(adaptiveCheckpointFrequencyValue);
+        adaptiveCheckpointFrequencyTextView.setText(
+                prefs.getBoolean(getString(R.string.adaptive_checkpoint_frequency_key), true) ? R.string.on : R.string.off);
 
-        Switch adaptiveLoudnessSwitch = (Switch) findViewById(R.id.adaptiveLoudnessSwitch);
-        adaptiveLoudnessSwitch.setChecked(
-                prefs.getBoolean(getString(R.string.adaptive_loudness_key), true));
+        TextView adaptiveLoudnessTextView = (TextView) findViewById(R.id.adaptiveLoudnessValue);
+        adaptiveLoudnessTextView.setText(
+                prefs.getBoolean(getString(R.string.adaptive_loudness_key), true) ? R.string.on : R.string.off);
 
         TextView checkpointFrequencyTextview = (TextView) findViewById(R.id.checkpointFrequencyValue);
         checkpointFrequencyTextview.setText(
@@ -252,6 +246,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                                    getString(R.string.tone_text_plural));
     }
 
+    public void onClose(View v) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onTouch(View v, MotionEvent me) {
         if (me.getActionMasked() != MotionEvent.ACTION_UP) {
@@ -261,7 +260,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
             case checkpointFrequency:
                 showCheckpointFrequencyMenu();
                 break;
-            case R.id.adaptiveCheckpointFrequency:
+            case adaptiveCheckpointFrequency:
                 toggleAdaptiveCheckpointFrequency();
                 break;
             case R.id.alertStyle:
@@ -283,25 +282,29 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
     }
 
     private void toggleAdaptiveCheckpointFrequency() {
-        Switch adaptiveCheckpointFrequencySwitch =
-                (Switch) findViewById(R.id.adaptiveCheckpointFrequencySwitch);
-        adaptiveCheckpointFrequencySwitch.toggle();
+        TextView adaptiveCheckpointFrequencyValue =
+                (TextView) findViewById(R.id.adaptiveCheckpointFrequencyValue);
+        String value = adaptiveCheckpointFrequencyValue.getText().toString();
+        int valueId = value.equals(getString(R.string.on)) ? R.string.off : R.string.on;
+        adaptiveCheckpointFrequencyValue.setText(valueId);
         SharedPreferences prefs =
                 getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(getString(R.string.adaptive_checkpoint_frequency_key),
-                adaptiveCheckpointFrequencySwitch.isChecked());
+                adaptiveCheckpointFrequencyValue.equals(getString(R.string.on)));
         editor.commit();
     }
 
     private void toggleAdaptiveLoudness() {
-        Switch adaptiveLoudnessSwitch = (Switch) findViewById(R.id.adaptiveLoudnessSwitch);
-        adaptiveLoudnessSwitch.toggle();
+        TextView adaptiveLoudnessValue = (TextView) findViewById(R.id.adaptiveLoudnessValue);
+        String value = adaptiveLoudnessValue.getText().toString();
+        int valueId = value.equals(getString(R.string.on)) ? R.string.off : R.string.on;
+        adaptiveLoudnessValue.setText(valueId);
         SharedPreferences prefs =
                 getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(getString(R.string.adaptive_loudness_key),
-                adaptiveLoudnessSwitch.isChecked());
+                adaptiveLoudnessValue.getText().equals(getString(R.string.on)));
         editor.commit();
     }
 
