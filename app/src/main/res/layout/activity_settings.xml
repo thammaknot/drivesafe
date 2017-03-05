@@ -21,7 +21,7 @@
             android:id="@+id/settingsTitleRow">
 
             <TextView
-                android:text="Settings"
+                android:text="@string/setting_mode"
                 android:textSize="30dp"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -37,6 +37,8 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
                 android:onClick="onClose" />
         </RelativeLayout>
 

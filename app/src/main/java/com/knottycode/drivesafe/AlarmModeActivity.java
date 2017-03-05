@@ -79,20 +79,6 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
         return getFilesDir() + File.separator + Constants.RECORDED_TONE_FILENAME;
     }
 
-    private void startAdaptiveLoudnessTimer() {
-        adaptiveLoudnessTimer =
-                new CountDownTimer(ADAPTIVE_LOUDNESS_COUNTDOWN_DURATION, ADAPTIVE_LOUDNESS_INTERVAL_MILLIS) {
-                    @Override
-                    public void onTick(long millisTilFinished) {
-                        int volume = audioManager.getStreamVolume(ALARM_STREAM) + 1;
-                        volume = Math.min(audioManager.getStreamMaxVolume(ALARM_STREAM), volume);
-                        audioManager.setStreamVolume(ALARM_STREAM, volume, 0);
-                    }
-                    @Override
-                    public void onFinish() { this.cancel(); }
-                }.start();
-    }
-
     private void startAlarm() {
         if (mediaPlayer == null) {
             mediaPlayer = new MediaPlayer();
@@ -124,9 +110,6 @@ public class AlarmModeActivity extends BaseDriveModeActivity {
             mediaPlayer.start();
         } catch (IOException ioe) {
             ioe.printStackTrace();
-        }
-        if (adaptiveLoudness) {
-            startAdaptiveLoudnessTimer();
         }
     }
 
