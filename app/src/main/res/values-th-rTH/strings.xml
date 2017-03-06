@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">ตื่นเถิดชาวไทย</string>
     <string name="title_activity_drive_mode">โหมดขับขี่</string>
     <string name="drive_mode_exit_warning_title">ออกจากโหมดขับขี่</string>
     <string name="drive_mode_exit_warning_text">แน่ใจนะว่าจะออกจากโหมดขับขี่?</string>
