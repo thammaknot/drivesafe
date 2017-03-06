@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DriveSafe</string>
+    <string name="app_name">Wake Up Thailand</string>
 
     <string name="title_activity_drive_mode">Drive Mode</string>
     <string name="drive_mode_exit_warning_title">Exit Drive Mode</string>
