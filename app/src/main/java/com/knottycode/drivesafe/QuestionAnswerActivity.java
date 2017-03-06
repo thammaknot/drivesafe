@@ -74,10 +74,10 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
+                tts.setLanguage(new Locale("th", "TH"));
                 startQuestion();
             }
         });
-        tts.setLanguage(new Locale("th", "th"));
         tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
     }
 
