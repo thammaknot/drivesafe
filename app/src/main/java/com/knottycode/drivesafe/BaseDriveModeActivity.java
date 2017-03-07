@@ -134,7 +134,6 @@ abstract public class BaseDriveModeActivity extends Activity {
         recognizer.setRecognitionListener(asrListener);
         asrListener.setRecognizer(recognizer, intent);
         activeASR = true;
-        // recognizer.startListening(intent);
         asrListener.startRecognition();
     }
 
