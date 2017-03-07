@@ -45,6 +45,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     private TextToSpeech tts;
     private boolean delayedAnswer = false;
     private boolean hasSpeechAnswer = false;
+    private boolean gracePeriodExtension = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -161,7 +162,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                             tts.setSpeechRate(1.0f);
                             stopQuestion();
                             startDriveMode();
-                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)) {
+                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID) || uttId.equals(Constants.EXTEND_GRACE_PERIOD_UTT_ID)) {
                             asrListener.startRecognition();
                         } else {
                             Log.d(TAG, "*** Doing nothing!!!!! ***");
@@ -202,6 +203,14 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         tts.speak(tryAgainKeyword, TextToSpeech.QUEUE_ADD, null, Constants.TRY_AGAIN_UTT_ID);
     }
 
+    private void extendGracePeriod() {
+        int index = random.nextInt(Constants.EXTEND_GRACE_PERIOD_KEYWORDS.size());
+        String extendGracePeriodKeyword = Constants.EXTEND_GRACE_PERIOD_KEYWORDS.get(index);
+        extendGracePeriodKeyword = extendGracePeriodKeyword + " " + Constants.GRACE_PERIOD_EXTENSION_SECONDS + " วินาที";
+        tts.speak(extendGracePeriodKeyword, TextToSpeech.QUEUE_ADD, null, Constants.EXTEND_GRACE_PERIOD_UTT_ID);
+        gracePeriodExtension = true;
+    }
+
     @Override
     protected void updateDisplay(long now) {
         if (answerPhaseStartTime == -1) { return; }
@@ -216,14 +225,18 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     protected boolean proceedToNextStep(long now) {
         if (answerPhaseStartTime == -1) { return false; }
         long checkpointElapsed = now - answerPhaseStartTime;
-        if (checkpointElapsed >= Constants.QUESTION_ANSWER_MAX_GRACE_PERIOD_MILLIS) {
+        long extension = 0;
+        if (gracePeriodExtension) {
+            extension += Constants.GRACE_PERIOD_EXTENSION_SECONDS * 1000;
+        }
+        if (checkpointElapsed >= Constants.QUESTION_ANSWER_MAX_GRACE_PERIOD_MILLIS + extension) {
             if (hasSpeechAnswer) {
                 speakAnswer();
             } else {
                 startAlarmMode();
             }
             return true;
-        }else if (checkpointElapsed >= Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS) {
+        } else if (checkpointElapsed >= Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS + extension) {
             if (asrListener.isListening()) {
                 delayedAnswer = true;
                 return false;
@@ -243,6 +256,15 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     private boolean isSkipWord(List<String> results) {
         for (String result : results) {
             if (Constants.SKIP_WORDS.contains(result)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isExtensionWord(List<String> results) {
+        for (String result : results) {
+            if (Constants.EXTENSION_WORDS.contains(result)) {
                 return true;
             }
         }
@@ -292,6 +314,8 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             long responseTimeMillis = System.currentTimeMillis() - qaModeStartTime;
             checkpointManager.addResponseTime(responseTimeMillis);
             acknowledgeCorrectAnswer();
+        } else if (!gracePeriodExtension && isExtensionWord(results)) {
+            extendGracePeriod();
         } else {
             // Incorrect answer.
             // If there is sufficient time, start ASR again.
