@@ -8,7 +8,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:icon="@drawable/wakeupthailand_app_icon">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,11 +20,16 @@
             android:name=".DriveModeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_drive_mode"
+            android:screenOrientation="portrait"
             android:theme="@style/FullscreenTheme" />
-        <activity android:name=".SettingsActivity"></activity>
-        <activity android:name=".CheckpointModeActivity"></activity>
-        <activity android:name=".QuestionAnswerActivity"></activity>
-        <activity android:name=".AlarmModeActivity"></activity>
+        <activity android:name=".SettingsActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".CheckpointModeActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".QuestionAnswerActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".AlarmModeActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
     <uses-permission android:name="android.permission.VIBRATE" />
