@@ -76,7 +76,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             @Override
             public void onInit(int i) {
                 tts.setLanguage(new Locale("th", "TH"));
-                startQuestion();
+                startQuestion(true);
             }
         });
         tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
@@ -153,7 +153,9 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                     @Override
                     public void run() {
                         if (uttId.equals(Constants.QUESTION_UTT_ID)) {
-                            answerPhaseStartTime = System.currentTimeMillis();
+                            if (answerPhaseStartTime == -1) {
+                                answerPhaseStartTime = System.currentTimeMillis();
+                            }
                             startVoiceRecognitionActivity();
                         } else if (uttId.equals(Constants.ANSWER_UTT_ID)) {
                             stopQuestion();
@@ -162,7 +164,9 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                             tts.setSpeechRate(1.0f);
                             stopQuestion();
                             startDriveMode();
-                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID) || uttId.equals(Constants.EXTEND_GRACE_PERIOD_UTT_ID)) {
+                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)) {
+                            // Nothing.
+                        } else if (uttId.equals(Constants.EXTEND_GRACE_PERIOD_UTT_ID)) {
                             asrListener.startRecognition();
                         } else {
                             Log.d(TAG, "*** Doing nothing!!!!! ***");
@@ -173,8 +177,10 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         };
     }
 
-    private void startQuestion() {
-        currentQuestion = getQuestionAnswer();
+    private void startQuestion(boolean getNewQuestion) {
+        if (currentQuestion == null || getNewQuestion) {
+            currentQuestion = getQuestionAnswer();
+        }
         tts.speak(currentQuestion.getQuestion(), TextToSpeech.QUEUE_ADD, null, Constants.QUESTION_UTT_ID);
     }
 
@@ -322,6 +328,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             // If not, just go straight to answer.
             if (getTimeRemainingInMillis() >= Constants.MIN_TIME_TO_RESTART_ASR_MILLIS) {
                 tryAgain();
+                startQuestion(false);
             } else {
                 speakAnswer();
             }

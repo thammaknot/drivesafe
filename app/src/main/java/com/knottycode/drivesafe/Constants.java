@@ -16,7 +16,7 @@ public class Constants {
 
     public static final int TIMER_INTERVAL_MILLIS = 100;
     public static final int CHECKPOINT_GRACE_PERIOD_MILLIS = 5 * 1000;
-    public static final int QUESTION_ANSWER_GRACE_PERIOD_MILLIS = 15 * 1000;
+    public static final int QUESTION_ANSWER_GRACE_PERIOD_MILLIS = 20 * 1000;
     public static final int QUESTION_ANSWER_MAX_GRACE_PERIOD_MILLIS = 25 * 1000;
     public static final int GRACE_PERIOD_EXTENSION_SECONDS = 20;
     public static final int MIN_TIME_TO_RESTART_ASR_MILLIS = 4 * 1000;
