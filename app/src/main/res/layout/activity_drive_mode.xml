@@ -11,39 +11,37 @@
     android:background="@drawable/drive_mode_background"
     tools:context="com.knottycode.drivesafe.DriveModeActivity">
 
+    <ImageButton
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/stop_button"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="165dp"
+        android:onClick="onClose"
+        android:id="@+id/closeButton" />
+
     <TextView
         android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="70dp"
-            android:textColor="#B9678A"
+            android:textSize="90dp"
+            android:textColor="#282965"
             android:text="00:00"
             android:fontFamily="sans-serif-condensed"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="60dp"
-            android:id="@+id/checkpointCountdownTimer" />
+        android:id="@+id/checkpointCountdownTimer"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="76dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
-        android:textColor="#A7A9AB"
-        android:textSize="16dp"
+        android:textColor="#364B90"
+        android:textSize="20dp"
         android:id="@+id/timeUntilNextCheckpointTextView"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
-        android:text="@string/time_until_next_checkpoint" />
-
-    <ImageButton
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:background="@drawable/close_button"
+        android:text="@string/time_until_next_checkpoint"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:onClick="onClose"
-        android:id="@+id/closeButton" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="63dp" />
 </RelativeLayout>

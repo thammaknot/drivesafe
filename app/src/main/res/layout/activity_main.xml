@@ -23,14 +23,14 @@
         android:layout_marginRight="10dp"
         android:onClick="enterSettings" />
 
-    <Button
-        android:background="@drawable/start_button_definition"
+    <ImageButton
+        android:background="@drawable/start_button"
         android:layout_width="200dp"
-        android:layout_height="46.69dp"
+        android:layout_height="200dp"
         android:onClick="enterDriveMode"
         android:id="@+id/driveButton"
-        android:layout_marginTop="160dp"
-        android:layout_below="@+id/settingsButton"
+        android:layout_marginTop="150dp"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -40,11 +40,12 @@
         android:textColor="#B9678A"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
         android:onClick="showCheckpointFrequencyMenu"
-        android:id="@+id/checkpointFrequencyDisplay" />
+        android:id="@+id/checkpointFrequencyDisplay"
+        android:layout_below="@+id/settingsButton"
+        android:layout_centerHorizontal="true"
+        android:layout_alignLeft="@+id/checkpointFrequencyLabel"
+        android:layout_alignStart="@+id/checkpointFrequencyLabel" />
 
     <TextView
         android:text="@string/checkpoint_frequency_label"
@@ -53,9 +54,10 @@
         android:textColor="#A7A9AB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:id="@+id/textView3" />
-
+        android:id="@+id/checkpointFrequencyLabel"
+        android:layout_alignTop="@+id/settingsButton"
+        android:layout_alignRight="@+id/driveButton"
+        android:layout_alignEnd="@+id/driveButton"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
