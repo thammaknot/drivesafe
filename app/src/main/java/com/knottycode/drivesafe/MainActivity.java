@@ -30,10 +30,12 @@ public class MainActivity extends Activity {
 
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_main);
 
         checkpointFrequencyTextView = (TextView) findViewById(checkpointFrequencyDisplay);
+        // checkpointFrequencyTextView.setVisibility(View.INVISIBLE);
+        TextView checkpointFrequencyLabel = (TextView) findViewById(R.id.checkpointFrequencyLabel);
+        // checkpointFrequencyLabel.setVisibility(View.INVISIBLE);
     }
 
     @Override
