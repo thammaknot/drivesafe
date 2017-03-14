@@ -72,4 +72,10 @@
         <item name="android:layout_marginLeft">80dp</item>
         <item name="android:layout_marginBottom">8dp</item>
     </style>
+
+    <style name="IntroImage">
+        <item name="android:layout_width">300dp</item>
+        <item name="android:layout_height">400dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
 </resources>
