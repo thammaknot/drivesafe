@@ -6,42 +6,86 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.TextView;
-
-import com.nhaarman.supertooltips.ToolTip;
-import com.nhaarman.supertooltips.ToolTipRelativeLayout;
-import com.nhaarman.supertooltips.ToolTipView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+
 import static com.knottycode.drivesafe.R.id.checkpointFrequencyDisplay;
+import static com.knottycode.drivesafe.R.id.settingsButton;
 
 public class MainActivity extends Activity {
 
     TextView checkpointFrequencyTextView;
+    ImageButton driveButton;
+    ImageButton settingsButton;
 
     protected long checkpointFrequencyMillis;
-    protected boolean adaptiveCheckpointFrequency = true;
-    protected boolean adaptiveLoudness = true;
-    protected Constants.AlertMode alertMode;
     protected List<String> availableAlarmTones;
+    private SharedPreferences preferences;
+    private static final String SHOWCASE_ID = "tutorial_showcase";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        {
+            // Get the shared preferences
+            preferences =
+                    getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+
+            // Check if onboarding_complete is false
+            if (!preferences.getBoolean(getString(R.string.onboarding_complete_key), false)) {
+                // Start the onboarding Activity
+                Intent onboarding = new Intent(this, IntroActivity.class);
+                startActivity(onboarding);
+                // Close the main Activity
+                finish();
+                return;
+            }
+        }
+
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_main);
 
         checkpointFrequencyTextView = (TextView) findViewById(checkpointFrequencyDisplay);
+        // checkpointFrequencyTextView.setVisibility(View.INVISIBLE);
+        TextView checkpointFrequencyLabel = (TextView) findViewById(R.id.checkpointFrequencyLabel);
+        // checkpointFrequencyLabel.setVisibility(View.INVISIBLE);
+        driveButton = (ImageButton) findViewById(R.id.driveButton);
+        settingsButton = (ImageButton) findViewById(R.id.settingsButton);
+
+        checkAndShowTutorial();
+    }
+
+    private void checkAndShowTutorial() {
+        if (preferences.getBoolean(getString(R.string.tutorial_complete_key), false)) {
+            return;
+        }
+
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(300);  // millis
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
+        sequence.setConfig(config);
+        String gotIt = getString(R.string.got_it);
+        sequence.addSequenceItem(checkpointFrequencyTextView,
+                getString(R.string.checkpoint_frequency_tutorial), gotIt);
+        sequence.addSequenceItem(settingsButton,
+                getString(R.string.settings_button_tutorial), gotIt);
+        sequence.addSequenceItem(driveButton,
+                getString(R.string.drive_button_tutorial), gotIt);
+
+        sequence.start();
     }
 
     @Override
@@ -54,17 +98,12 @@ public class MainActivity extends Activity {
     private void loadPreferences() {
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
-        adaptiveCheckpointFrequency = prefs.getBoolean(getString(R.string.adaptive_checkpoint_frequency_key), true);
-        adaptiveLoudness = prefs.getBoolean(getString(R.string.adaptive_loudness_key), true);
         checkpointFrequencyMillis =
                 prefs.getInt(getString(R.string.checkpoint_frequency_key),
                         Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS) * 1000;
         availableAlarmTones =
                 new ArrayList<String>(prefs.getStringSet(getString(R.string.alarm_tones_key),
                         Constants.allAlarmTones));
-        int alertModeCode = prefs.getInt(getString(R.string.alert_style_key),
-                Constants.DEFAULT_ALERT_STYLE.getCode());
-        alertMode = Constants.AlertMode.fromCode(alertModeCode);
     }
 
     private void displayPreferences() {
@@ -72,32 +111,6 @@ public class MainActivity extends Activity {
         int minutes = checkpointFreqSeconds / 60;
         int seconds = checkpointFreqSeconds % 60;
         checkpointFrequencyTextView.setText(String.format("%02d:%02d", minutes, seconds));
-        if (adaptiveCheckpointFrequency) {
-            findViewById(R.id.adaptiveCheckpointFrequencIcon)
-                    .setBackground(getResources().getDrawable(R.drawable.adaptive_checkpoint_icon));
-            findViewById(R.id.adaptiveCheckpointFrequencIcon).setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.adaptiveCheckpointFrequencIcon).setVisibility(View.INVISIBLE);
-        }
-        switch (alertMode) {
-            case SCREEN:
-                findViewById(R.id.alertTypeIcon).setVisibility(View.INVISIBLE);
-                break;
-            case VIBRATE:
-                findViewById(R.id.alertTypeIcon).setVisibility(View.INVISIBLE);
-                break;
-            case SOUND:
-                findViewById(R.id.alertTypeIcon).setVisibility(View.VISIBLE);
-                break;
-            default:
-        }
-        if (adaptiveLoudness) {
-            findViewById(R.id.adaptiveLoudnessIcon)
-                    .setBackground(getResources().getDrawable(R.drawable.adaptive_loudness_icon));
-            findViewById(R.id.adaptiveLoudnessIcon).setVisibility(View.VISIBLE);
-        } else {
-            findViewById(R.id.adaptiveLoudnessIcon).setVisibility(View.INVISIBLE);
-        }
     }
 
     public void enterDriveMode(View view) {
@@ -137,37 +150,6 @@ public class MainActivity extends Activity {
                         checkpointFrequencyTextView.setText(formatTime(timeOptions[which]));
                     }
                 }).show();
-
-    }
-
-    public void toggleAdaptiveCheckpointFrequency(View v) {
-        new AlertDialog.Builder(this).setTitle("111").show();
-    }
-
-    public void toggleAdaptiveLoudness(View v) {
-        new AlertDialog.Builder(this).setTitle("222").show();
-    }
-
-    public void showAlertTypeMenu(View v) {
-        new AlertDialog.Builder(this).setTitle("333").show();
-    }
-
-    public void showToneSelectionMenu(View v) {
-        new AlertDialog.Builder(this).setTitle("444").show();
-    }
-
-    public void showRecordNewToneMenu(View v) {
-        new AlertDialog.Builder(this).setTitle("555").show();
-    }
-
-    private void runTutorialSequence() {
-        ToolTipRelativeLayout toolTipRelativeLayout = (ToolTipRelativeLayout) findViewById(R.id.settingButtonToolTip);
-        ToolTip toolTip = new ToolTip()
-                .withText("1. Click here to adjust settings")
-                .withColor(Color.RED)
-                .withTextColor(Color.YELLOW)
-                .withAnimationType(ToolTip.AnimationType.FROM_MASTER_VIEW);
-        toolTipRelativeLayout.showToolTipForView(toolTip, findViewById(R.id.settingsButton));
 
     }
 

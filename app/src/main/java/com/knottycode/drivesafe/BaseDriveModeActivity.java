@@ -11,6 +11,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -36,10 +37,7 @@ abstract public class BaseDriveModeActivity extends Activity {
     protected static final String QUESTION_ANSWER_MODE = "QA";
 
     protected long checkpointFrequencyMillis;
-    protected boolean adaptiveCheckpointFrequency = true;
-    protected boolean adaptiveLoudness = true;
     protected Set<String> tones;
-    protected Constants.AlertMode alertMode;
     protected List<String> availableAlarmTones;
 
     protected MediaPlayer mediaPlayer;
@@ -49,6 +47,7 @@ abstract public class BaseDriveModeActivity extends Activity {
     protected SpeechRecognizer recognizer;
     protected ASRListener asrListener;
     protected int initialVolume;
+    protected boolean activeASR = false;
 
     protected Handler timerHandler = new Handler();
     protected Runnable timerRunnable = new Runnable() {
@@ -71,7 +70,7 @@ abstract public class BaseDriveModeActivity extends Activity {
 
         loadPreferences();
         checkpointManager = CheckpointManager.getInstance(checkpointFrequencyMillis,
-                adaptiveCheckpointFrequency, System.currentTimeMillis(), this);
+                System.currentTimeMillis(), this);
         checkpointFrequencyMillis = checkpointManager.getNextFrequencyMillis();
         mediaPlayer = new MediaPlayer();
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -83,8 +82,8 @@ abstract public class BaseDriveModeActivity extends Activity {
     public void onPause() {
         audioManager.setStreamVolume(ALARM_STREAM, initialVolume, 0);
         if (recognizer != null) {
-            recognizer.stopListening();
-            recognizer.destroy();
+            Log.d(TAG, "ASR Listener:: calling stopRecognition from onPause");
+            asrListener.stopRecognition();
         }
         super.onPause();
     }
@@ -107,16 +106,11 @@ abstract public class BaseDriveModeActivity extends Activity {
     private void loadPreferences() {
         SharedPreferences prefs = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
-        adaptiveCheckpointFrequency = prefs.getBoolean(getString(R.string.adaptive_checkpoint_frequency_key), true);
-        adaptiveLoudness = prefs.getBoolean(getString(R.string.adaptive_loudness_key), true);
         checkpointFrequencyMillis =
                 prefs.getInt(getString(R.string.checkpoint_frequency_key),
                         Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS) * 1000;
         availableAlarmTones =
                 new ArrayList<String>(prefs.getStringSet(getString(R.string.alarm_tones_key), Constants.allAlarmTones));
-        int alertModeCode = prefs.getInt(getString(R.string.alert_style_key),
-                Constants.DEFAULT_ALERT_STYLE.getCode());
-        alertMode = Constants.AlertMode.fromCode(alertModeCode);
     }
 
     abstract protected void updateDisplay(long now);
@@ -138,7 +132,9 @@ abstract public class BaseDriveModeActivity extends Activity {
                 this.getPackageName());
         recognizer = SpeechRecognizer.createSpeechRecognizer(this);
         recognizer.setRecognitionListener(asrListener);
-        recognizer.startListening(intent);
+        asrListener.setRecognizer(recognizer, intent);
+        activeASR = true;
+        asrListener.startRecognition();
     }
 
     /**
@@ -147,14 +143,7 @@ abstract public class BaseDriveModeActivity extends Activity {
     protected void validateSystemLoudness() {
         int volume = audioManager.getStreamVolume(ALARM_STREAM);
         int maxVolume = audioManager.getStreamMaxVolume(ALARM_STREAM);
-        double percent = volume * 1.0 / maxVolume;
-        if (percent < 0.5) {
-            if (adaptiveLoudness) {
-                audioManager.setStreamVolume(ALARM_STREAM, (int) Math.ceil(maxVolume / 2.0), 0);
-            } else {
-                audioManager.setStreamVolume(ALARM_STREAM, maxVolume, 0);
-            }
-        }
+        audioManager.setStreamVolume(ALARM_STREAM, maxVolume, 0);
     }
 
     protected void startAlarmMode() {

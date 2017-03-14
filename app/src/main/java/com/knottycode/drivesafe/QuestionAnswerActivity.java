@@ -23,6 +23,10 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
+import static com.knottycode.drivesafe.R.id.debugTime;
+import static com.knottycode.drivesafe.R.string.minutes;
+import static com.knottycode.drivesafe.R.string.seconds;
+
 /**
  * Created by thammaknot on 2/18/17.
  */
@@ -39,6 +43,9 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     private Random random = new Random();
     private TextToSpeech tts;
+    private boolean delayedAnswer = false;
+    private boolean hasSpeechAnswer = false;
+    private boolean gracePeriodExtension = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,10 +75,10 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
-                startQuestion();
+                tts.setLanguage(new Locale("th", "TH"));
+                startQuestion(true);
             }
         });
-        tts.setLanguage(new Locale("th", "th"));
         tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
     }
 
@@ -135,20 +142,20 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     protected UtteranceProgressListener getOnUtteranceProgressListener() {
         return new UtteranceProgressListener() {
             @Override
-            public void onStart(String s) {
-            }
+            public void onStart(String s) {}
 
             @Override
-            public void onError(String s) {
-            }
+            public void onError(String s) {}
 
             @Override
             public void onDone(final String uttId) {
-                answerPhaseStartTime = System.currentTimeMillis();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if (uttId.equals(Constants.QUESTION_UTT_ID)) {
+                            if (answerPhaseStartTime == -1) {
+                                answerPhaseStartTime = System.currentTimeMillis();
+                            }
                             startVoiceRecognitionActivity();
                         } else if (uttId.equals(Constants.ANSWER_UTT_ID)) {
                             stopQuestion();
@@ -157,6 +164,10 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                             tts.setSpeechRate(1.0f);
                             stopQuestion();
                             startDriveMode();
+                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)) {
+                            // Nothing.
+                        } else if (uttId.equals(Constants.EXTEND_GRACE_PERIOD_UTT_ID)) {
+                            asrListener.startRecognition();
                         } else {
                             Log.d(TAG, "*** Doing nothing!!!!! ***");
                         }
@@ -166,8 +177,10 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         };
     }
 
-    private void startQuestion() {
-        currentQuestion = getQuestionAnswer();
+    private void startQuestion(boolean getNewQuestion) {
+        if (currentQuestion == null || getNewQuestion) {
+            currentQuestion = getQuestionAnswer();
+        }
         tts.speak(currentQuestion.getQuestion(), TextToSpeech.QUEUE_ADD, null, Constants.QUESTION_UTT_ID);
     }
 
@@ -185,19 +198,63 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     private void acknowledgeCorrectAnswer() {
         tts.setSpeechRate(2.0f);
-        tts.speak(Constants.CORRECT_KEYWORD, TextToSpeech.QUEUE_ADD, null, Constants.CORRECT_KEYWORD_UTT_ID);
+        int index = random.nextInt(Constants.CORRECT_KEYWORDS.size());
+        String correctKeyword = Constants.CORRECT_KEYWORDS.get(index);
+        tts.speak(correctKeyword, TextToSpeech.QUEUE_ADD, null, Constants.CORRECT_KEYWORD_UTT_ID);
+    }
+
+    private void tryAgain() {
+        int index = random.nextInt(Constants.TRY_AGAIN_KEYWORDS.size());
+        String tryAgainKeyword = Constants.TRY_AGAIN_KEYWORDS.get(index);
+        tts.speak(tryAgainKeyword, TextToSpeech.QUEUE_ADD, null, Constants.TRY_AGAIN_UTT_ID);
+    }
+
+    private void extendGracePeriod() {
+        int index = random.nextInt(Constants.EXTEND_GRACE_PERIOD_KEYWORDS.size());
+        String extendGracePeriodKeyword = Constants.EXTEND_GRACE_PERIOD_KEYWORDS.get(index);
+        extendGracePeriodKeyword = extendGracePeriodKeyword + " " + Constants.GRACE_PERIOD_EXTENSION_SECONDS + " วินาที";
+        tts.speak(extendGracePeriodKeyword, TextToSpeech.QUEUE_ADD, null, Constants.EXTEND_GRACE_PERIOD_UTT_ID);
+        gracePeriodExtension = true;
     }
 
     @Override
-    protected void updateDisplay(long now) { }
+    protected void updateDisplay(long now) {
+        if (answerPhaseStartTime == -1) { return; }
+        TextView debugTime = (TextView) findViewById(R.id.debugTime);
+        long elapsed = (now - answerPhaseStartTime) / 1000;
+        long seconds = elapsed % 60;
+        // long minutes = elapsed / 60;
+        debugTime.setText(String.format("00:%02d [%s]", seconds, asrListener.isListening() ? "listen" : "not listen"));
+    }
 
     @Override
     protected boolean proceedToNextStep(long now) {
         if (answerPhaseStartTime == -1) { return false; }
         long checkpointElapsed = now - answerPhaseStartTime;
-        if (checkpointElapsed >= Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS) {
-            speakAnswer();
+        long extension = 0;
+        if (gracePeriodExtension) {
+            extension += Constants.GRACE_PERIOD_EXTENSION_SECONDS * 1000;
+        }
+        if (checkpointElapsed >= Constants.QUESTION_ANSWER_MAX_GRACE_PERIOD_MILLIS + extension) {
+            if (hasSpeechAnswer) {
+                speakAnswer();
+            } else {
+                startAlarmMode();
+            }
             return true;
+        } else if (checkpointElapsed >= Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS + extension) {
+            if (asrListener.isListening()) {
+                delayedAnswer = true;
+                return false;
+            }
+            if (!delayedAnswer) {
+                if (hasSpeechAnswer) {
+                    speakAnswer();
+                } else {
+                    startAlarmMode();
+                }
+                return true;
+            }
         }
         return false;
     }
@@ -211,28 +268,49 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         return false;
     }
 
-    private boolean hasCorrectAnswer(List<String> results) {
-        Set<String> answerKeywords = currentQuestion.getAnswerKeywords();
+    private boolean isExtensionWord(List<String> results) {
         for (String result : results) {
-            boolean match = true;
-            for (String key : answerKeywords) {
-                if (!result.contains(key)) {
-                    match = false;
-                    break;
-                }
-            }
-            if (match) {
+            if (Constants.EXTENSION_WORDS.contains(result)) {
                 return true;
             }
         }
         return false;
     }
 
+    private boolean hasCorrectAnswer(List<String> results) {
+        List<Set<String>> allAnswers = currentQuestion.getAllAnswers();
+        for (Set<String> answer : allAnswers) {
+            for (String result : results) {
+                boolean match = true;
+                for (String key : answer) {
+                    if (!result.contains(key)) {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private long getTimeRemainingInMillis() {
+        if (answerPhaseStartTime == -1) {
+            return Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS;
+        }
+        return Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS -
+                (System.currentTimeMillis() - answerPhaseStartTime);
+    }
+
     @Override
     public void onASRResultsReady(List<String> results) {
+        delayedAnswer = false;
         if (results.size() == 0) {
             return;
         }
+        hasSpeechAnswer = true;
         String topResult = results.get(0);
         asrOutputTextView.setText(topResult);
         if (isSkipWord(results)) {
@@ -242,8 +320,18 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             long responseTimeMillis = System.currentTimeMillis() - qaModeStartTime;
             checkpointManager.addResponseTime(responseTimeMillis);
             acknowledgeCorrectAnswer();
+        } else if (!gracePeriodExtension && isExtensionWord(results)) {
+            extendGracePeriod();
         } else {
-            Log.d(TAG, "##### SAFETY PHRASE not found!!!!");
+            // Incorrect answer.
+            // If there is sufficient time, start ASR again.
+            // If not, just go straight to answer.
+            if (getTimeRemainingInMillis() >= Constants.MIN_TIME_TO_RESTART_ASR_MILLIS) {
+                tryAgain();
+                startQuestion(false);
+            } else {
+                speakAnswer();
+            }
         }
     }
 

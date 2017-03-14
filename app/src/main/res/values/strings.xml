@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DriveSafe</string>
+    <string name="app_name">Wake Up Thailand</string>
 
     <string name="title_activity_drive_mode">Drive Mode</string>
     <string name="drive_mode_exit_warning_title">Exit Drive Mode</string>
@@ -11,6 +11,17 @@
     <string name="checkpoint_frequency_key">checkpoint_frequency</string>
     <string name="alarm_tones_key">alarm_tones</string>
     <string name="alert_style_key">alert_style</string>
+    <string name="onboarding_complete_key">onboarding_complete</string>
+    <string name="tutorial_complete_key">tutorial_complete</string>
+
+    <string name="wake_up_intro1">This app periodically asks you questions to energize your brain and wake you up during your drive.</string>
+    <string name="wake_up_intro2">Answer each question with your voice under the time limit to earn points.</string>
+    <string name="wake_up_intro3">If you don\'t answer anything, the app will play loud alarm sound to wake you up. Touch the screen to stop the alarm.</string>
+    <string name="wake_up_intro4">For best results, please use bluetooth headset and turn down music volume.</string>
+
+    <string name="checkpoint_frequency_tutorial">This shows the pause time between questions. Click it to change question frequency.</string>
+    <string name="settings_button_tutorial">Click the settings button for advanced options, including alarm tone selection.</string>
+    <string name="drive_button_tutorial">To start driving, simply click the start button.</string>
 
     <string name="checkpoint_frequency_menu_title">Set Checkpoint Frequency (s)</string>
     <string name="alert_style_menu_title">Select Alert Style</string>
@@ -44,6 +55,12 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="zero_tone_warning">Must select at least one tone</string>
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="skip">Skip tutorial</string>
+    <string name="got_it">Got it</string>
 
     <string name="tone_best_wake_up_sound">Wake Me Up</string>
     <string name="tone_car_alarm">Car Alarm</string>

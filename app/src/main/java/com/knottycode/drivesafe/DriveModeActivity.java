@@ -61,6 +61,12 @@ public class DriveModeActivity extends BaseDriveModeActivity {
     }
 
     private boolean onTouch(View v, MotionEvent me) {
+        if (me.getActionMasked() != MotionEvent.ACTION_UP) {
+            return false;
+        }
+        long responseTimeMillis = System.currentTimeMillis() - lastCheckpointTime;
+        checkpointManager.addResponseTime(responseTimeMillis);
+        startQuestionAnswerMode();
         return true;
     }
 

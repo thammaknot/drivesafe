@@ -1,5 +1,6 @@
 package com.knottycode.drivesafe;
 
+import android.content.Intent;
 import android.view.View;
 
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -43,7 +46,7 @@ import static com.knottycode.drivesafe.R.id.alarmTones;
 import static com.knottycode.drivesafe.R.id.checkpointFrequency;
 import static com.knottycode.drivesafe.R.id.recordTone;
 
-public class SettingsActivity extends AppCompatActivity implements View.OnTouchListener {
+public class SettingsActivity extends Activity implements View.OnTouchListener {
 
     private static final String TAG = "SettingsActivity";
     private static String TEMP_RECORDING_FILEPATH = null;
@@ -65,6 +68,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Remove title bar
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // Remove notification bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_settings);
 
         TEMP_RECORDING_FILEPATH = getFilesDir() + File.separator + "tmp_audio.3gp";
@@ -77,26 +86,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
 
         setupRecordNewToneMenu();
         setOnTouchListeners();
-
-        Switch adaptiveCheckpointFrequencySwitch = (Switch) findViewById(R.id.adaptiveCheckpointFrequencySwitch);
-        adaptiveCheckpointFrequencySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton b, boolean checked) {
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean(getString(R.string.adaptive_checkpoint_frequency_key), checked);
-                editor.commit();
-            }
-        });
-
-        Switch adaptiveLoudnessSwitch = (Switch) findViewById(R.id.adaptiveLoudnessSwitch);
-        adaptiveLoudnessSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton b, boolean checked) {
-                SharedPreferences.Editor editor = prefs.edit();
-                editor.putBoolean(getString(R.string.adaptive_loudness_key), checked);
-                editor.commit();
-            }
-        });
     }
 
     private void loadToneDisplayNames() {
@@ -191,42 +180,19 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
         RelativeLayout checkpointFrequency = (RelativeLayout) findViewById(R.id.checkpointFrequency);
         checkpointFrequency.setOnTouchListener(this);
 
-        RelativeLayout alertStyle = (RelativeLayout) findViewById(R.id.alertStyle);
-        alertStyle.setOnTouchListener(this);
-
         RelativeLayout alarmTones = (RelativeLayout) findViewById(R.id.alarmTones);
         alarmTones.setOnTouchListener(this);
 
-        RelativeLayout adaptiveCheckpoint = (RelativeLayout) findViewById(R.id.adaptiveCheckpointFrequency);
-        adaptiveCheckpoint.setOnTouchListener(this);
-
         RelativeLayout recordTone = (RelativeLayout) findViewById(R.id.recordTone);
         recordTone.setOnTouchListener(this);
-
-        RelativeLayout adaptiveLoudness = (RelativeLayout) findViewById(R.id.adaptiveLoudness);
-        adaptiveLoudness.setOnTouchListener(this);
     }
 
     private void displayCurrentPreferences() {
-        Switch adaptiveCheckpointFrequencySwitch = (Switch) findViewById(R.id.adaptiveCheckpointFrequencySwitch);
-        adaptiveCheckpointFrequencySwitch.setChecked(
-                prefs.getBoolean(getString(R.string.adaptive_checkpoint_frequency_key), true));
-
-        Switch adaptiveLoudnessSwitch = (Switch) findViewById(R.id.adaptiveLoudnessSwitch);
-        adaptiveLoudnessSwitch.setChecked(
-                prefs.getBoolean(getString(R.string.adaptive_loudness_key), true));
-
         TextView checkpointFrequencyTextview = (TextView) findViewById(R.id.checkpointFrequencyValue);
         checkpointFrequencyTextview.setText(
                 getCheckpointFrequencyText(prefs.getInt(getString(R.string.checkpoint_frequency_key),
                         Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS),
                         this));
-
-        TextView alertStyleTextView = (TextView) findViewById(R.id.alertStyleValue);
-        Constants.AlertMode mode =
-                Constants.AlertMode.fromCode(prefs.getInt("alert_style",
-                        Constants.DEFAULT_ALERT_STYLE.getCode()));
-        alertStyleTextView.setText(mode.getDisplayString(this));
 
         TextView alarmTonesValueTextView = (TextView) findViewById(R.id.alarmTonesValue);
         Set<String> savedTones = prefs.getStringSet(getString(R.string.alarm_tones_key),
@@ -252,6 +218,11 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                                    getString(R.string.tone_text_plural));
     }
 
+    public void onClose(View v) {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onTouch(View v, MotionEvent me) {
         if (me.getActionMasked() != MotionEvent.ACTION_UP) {
@@ -261,48 +232,16 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
             case checkpointFrequency:
                 showCheckpointFrequencyMenu();
                 break;
-            case R.id.adaptiveCheckpointFrequency:
-                toggleAdaptiveCheckpointFrequency();
-                break;
-            case R.id.alertStyle:
-                showAlertStyleMenu();
-                break;
             case alarmTones:
                 showAlarmTonesMenu();
                 break;
             case recordTone:
                 showRecordNewToneDialog();
                 break;
-            case R.id.adaptiveLoudness:
-                toggleAdaptiveLoudness();
-                break;
             default:
                 break;
         }
         return false;
-    }
-
-    private void toggleAdaptiveCheckpointFrequency() {
-        Switch adaptiveCheckpointFrequencySwitch =
-                (Switch) findViewById(R.id.adaptiveCheckpointFrequencySwitch);
-        adaptiveCheckpointFrequencySwitch.toggle();
-        SharedPreferences prefs =
-                getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(getString(R.string.adaptive_checkpoint_frequency_key),
-                adaptiveCheckpointFrequencySwitch.isChecked());
-        editor.commit();
-    }
-
-    private void toggleAdaptiveLoudness() {
-        Switch adaptiveLoudnessSwitch = (Switch) findViewById(R.id.adaptiveLoudnessSwitch);
-        adaptiveLoudnessSwitch.toggle();
-        SharedPreferences prefs =
-                getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(getString(R.string.adaptive_loudness_key),
-                adaptiveLoudnessSwitch.isChecked());
-        editor.commit();
     }
 
     private void showCheckpointFrequencyMenu() {
@@ -328,28 +267,6 @@ public class SettingsActivity extends AppCompatActivity implements View.OnTouchL
                     }
                 }).show();
 
-    }
-
-    private void showAlertStyleMenu() {
-        final Constants.AlertMode[] modes = Constants.AlertMode.values();
-        final String[] alertStyles = new String[modes.length];
-        for (int i = 0; i < modes.length; ++i) {
-            alertStyles[i] = modes[i].getDisplayString(this);
-        }
-        final TextView alertStyleValueTextView =
-                (TextView) findViewById(R.id.alertStyleValue);
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.alert_style_menu_title)
-                .setItems(alertStyles, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        SharedPreferences prefs =
-                                getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putInt(getString(R.string.alert_style_key), modes[which].getCode());
-                        editor.commit();
-                        alertStyleValueTextView.setText(alertStyles[which]);
-                    }
-                }).show();
     }
 
     private void showAlarmTonesMenu() {
