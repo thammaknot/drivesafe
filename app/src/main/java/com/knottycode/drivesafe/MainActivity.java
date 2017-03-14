@@ -28,6 +28,22 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        {
+            // Get the shared preferences
+            SharedPreferences preferences =
+                    getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+
+            // Check if onboarding_complete is false
+            if(!preferences.getBoolean(getString(R.string.onboarding_complete_key), false)) {
+                // Start the onboarding Activity
+                Intent onboarding = new Intent(this, IntroActivity.class);
+                startActivity(onboarding);
+                // Close the main Activity
+                finish();
+                return;
+            }
+        }
+
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);

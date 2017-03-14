@@ -4,6 +4,11 @@
     <string name="drive_mode_exit_warning_title">ออกจากโหมดขับขี่</string>
     <string name="drive_mode_exit_warning_text">แน่ใจนะว่าจะออกจากโหมดขับขี่?</string>
 
+    <string name="wake_up_intro1">แอ็พนี้จะส่งเสียงถามคำถามกระตุกต่อมความคิด เพื่อให้คุณไม่ง่วงระหว่างขับรถ</string>
+    <string name="wake_up_intro2">พูดคำตอบหลังสัญญาณ ให้ทันในเวลาที่กำหนด แล้วคุณจะได้คะแนน</string>
+    <string name="wake_up_intro3">หากคุณไม่พูดอะไร แอ๊พจะส่งเสียงดังเพื่อปลุกคุณ แตะที่หน้าจอเพื่อหยุดเสียง</string>
+    <string name="wake_up_intro4">เราแนะนำให้คุณใช้บลููทูธ และหรี่เสียงวิทยุ ระหว่างใช้แอ๊พ</string>
+
     <string name="checkpoint_frequency_menu_title">เลือกความถี่ของเช็คพ้อยท์ (วินาที)</string>
     <string name="alert_style_menu_title">เลือกรูปแบบการเตือน</string>
     <string name="record_new_tone_menu_title">บันทึกเสียงปลุกใหม่</string>
@@ -38,6 +43,9 @@
     <string name="cannot_deselect">ต้องเลือกอย่างน้อย 1 เสียง</string>
     <string name="on">เปิด</string>
     <string name="off">ปิด</string>
+    <string name="next">ถัดไป</string>
+    <string name="done">เสร็จ</string>
+    <string name="skip">ข้ามการแนะนำแอ๊พ</string>
 
     <string name="tone_best_wake_up_sound">ตื่นๆๆ</string>
     <string name="tone_car_alarm">กันขโมยรถ</string>
