@@ -23,9 +23,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
-import static com.knottycode.drivesafe.R.id.debugTime;
-import static com.knottycode.drivesafe.R.string.minutes;
-import static com.knottycode.drivesafe.R.string.seconds;
+import com.knottycode.drivesafe.CheckpointManager.ScoreMode;
 
 /**
  * Created by thammaknot on 2/18/17.
@@ -129,6 +127,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         }
         long responseTimeMillis = System.currentTimeMillis() - qaModeStartTime;
         checkpointManager.addResponseTime(responseTimeMillis);
+        checkpointManager.updateScore(ScoreMode.SKIP);
         stopQuestion();
         startDriveMode();
         return true;
@@ -237,8 +236,10 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         }
         if (checkpointElapsed >= Constants.QUESTION_ANSWER_MAX_GRACE_PERIOD_MILLIS + extension) {
             if (hasSpeechAnswer) {
+                checkpointManager.updateScore(ScoreMode.INCORRECT);
                 speakAnswer();
             } else {
+                checkpointManager.updateScore(ScoreMode.NO_RESPONSE);
                 startAlarmMode();
             }
             return true;
@@ -249,8 +250,10 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             }
             if (!delayedAnswer) {
                 if (hasSpeechAnswer) {
+                    checkpointManager.updateScore(ScoreMode.INCORRECT);
                     speakAnswer();
                 } else {
+                    checkpointManager.updateScore(ScoreMode.NO_RESPONSE);
                     startAlarmMode();
                 }
                 return true;
@@ -315,10 +318,12 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         asrOutputTextView.setText(topResult);
         if (isSkipWord(results)) {
             Log.d(TAG, "******* SKIP WORD FOUND ==========");
+            checkpointManager.updateScore(ScoreMode.SKIP);
             speakAnswer();
         } else if (hasCorrectAnswer(results)) {
             long responseTimeMillis = System.currentTimeMillis() - qaModeStartTime;
             checkpointManager.addResponseTime(responseTimeMillis);
+            checkpointManager.updateScore(ScoreMode.CORRECT);
             acknowledgeCorrectAnswer();
         } else if (!gracePeriodExtension && isExtensionWord(results)) {
             extendGracePeriod();
@@ -330,6 +335,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                 tryAgain();
                 startQuestion(false);
             } else {
+                checkpointManager.updateScore(ScoreMode.INCORRECT);
                 speakAnswer();
             }
         }

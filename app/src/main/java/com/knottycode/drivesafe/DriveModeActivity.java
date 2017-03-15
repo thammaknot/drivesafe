@@ -35,6 +35,9 @@ public class DriveModeActivity extends BaseDriveModeActivity {
         });
 
         checkpointCountdownTimer = (TextView) findViewById(R.id.checkpointCountdownTimer);
+        TextView scoreTextView = (TextView) findViewById(R.id.scoreTextView);
+        String scoreText = checkpointManager.getAllScores();
+        scoreTextView.setText(scoreText);
     }
 
     @Override
