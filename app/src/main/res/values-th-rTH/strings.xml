@@ -11,7 +11,7 @@
 
     <string name="checkpoint_frequency_tutorial">ตัวเลขนี้ระบุระยะเวลาระหว่างคำถาม แตะเพื่อปรับความถี่ของคำถาม</string>
     <string name="settings_button_tutorial">แตะปุ่มนี้เพื่อตั้งค่าตัวเลือกขั้นสูง คุณสามารถเลือกเสียงปลุก และบันทึกเสียงปลุกใหม่ได้</string>
-    <string name="drive_button_tutorial">เมื่อพร้อมจะเริ่มขับขี่ แตะที่ปุ่มนี้เพื่อเริ่ม</string>
+    <string name="drive_button_tutorial">เมื่อพร้อมจะเริ่มขับขี่ แตะที่ปุ่มนี้เพื่อเริ่ม แอ๊พจะถามคำถามเป็นระยะๆ</string>
 
     <string name="checkpoint_frequency_menu_title">เลือกความถี่ของเช็คพ้อยท์ (วินาที)</string>
     <string name="alert_style_menu_title">เลือกรูปแบบการเตือน</string>
