@@ -10,19 +10,28 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+
 import static com.knottycode.drivesafe.R.id.checkpointFrequencyDisplay;
+import static com.knottycode.drivesafe.R.id.settingsButton;
 
 public class MainActivity extends Activity {
 
     TextView checkpointFrequencyTextView;
+    ImageButton driveButton;
+    ImageButton settingsButton;
 
     protected long checkpointFrequencyMillis;
     protected List<String> availableAlarmTones;
+    private SharedPreferences preferences;
+    private static final String SHOWCASE_ID = "tutorial_showcase";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +39,11 @@ public class MainActivity extends Activity {
 
         {
             // Get the shared preferences
-            SharedPreferences preferences =
+            preferences =
                     getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
 
             // Check if onboarding_complete is false
-            if(!preferences.getBoolean(getString(R.string.onboarding_complete_key), false)) {
+            if (!preferences.getBoolean(getString(R.string.onboarding_complete_key), false)) {
                 // Start the onboarding Activity
                 Intent onboarding = new Intent(this, IntroActivity.class);
                 startActivity(onboarding);
@@ -52,6 +61,31 @@ public class MainActivity extends Activity {
         // checkpointFrequencyTextView.setVisibility(View.INVISIBLE);
         TextView checkpointFrequencyLabel = (TextView) findViewById(R.id.checkpointFrequencyLabel);
         // checkpointFrequencyLabel.setVisibility(View.INVISIBLE);
+        driveButton = (ImageButton) findViewById(R.id.driveButton);
+        settingsButton = (ImageButton) findViewById(R.id.settingsButton);
+
+        checkAndShowTutorial();
+    }
+
+    private void checkAndShowTutorial() {
+        if (preferences.getBoolean(getString(R.string.tutorial_complete_key), false)) {
+            return;
+        }
+
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(300);  // millis
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
+        sequence.setConfig(config);
+        String gotIt = getString(R.string.got_it);
+        sequence.addSequenceItem(checkpointFrequencyTextView,
+                getString(R.string.checkpoint_frequency_tutorial), gotIt);
+        sequence.addSequenceItem(settingsButton,
+                getString(R.string.settings_button_tutorial), gotIt);
+        sequence.addSequenceItem(driveButton,
+                getString(R.string.drive_button_tutorial), gotIt);
+
+        sequence.start();
     }
 
     @Override

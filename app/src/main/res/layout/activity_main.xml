@@ -11,7 +11,17 @@
     android:background="@drawable/start_background"
     tools:context="com.knottycode.drivesafe.MainActivity">
 
-    <Button
+    <com.nhaarman.supertooltips.ToolTipRelativeLayout
+        android:id="@+id/startButtonToolTip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.nhaarman.supertooltips.ToolTipRelativeLayout
+        android:id="@+id/settingButtonToolTip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageButton
         android:background="@drawable/setting_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
