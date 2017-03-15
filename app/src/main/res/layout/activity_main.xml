@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -11,15 +12,17 @@
     android:background="@drawable/start_background"
     tools:context="com.knottycode.drivesafe.MainActivity">
 
-    <com.nhaarman.supertooltips.ToolTipRelativeLayout
-        android:id="@+id/startButtonToolTip"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <com.nhaarman.supertooltips.ToolTipRelativeLayout
-        android:id="@+id/settingButtonToolTip"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/info"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/imageButton"
+        android:onClick="onClickInfo" />
 
     <ImageButton
         android:background="@drawable/setting_button"
