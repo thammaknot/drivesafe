@@ -20,7 +20,6 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 import static com.knottycode.drivesafe.R.id.checkpointFrequencyDisplay;
-import static com.knottycode.drivesafe.R.id.settingsButton;
 
 public class MainActivity extends Activity {
 
@@ -31,7 +30,6 @@ public class MainActivity extends Activity {
     protected long checkpointFrequencyMillis;
     protected List<String> availableAlarmTones;
     private SharedPreferences preferences;
-    private static final String SHOWCASE_ID = "tutorial_showcase";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +73,10 @@ public class MainActivity extends Activity {
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(300);  // millis
 
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
+        int tutorialId =
+                preferences.getInt(getString(R.string.tutorial_id_key), 0);
+        MaterialShowcaseSequence sequence =
+                new MaterialShowcaseSequence(this, String.valueOf(tutorialId));
         sequence.setConfig(config);
         String gotIt = getString(R.string.got_it);
         sequence.addSequenceItem(checkpointFrequencyTextView,
@@ -84,8 +85,11 @@ public class MainActivity extends Activity {
                 getString(R.string.settings_button_tutorial), gotIt);
         sequence.addSequenceItem(driveButton,
                 getString(R.string.drive_button_tutorial), gotIt);
-
         sequence.start();
+        preferences.edit()
+                .putBoolean(getString(R.string.tutorial_complete_key), true).apply();
+        preferences.edit()
+                .putInt(getString(R.string.tutorial_id_key), tutorialId + 1).apply();
     }
 
     @Override
@@ -122,6 +126,17 @@ public class MainActivity extends Activity {
     public void enterSettings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+    }
+
+    public void onClickInfo(View view) {
+        preferences.edit()
+                .putBoolean(getString(R.string.tutorial_complete_key), false).apply();
+        // Start the onboarding Activity
+        Intent onboarding = new Intent(this, IntroActivity.class);
+        startActivity(onboarding);
+        // Close the main Activity
+        finish();
+        return;
     }
 
     private String formatTime(int seconds) {
