@@ -4,6 +4,16 @@
     <string name="drive_mode_exit_warning_title">ออกจากโหมดขับขี่</string>
     <string name="drive_mode_exit_warning_text">แน่ใจนะว่าจะออกจากโหมดขับขี่?</string>
 
+    <string name="preference_file_key">com.knottycode.DriveSafe</string>
+    <string name="adaptive_loudness_key">adaptive_loudness</string>
+    <string name="adaptive_checkpoint_frequency_key">adaptive_checkpoint_frequency</string>
+    <string name="checkpoint_frequency_key">checkpoint_frequency</string>
+    <string name="alarm_tones_key">alarm_tones</string>
+    <string name="alert_style_key">alert_style</string>
+    <string name="onboarding_complete_key">onboarding_complete</string>
+    <string name="tutorial_complete_key">tutorial_complete</string>
+    <string name="tutorial_id_key">tutorial_id</string>
+
     <string name="wake_up_intro1">แอ็พนี้จะส่งเสียงถามคำถามกระตุกต่อมความคิด เพื่อให้คุณไม่ง่วงระหว่างขับรถ</string>
     <string name="wake_up_intro2">พูดคำตอบหลังสัญญาณ ให้ทันในเวลาที่กำหนด แล้วคุณจะได้คะแนน</string>
     <string name="wake_up_intro3">หากคุณไม่พูดอะไร แอ๊พจะส่งเสียงดังเพื่อปลุกคุณ แตะที่หน้าจอเพื่อหยุดเสียง</string>
@@ -44,7 +54,7 @@
 
     <string name="ok">ตกลง</string>
     <string name="cancel">ยกเลิก</string>
-    <string name="cannot_deselect">ต้องเลือกอย่างน้อย 1 เสียง</string>
+    <string name="zero_tone_warning">ต้องเลือกอย่างน้อย 1 เสียง</string>
     <string name="on">เปิด</string>
     <string name="off">ปิด</string>
     <string name="next">ถัดไป</string>
