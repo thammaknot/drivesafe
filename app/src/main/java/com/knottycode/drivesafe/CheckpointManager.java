@@ -28,6 +28,7 @@ public class CheckpointManager implements Serializable {
     private long driveModeStartTime = -1;
     private List<QuestionAnswer> questions;
     private int nextQuestionIndex = 0;
+    private boolean volumeAdjusted = false;
 
     private static final int MIN_FREQUENCY_MILLIS = 30 * 1000;
     private static final int MAX_FREQUENCY_MILLIS = 5 * 60 * 1000;
@@ -111,5 +112,13 @@ public class CheckpointManager implements Serializable {
     
     public long getNextFrequencyMillis() {
         return nextFrequencyMillis;
+    }
+
+    public void setVolumeAdjusted(boolean b) {
+        volumeAdjusted = b;
+    }
+
+    public boolean getVolumeAdjusted() {
+        return volumeAdjusted;
     }
 }
