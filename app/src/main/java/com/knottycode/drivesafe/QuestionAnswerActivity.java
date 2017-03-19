@@ -38,7 +38,6 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     private long qaModeStartTime;
     private long answerPhaseStartTime = -1;
-    private List<QuestionAnswer> questions;
     private QuestionAnswer currentQuestion;
 
     private Random random = new Random();
@@ -66,7 +65,6 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             }
         });
         asrOutputTextView = (TextView) findViewById(R.id.asrOutputTextView);
-        loadQuestions();
         initTTS();
     }
 
@@ -80,35 +78,6 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             }
         });
         tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
-    }
-
-    private void loadQuestions() {
-        AssetManager am = getAssets();
-        InputStream is;
-        questions = new ArrayList<QuestionAnswer>();
-        try {
-            is = am.open(Constants.QUESTION_PATH_PREFIX + "/fun_questions.txt");
-        } catch (IOException io) {
-            // Leave the set empty.
-            return;
-        }
-        BufferedReader r = new BufferedReader(new InputStreamReader(is));
-        String line;
-        try {
-            while ((line = r.readLine()) != null) {
-                String[] tokens = line.split("\t");
-                if (tokens.length != 3) {
-                    Log.w(TAG, "Malformed line in question file: " + line);
-                    continue;
-                }
-                questions.add(
-                        new QuestionAnswer(tokens[0], tokens[1],
-                                QuestionAnswer.QuestionType.FUNNY, tokens[2]));
-            }
-        } catch (IOException io) {
-            Log.e(TAG, "Exception while reading question file.");
-            io.printStackTrace();
-        }
     }
 
     @Override
@@ -135,8 +104,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     }
 
     private QuestionAnswer getQuestionAnswer() {
-        int r = random.nextInt(questions.size());
-        return questions.get(r);
+        return checkpointManager.getNextQuestion();
     }
 
     protected UtteranceProgressListener getOnUtteranceProgressListener() {
