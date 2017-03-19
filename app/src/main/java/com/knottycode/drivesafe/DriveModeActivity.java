@@ -35,6 +35,10 @@ public class DriveModeActivity extends BaseDriveModeActivity {
         });
 
         checkpointCountdownTimer = (TextView) findViewById(R.id.checkpointCountdownTimer);
+        if (!checkpointManager.getVolumeAdjusted()) {
+            validateSystemLoudness();
+            checkpointManager.setVolumeAdjusted(true);
+        }
     }
 
     @Override
