@@ -121,11 +121,13 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this, DriveModeActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
     }
 
     public void enterSettings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
+        finish();
     }
 
     public void onClickInfo(View view) {
