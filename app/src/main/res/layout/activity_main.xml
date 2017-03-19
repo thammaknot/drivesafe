@@ -47,6 +47,19 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
+        android:text="@string/checkpoint_frequency_label"
+        android:fontFamily="sans-serif"
+        android:textSize="20dp"
+        android:textColor="#A7A9AB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/checkpointFrequencyLabel"
+        android:layout_alignTop="@+id/settingsButton"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
         android:text="00:30"
         android:textSize="90dp"
         android:fontFamily="sans-serif-condensed"
@@ -56,21 +69,5 @@
         android:onClick="showCheckpointFrequencyMenu"
         android:id="@+id/checkpointFrequencyDisplay"
         android:layout_below="@+id/settingsButton"
-        android:layout_centerHorizontal="true"
-        android:layout_alignLeft="@+id/checkpointFrequencyLabel"
-        android:layout_alignStart="@+id/checkpointFrequencyLabel" />
-
-    <TextView
-        android:text="@string/checkpoint_frequency_label"
-        android:fontFamily="sans-serif"
-        android:textSize="20dp"
-        android:textColor="#A7A9AB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/checkpointFrequencyLabel"
-        android:layout_alignTop="@+id/settingsButton"
-        android:layout_alignRight="@+id/driveButton"
-        android:layout_alignEnd="@+id/driveButton"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerInParent="true" />
 </RelativeLayout>

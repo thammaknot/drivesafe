@@ -4,21 +4,21 @@
     <string name="drive_mode_exit_warning_title">ออกจากโหมดขับขี่</string>
     <string name="drive_mode_exit_warning_text">แน่ใจนะว่าจะออกจากโหมดขับขี่?</string>
 
-    <string name="wake_up_intro1">แอ็พนี้จะส่งเสียงถามคำถามกระตุกต่อมความคิด เพื่อให้คุณไม่ง่วงระหว่างขับรถ</string>
+    <string name="wake_up_intro1">แอพนี้จะส่งเสียงถามคำถามกระตุกต่อมความคิด เพื่อให้คุณไม่ง่วงระหว่างขับรถ</string>
     <string name="wake_up_intro2">พูดคำตอบหลังสัญญาณ ให้ทันในเวลาที่กำหนด แล้วคุณจะได้คะแนน</string>
-    <string name="wake_up_intro3">หากคุณไม่พูดอะไร แอ๊พจะส่งเสียงดังเพื่อปลุกคุณ แตะที่หน้าจอเพื่อหยุดเสียง</string>
-    <string name="wake_up_intro4">เราแนะนำให้คุณใช้บลููทูธ และหรี่เสียงวิทยุ ระหว่างใช้แอ๊พ</string>
+    <string name="wake_up_intro3">หากคุณไม่พูดอะไร แอพจะส่งเสียงดังเพื่อปลุกคุณ แตะที่หน้าจอเพื่อหยุดเสียง</string>
+    <string name="wake_up_intro4">เราแนะนำให้คุณใช้บลููทูธ และหรี่เสียงวิทยุ ระหว่างใช้แอพ เพื่อให้แอพฟังเสียงของคุณได้ชัดขึ้น</string>
 
     <string name="checkpoint_frequency_tutorial">ตัวเลขนี้ระบุระยะเวลาระหว่างคำถาม แตะเพื่อปรับความถี่ของคำถาม</string>
     <string name="settings_button_tutorial">แตะปุ่มนี้เพื่อตั้งค่าตัวเลือกขั้นสูง คุณสามารถเลือกเสียงปลุก และบันทึกเสียงปลุกใหม่ได้</string>
-    <string name="drive_button_tutorial">เมื่อพร้อมจะเริ่มขับขี่ แตะที่ปุ่มนี้เพื่อเริ่ม แอ๊พจะถามคำถามเป็นระยะๆ</string>
+    <string name="drive_button_tutorial">เมื่อพร้อมจะเริ่มขับขี่ แตะที่ปุ่มนี้เพื่อเริ่ม แอพจะถามคำถามเป็นระยะๆ</string>
 
-    <string name="checkpoint_frequency_menu_title">เลือกความถี่ของเช็คพ้อยท์ (วินาที)</string>
+    <string name="checkpoint_frequency_menu_title">เลือกความถี่ของคำถาม (วินาที)</string>
     <string name="alert_style_menu_title">เลือกรูปแบบการเตือน</string>
     <string name="record_new_tone_menu_title">บันทึกเสียงปลุกใหม่</string>
     <string name="recorded_tone_display_name">เสียงที่คุณบันทึก</string>
 
-    <string name="time_until_next_checkpoint">เวลาก่อนถึงเช็คพ้อยท์ถัดไป</string>
+    <string name="time_until_next_checkpoint">เวลาก่อนถึงคำถามถัดไป</string>
     <string name="time_until_alarm">เวลาก่อนเข้าโหมดปลุก</string>
     <string name="time_in_drive_mode">เวลาที่คุณได้อยู่ในโหมดขับขี่</string>
 
@@ -49,7 +49,7 @@
     <string name="off">ปิด</string>
     <string name="next">ถัดไป</string>
     <string name="done">เสร็จ</string>
-    <string name="skip">ข้ามการแนะนำแอ๊พ</string>
+    <string name="skip">ข้ามการแนะนำแอพ</string>
     <string name="got_it">เข้าใจแล้ว</string>
 
     <string name="tone_best_wake_up_sound">ตื่นๆๆ</string>
@@ -60,5 +60,5 @@
     <string name="tone_pager_tone">บี๊บๆๆ</string>
     <string name="tone_rooster_alarm">ไก่ขัน</string>
 
-    <string name="checkpoint_frequency_label">ความถี่ของเช็คพ้อยท์</string>
+    <string name="checkpoint_frequency_label">ความถี่ของคำถาม</string>
 </resources>

@@ -1,13 +1,10 @@
 package com.knottycode.drivesafe;
 
-import android.content.Intent;
-import android.view.View;
-
-import android.support.v7.app.AppCompatActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -19,10 +16,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,7 +79,6 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         prefs = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
         displayCurrentPreferences();
 
-        setupRecordNewToneMenu();
         setOnTouchListeners();
     }
 
@@ -120,8 +114,6 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         recordButton = (ImageButton) menuView.findViewById(R.id.recordButton);
         final ImageButton playButton = (ImageButton) menuView.findViewById(R.id.playButton);
 
-        final TextView statusTextView = (TextView) menuView.findViewById(R.id.statusIndicatorTextView);
-
         playButton.setEnabled(false);
         recordButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -139,7 +131,6 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
                     try {
                         mediaRecorder.prepare();
                         isRecording = true;
-                        statusTextView.setText("Recording");
                         playButton.setEnabled(false);
                         mediaRecorder.start();
                     } catch (IOException io) {
@@ -149,7 +140,6 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
                 } else {
                     stopRecording();
                     playButton.setEnabled(true);
-                    statusTextView.setText("NOT Recording");
                 }
                 return true;
             }
@@ -162,12 +152,10 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
                 }
                 if (!isPlaying) {
                     isPlaying = true;
-                    statusTextView.setText("Playing");
                     recordButton.setEnabled(false);
                     playSound(TEMP_RECORDING_FILEPATH);
                 } else {
                     isPlaying = false;
-                    statusTextView.setText("Stopping play");
                     resetMediaPlayer();
                     recordButton.setEnabled(true);
                 }
@@ -389,6 +377,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
     }
 
     private void showRecordNewToneDialog() {
+        setupRecordNewToneMenu();
         new AlertDialog.Builder(this)
                 .setTitle(R.string.record_new_tone_menu_title)
                 .setView(menuView)

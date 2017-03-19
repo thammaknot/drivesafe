@@ -21,17 +21,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text="@string/skip"
-            android:id="@+id/skip"
-            />
+            android:id="@+id/skip" />
 
         <com.gc.materialdesign.views.ButtonFlat
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text="@string/next"
-            android:id="@+id/next"
-            />
-
+            android:id="@+id/next" />
     </LinearLayout>
 
     <com.ogaclejapan.smarttablayout.SmartTabLayout
