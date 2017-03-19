@@ -189,6 +189,21 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
 
     }
 
+    protected static String getNaturalLanguageText(int frequencySeconds, Context context) {
+        int minutes = frequencySeconds / 60;
+        int seconds = frequencySeconds % 60;
+        String output = "";
+        if (minutes > 0) {
+            output = String.valueOf(minutes) + " " + context.getString(R.string.minutes) + " ";
+        }
+        if (seconds > 0) {
+            String unit = minutes > 0 ?
+                    context.getString(R.string.seconds_abbrev) : context.getString(R.string.seconds);
+            output += seconds + " " + unit;
+        }
+        return output;
+    }
+
     protected static String getCheckpointFrequencyText(int frequencySeconds, Context context) {
         String minutePart = "";
         if (frequencySeconds > 60) {

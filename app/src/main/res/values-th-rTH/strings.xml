@@ -40,6 +40,7 @@
     <string name="tone_text_plural">เสียง</string>
     <string name="setting_alarm_adaptive_loudness">ระดับเสียงดังขึ้นเรื่อยๆ</string>
 
+    <string name="seconds_abbrev">วิ</string>
     <string name="seconds">วินาที</string>
     <string name="minutes">นาที</string>
 

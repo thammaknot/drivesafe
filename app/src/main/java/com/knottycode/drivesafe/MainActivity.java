@@ -112,9 +112,8 @@ public class MainActivity extends Activity {
 
     private void displayPreferences() {
         int checkpointFreqSeconds = (int) (checkpointFrequencyMillis / 1000);
-        int minutes = checkpointFreqSeconds / 60;
-        int seconds = checkpointFreqSeconds % 60;
-        checkpointFrequencyTextView.setText(String.format("%02d:%02d", minutes, seconds));
+        checkpointFrequencyTextView.setText(
+                SettingsActivity.getNaturalLanguageText(checkpointFreqSeconds, this));
     }
 
     public void enterDriveMode(View view) {
@@ -142,9 +141,7 @@ public class MainActivity extends Activity {
     }
 
     private String formatTime(int seconds) {
-        int minutesPart = seconds / 60;
-        int secondsPart = seconds % 60;
-        return String.format("%02d:%02d", minutesPart, secondsPart);
+        return String.format(SettingsActivity.getNaturalLanguageText(seconds, this));
     }
 
     public void showCheckpointFrequencyMenu(View v) {
