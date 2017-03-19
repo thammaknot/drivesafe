@@ -21,6 +21,7 @@
     <string name="time_until_next_checkpoint">เวลาก่อนถึงคำถามถัดไป</string>
     <string name="time_until_alarm">เวลาก่อนเข้าโหมดปลุก</string>
     <string name="time_in_drive_mode">เวลาที่คุณได้อยู่ในโหมดขับขี่</string>
+    <string name="please_touch_to_stop_alarm">แตะหน้าจอเพื่อหยุดเสียงปลุก</string>
 
     <string name="drive_mode">ขับขี่</string>
     <string name="setting_mode">ตั้งค่า</string>

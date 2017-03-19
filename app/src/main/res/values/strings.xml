@@ -32,6 +32,7 @@
     <string name="time_until_next_checkpoint">Time until next question</string>
     <string name="time_until_alarm">Time until alarm</string>
     <string name="time_in_drive_mode">Time in drive mode</string>
+    <string name="please_touch_to_stop_alarm">Touch screen to silence alarm</string>
 
     <string name="drive_mode">Drive</string>
     <string name="setting_mode">Settings</string>
