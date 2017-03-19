@@ -4,18 +4,16 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="#a42829"
     android:gravity="center_horizontal">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        android:layout_marginTop="20dp"
-        android:text="@string/wake_up_intro4"/>
 
     <ImageView
         style="@style/IntroImage"
-        android:background="@drawable/alert_mode_background"
+        android:src="@drawable/tutorial_image4"
         android:id="@+id/imageView" />
+
+    <TextView
+        style="@style/IntroText"
+        android:text="@string/wake_up_intro4"/>
 
 </LinearLayout>

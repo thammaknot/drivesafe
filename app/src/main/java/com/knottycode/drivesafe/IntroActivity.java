@@ -35,23 +35,18 @@ public class IntroActivity extends FragmentActivity {
         next.setRippleSpeed(30);
         skip.setRippleSpeed(30);
 
-        final Fragment p1 = new IntroFragment1();
-        final Fragment p2 = new IntroFragment2();
-        final Fragment p3 = new IntroFragment3();
-        final Fragment p4 = new IntroFragment4();
-
         FragmentStatePagerAdapter adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return p1;
+                        return new IntroFragment1();
                     case 1:
-                        return p2;
+                        return new IntroFragment2();
                     case 2:
-                        return p3;
+                        return new IntroFragment3();
                     case 3:
-                        return p4;
+                        return new IntroFragment4();
                     default:
                         return null;
                 }
