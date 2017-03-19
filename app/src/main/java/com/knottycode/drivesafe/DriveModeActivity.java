@@ -1,7 +1,6 @@
 package com.knottycode.drivesafe;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -36,7 +35,6 @@ public class DriveModeActivity extends BaseDriveModeActivity {
         });
 
         checkpointCountdownTimer = (TextView) findViewById(R.id.checkpointCountdownTimer);
-        Log.d(TAG, "******** volume adjusted = " + checkpointManager.getVolumeAdjusted());
         if (!checkpointManager.getVolumeAdjusted()) {
             validateSystemLoudness();
             checkpointManager.setVolumeAdjusted(true);
