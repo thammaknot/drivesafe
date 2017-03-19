@@ -20,7 +20,7 @@ public class Constants {
     public static final int QUESTION_ANSWER_MAX_GRACE_PERIOD_MILLIS = 25 * 1000;
     public static final int GRACE_PERIOD_EXTENSION_SECONDS = 20;
     public static final int MIN_TIME_TO_RESTART_ASR_MILLIS = 4 * 1000;
-    public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 10;
+    public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 60;
     public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SOUND;
     public static final int UNIT_SILENCE_DURATION_MILLIS = 500;
 
