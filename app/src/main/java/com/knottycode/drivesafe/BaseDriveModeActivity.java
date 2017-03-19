@@ -151,13 +151,7 @@ abstract public class BaseDriveModeActivity extends Activity {
         Intent intent = new Intent(this, AlarmModeActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-    }
-
-    protected void startCheckpointMode() {
-        stopTimer();
-        Intent intent = new Intent(this, CheckpointModeActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
     }
 
     protected void startQuestionAnswerMode() {
@@ -165,6 +159,7 @@ abstract public class BaseDriveModeActivity extends Activity {
         Intent intent = new Intent(this, QuestionAnswerActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
     }
 
     protected void startDriveMode() {
@@ -172,6 +167,7 @@ abstract public class BaseDriveModeActivity extends Activity {
         Intent intent = new Intent(this, DriveModeActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
     }
 
     private void goBackToMainActivity() {
@@ -180,6 +176,7 @@ abstract public class BaseDriveModeActivity extends Activity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
     }
 
     @Override

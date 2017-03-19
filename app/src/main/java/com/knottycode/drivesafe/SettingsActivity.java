@@ -209,6 +209,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
     public void onClose(View v) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+        finish();
     }
 
     @Override
