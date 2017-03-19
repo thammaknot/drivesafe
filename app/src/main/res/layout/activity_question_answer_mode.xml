@@ -11,31 +11,8 @@
     android:background="@drawable/alert_mode_background"
     tools:context="com.knottycode.drivesafe.DriveModeActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="70dp"
-        android:textColor="#24255B"
-        android:text="00:00"
-        android:fontFamily="sans-serif-condensed"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
-        android:id="@+id/checkpointCountdownTimer" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-bold"
-        android:textColor="#656BB1"
-        android:textSize="16dp"
-        android:id="@+id/timeUntilAlarmModeTextView"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:text="@string/time_until_alarm" />
-
-    <TextView
+    <!--TextView
         android:text=""
         android:fontFamily="bold"
         android:textSize="40dp"
@@ -45,14 +22,14 @@
         android:id="@+id/asrOutputTextView"
         android:layout_above="@+id/checkpointCountdownTimer"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp" />
+        android:layout_marginBottom="50dp" /-->
 
-    <TextView
+    <!--TextView
         android:text="00:00"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="110dp"
-        android:id="@+id/debugTime" />
+        android:id="@+id/debugTime" /-->
 </RelativeLayout>

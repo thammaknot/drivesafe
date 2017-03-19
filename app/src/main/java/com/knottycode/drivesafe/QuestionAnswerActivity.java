@@ -23,7 +23,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
-import static com.knottycode.drivesafe.R.id.debugTime;
+// import static com.knottycode.drivesafe.R.id.debugTime;
 import static com.knottycode.drivesafe.R.string.minutes;
 import static com.knottycode.drivesafe.R.string.seconds;
 
@@ -64,7 +64,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                 return QuestionAnswerActivity.this.onTouch(v, me);
             }
         });
-        asrOutputTextView = (TextView) findViewById(R.id.asrOutputTextView);
+        // asrOutputTextView = (TextView) findViewById(R.id.asrOutputTextView);
         initTTS();
     }
 
@@ -188,11 +188,12 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     @Override
     protected void updateDisplay(long now) {
         if (answerPhaseStartTime == -1) { return; }
+        /*
         TextView debugTime = (TextView) findViewById(R.id.debugTime);
         long elapsed = (now - answerPhaseStartTime) / 1000;
         long seconds = elapsed % 60;
-        // long minutes = elapsed / 60;
         debugTime.setText(String.format("00:%02d [%s]", seconds, asrListener.isListening() ? "listen" : "not listen"));
+        */
     }
 
     @Override
@@ -280,7 +281,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         }
         hasSpeechAnswer = true;
         String topResult = results.get(0);
-        asrOutputTextView.setText(topResult);
+        // asrOutputTextView.setText(topResult);
         if (isSkipWord(results)) {
             Log.d(TAG, "******* SKIP WORD FOUND ==========");
             speakAnswer();
