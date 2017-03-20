@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -23,6 +24,7 @@ public class Constants {
     public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 60;
     public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SOUND;
     public static final int UNIT_SILENCE_DURATION_MILLIS = 500;
+    public static final Locale THAI_LOCALE = new Locale("th", "TH");
 
     public static final String DEFAULT_ALERT_SOUND = "alert/glitchy-tone.mp3";
     public static final String RECORDED_TONE_FILENAME = "recorded_tone.3gp";
