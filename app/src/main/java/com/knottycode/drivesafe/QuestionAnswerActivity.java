@@ -1,11 +1,11 @@
 package com.knottycode.drivesafe;
 
-import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,19 +13,12 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
 // import static com.knottycode.drivesafe.R.id.debugTime;
-import static com.knottycode.drivesafe.R.string.minutes;
-import static com.knottycode.drivesafe.R.string.seconds;
 
 /**
  * Created by thammaknot on 2/18/17.
@@ -73,7 +66,14 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
-                tts.setLanguage(new Locale("th", "TH"));
+                tts.setLanguage(Constants.THAI_LOCALE);
+                Set<Voice> voices = tts.getVoices();
+                for (Voice v : voices) {
+                    if (v.isNetworkConnectionRequired() && v.getQuality() >= Voice.QUALITY_HIGH &&
+                            v.getLocale().equals(Constants.THAI_LOCALE)) {
+                        tts.setVoice(v);
+                    }
+                }
                 startQuestion(true);
             }
         });
