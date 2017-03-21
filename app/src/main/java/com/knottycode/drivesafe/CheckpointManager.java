@@ -104,7 +104,6 @@ public class CheckpointManager implements Serializable {
             }
         }
         Collections.shuffle(questions);
-        Log.d(TAG, "@@@@@@@@@@@@Done loading " + questions.size() + " questions @!!!!!!!!!!");
     }
 
     public QuestionAnswer getNextQuestion() {
