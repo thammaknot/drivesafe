@@ -14,6 +14,7 @@
     <string name="onboarding_complete_key">onboarding_complete</string>
     <string name="tutorial_complete_key">tutorial_complete</string>
     <string name="tutorial_id_key">tutorial_id</string>
+    <string name="question_types_key">question_types</string>
 
     <string name="wake_up_intro1">This app periodically asks you questions to energize your brain and wake you up during your drive.</string>
     <string name="wake_up_intro2">Answer each question with your voice after the beep under the time limit to earn points.</string>

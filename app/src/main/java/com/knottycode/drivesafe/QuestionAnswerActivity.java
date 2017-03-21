@@ -247,22 +247,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     }
 
     private boolean hasCorrectAnswer(List<String> results) {
-        List<Set<String>> allAnswers = currentQuestion.getAllAnswers();
-        for (Set<String> answer : allAnswers) {
-            for (String result : results) {
-                boolean match = true;
-                for (String key : answer) {
-                    if (!result.contains(key)) {
-                        match = false;
-                        break;
-                    }
-                }
-                if (match) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return currentQuestion.checkAnswer(results);
     }
 
     private long getTimeRemainingInMillis() {

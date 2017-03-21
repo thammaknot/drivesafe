@@ -13,6 +13,7 @@
     <string name="onboarding_complete_key">onboarding_complete</string>
     <string name="tutorial_complete_key">tutorial_complete</string>
     <string name="tutorial_id_key">tutorial_id</string>
+    <string name="question_types_key">question_types</string>
 
     <string name="wake_up_intro1">แอพนี้จะส่งเสียงถามคำถามกระตุกต่อมความคิด เพื่อให้คุณไม่ง่วงระหว่างขับรถ</string>
     <string name="wake_up_intro2">พูดคำตอบหลังสัญญาณ ให้ทันในเวลาที่กำหนด แล้วคุณจะได้คะแนน</string>
