@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -13,6 +14,7 @@ import java.util.Set;
  */
 
 public class Constants {
+    public static final Random RANDOM = new Random();
     public static final String SAFE_PHRASE = "ระนองระยองยะลา";
 
     public static final int TIMER_INTERVAL_MILLIS = 100;
@@ -85,6 +87,19 @@ public class Constants {
         EXTENSION_WORDS.add("ขอเวลาอีกหน่อยได้ไหม");
         EXTENSION_WORDS.add("ขอเวลาเพิ่ม");
         EXTENSION_WORDS.add("อีกแป๊บนึง");
+    }
+
+    public static final Set<String> ALL_QUESTION_TYPES = new HashSet<String>();
+    public static final int NUM_MATH_QUESTIONS = 50;
+    public static final String MATH_ADDITION = "บวก";
+    public static final String MATH_MULTIPLICATION = "คูณ";
+    public static final String MATH_QUESTION_ENDING = "เท่ากับเท่าไหร";
+
+    static {
+        ALL_QUESTION_TYPES.add("funny");
+        ALL_QUESTION_TYPES.add("math");
+        ALL_QUESTION_TYPES.add("trivia");
+        ALL_QUESTION_TYPES.add("riddles");
     }
 
     public static final long[] VIBRATION_PATTERN = {0, 700, 100, 400};

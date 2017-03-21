@@ -247,6 +247,8 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     }
 
     private boolean hasCorrectAnswer(List<String> results) {
+        return currentQuestion.checkAnswer(results);
+        /*
         List<Set<String>> allAnswers = currentQuestion.getAllAnswers();
         for (Set<String> answer : allAnswers) {
             for (String result : results) {
@@ -263,6 +265,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             }
         }
         return false;
+        */
     }
 
     private long getTimeRemainingInMillis() {

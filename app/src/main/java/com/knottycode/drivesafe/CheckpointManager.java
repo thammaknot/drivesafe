@@ -1,6 +1,7 @@
 package com.knottycode.drivesafe;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.util.Log;
 
@@ -11,7 +12,12 @@ import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import static android.content.Context.MODE_PRIVATE;
+import static com.knottycode.drivesafe.QuestionAnswer.QuestionType;
 
 /**
  * Created by thammaknot on 2/6/17.
@@ -51,33 +57,54 @@ public class CheckpointManager implements Serializable {
     }
 
     private void loadQuestions(Context context) {
+        SharedPreferences preferences =
+                context.getSharedPreferences(context.getString(R.string.preference_file_key),
+                        MODE_PRIVATE);
+        Set<String> qTypeStrings =
+                preferences.getStringSet(context.getString(R.string.question_types_key),
+                        Constants.ALL_QUESTION_TYPES);
+        Set<QuestionType> qTypes = new HashSet<>();
+        for (String t : qTypeStrings) {
+            qTypes.add(QuestionType.fromString(t));
+        }
+
         AssetManager am = context.getAssets();
         InputStream is;
         questions = new ArrayList<QuestionAnswer>();
-        try {
-            is = am.open(Constants.QUESTION_PATH_PREFIX + "/fun_questions.txt");
-        } catch (IOException io) {
-            // Leave the set empty.
-            return;
-        }
-        BufferedReader r = new BufferedReader(new InputStreamReader(is));
-        String line;
-        try {
-            while ((line = r.readLine()) != null) {
-                String[] tokens = line.split("\t");
-                if (tokens.length != 3) {
-                    Log.w(TAG, "Malformed line in question file: " + line);
-                    continue;
+
+        for (QuestionType type : qTypes) {
+            if (type == QuestionType.MATH) {
+                for (int i = 0; i < Constants.NUM_MATH_QUESTIONS; ++i) {
+                    questions.add(new QuestionAnswer("", "", QuestionType.MATH, ""));
                 }
-                questions.add(
-                        new QuestionAnswer(tokens[0], tokens[1],
-                                QuestionAnswer.QuestionType.FUNNY, tokens[2]));
+                continue;
             }
-            Collections.shuffle(questions);
-        } catch (IOException io) {
-            Log.e(TAG, "Exception while reading question file.");
-            io.printStackTrace();
+            try {
+                is = am.open(Constants.QUESTION_PATH_PREFIX + "/" + type.getFilename() + ".txt");
+            } catch (IOException io) {
+                // Skip this type.
+                continue;
+            }
+            BufferedReader r = new BufferedReader(new InputStreamReader(is));
+            String line;
+            try {
+                while ((line = r.readLine()) != null) {
+                    String[] tokens = line.split("\t");
+                    if (tokens.length != 3) {
+                        Log.w(TAG, "Malformed line in question file: " + line);
+                        continue;
+                    }
+                    questions.add(
+                            new QuestionAnswer(tokens[0], tokens[1],
+                                    QuestionAnswer.QuestionType.FUNNY, tokens[2]));
+                }
+            } catch (IOException io) {
+                Log.e(TAG, "Exception while reading question file.");
+                io.printStackTrace();
+            }
         }
+        Collections.shuffle(questions);
+        Log.d(TAG, "@@@@@@@@@@@@Done loading " + questions.size() + " questions @!!!!!!!!!!");
     }
 
     public QuestionAnswer getNextQuestion() {
