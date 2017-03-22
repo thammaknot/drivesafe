@@ -266,6 +266,9 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         }
         hasSpeechAnswer = true;
         String topResult = results.get(0);
+        for (String s : results) {
+            Log.d(TAG, "#######> " + s);
+        }
         // asrOutputTextView.setText(topResult);
         if (isSkipWord(results)) {
             Log.d(TAG, "******* SKIP WORD FOUND ==========");

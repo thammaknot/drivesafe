@@ -27,6 +27,7 @@ public class Constants {
     public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SOUND;
     public static final int UNIT_SILENCE_DURATION_MILLIS = 500;
     public static final Locale THAI_LOCALE = new Locale("th", "TH");
+    public static final int MAX_ASR_RESULTS = 10;
 
     public static final String DEFAULT_ALERT_SOUND = "alert/glitchy-tone.mp3";
     public static final String RECORDED_TONE_FILENAME = "recorded_tone.3gp";
