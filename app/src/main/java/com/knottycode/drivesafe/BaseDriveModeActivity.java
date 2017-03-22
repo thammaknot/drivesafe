@@ -128,6 +128,7 @@ abstract public class BaseDriveModeActivity extends Activity {
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "th-TH");
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "th-TH");
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, Constants.MAX_ASR_RESULTS);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
                 this.getPackageName());
         recognizer = SpeechRecognizer.createSpeechRecognizer(this);
