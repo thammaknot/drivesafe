@@ -93,7 +93,7 @@ public class Constants {
     public static final int NUM_MATH_QUESTIONS = 50;
     public static final String MATH_ADDITION = "บวก";
     public static final String MATH_MULTIPLICATION = "คูณ";
-    public static final String MATH_QUESTION_ENDING = "เท่ากับเท่าไหร";
+    public static final String MATH_QUESTION_ENDING = "เท่ากับเท่าไหร่";
 
     static {
         ALL_QUESTION_TYPES.add("funny");
