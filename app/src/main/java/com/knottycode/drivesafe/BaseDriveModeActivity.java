@@ -14,6 +14,12 @@ import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,7 +189,21 @@ abstract public class BaseDriveModeActivity extends Activity {
         finish();
     }
 
-    private void saveScore() {
+    private void saveStats() {
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+
+        if (user != null && mDatabase != null) {
+            String uid = user.getUid();
+            long duration = System.currentTimeMillis() - checkpointManager.getDriveModeStartTime();
+            TripStats trip =
+                    new TripStats(duration, checkpointManager.getScore(),
+                            checkpointManager.getDriveModeStartTime());
+            mDatabase.child("users").child(uid).child("stats").push().setValue(trip);
+        } else {
+            Toast.makeText(this, getString(R.string.unable_to_save_stats), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -194,7 +214,7 @@ abstract public class BaseDriveModeActivity extends Activity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        saveScore();
+                        saveStats();
                         goBackToMainActivity();
                     }
                 })

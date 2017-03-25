@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,6 +49,8 @@ public class CheckpointManager implements Serializable {
     private static final int MAX_FREQUENCY_MILLIS = 5 * 60 * 1000;
     private static final int RESPONSE_TIME_CUTOFF_MILLIS = 2 * 1000;
     private static final int FREQUENCY_INCREMENT_MILLIS = 15 * 1000;
+
+    private FirebaseUser firebaseUser;
 
     public CheckpointManager(long initFrequencyMillis, long startTime, Context context) {
         this.initFrequencyMillis = initFrequencyMillis;
@@ -195,5 +199,13 @@ public class CheckpointManager implements Serializable {
 
     public boolean getVolumeAdjusted() {
         return volumeAdjusted;
+    }
+
+    public void setUser(FirebaseUser user) {
+        this.firebaseUser = user;
+    }
+
+    public FirebaseUser getUser() {
+        return firebaseUser;
     }
 }
