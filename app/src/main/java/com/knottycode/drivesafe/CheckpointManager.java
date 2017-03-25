@@ -32,6 +32,13 @@ public class CheckpointManager implements Serializable {
     private long initFrequencyMillis;
     private long nextFrequencyMillis;
     private long driveModeStartTime = -1;
+
+    private int score = 0;
+    private int numCorrect = 0;
+    private int numIncorrect = 0;
+    private int numSkip = 0;
+    private int numNoResponse = 0;
+
     private List<QuestionAnswer> questions;
     private int nextQuestionIndex = 0;
     private boolean volumeAdjusted = false;
@@ -141,6 +148,45 @@ public class CheckpointManager implements Serializable {
     
     public long getNextFrequencyMillis() {
         return nextFrequencyMillis;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public enum ScoreMode {
+        CORRECT, INCORRECT, SKIP, NO_RESPONSE;
+    }
+
+    public void updateScore(ScoreMode mode) {
+        switch (mode) {
+            case CORRECT:
+                ++numCorrect;
+                break;
+            case INCORRECT:
+                ++numIncorrect;
+                break;
+            case SKIP:
+                ++numSkip;
+                break;
+            case NO_RESPONSE:
+                ++numNoResponse;
+                break;
+            default:
+        }
+        score = numCorrect;
+    }
+
+    public void resetScores() {
+        score = 0;
+        numCorrect = 0;
+        numIncorrect = 0;
+        numSkip = 0;
+        numNoResponse = 0;
+    }
+
+    public String getAllScores() {
+        return "" + numCorrect + "|" + numIncorrect + "|" + numSkip + "|" + numNoResponse;
     }
 
     public void setVolumeAdjusted(boolean b) {
