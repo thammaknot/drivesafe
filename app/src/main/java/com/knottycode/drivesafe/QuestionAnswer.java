@@ -20,16 +20,18 @@ public class QuestionAnswer {
     private static final String ANSWER_SYLLABLE_DELIM = ",";
 
     public enum QuestionType {
-        FUNNY("funny", "fun_questions"),
-        RIDDLE("riddles", "riddles"),
-        TRIVIA("trivia", "trivia"),
-        MATH("math", ""),
-        OTHER("other", "");
+        FUNNY(0, "funny", "fun_questions"),
+        RIDDLE(1, "riddles", "riddles"),
+        TRIVIA(2, "trivia", "trivia"),
+        MATH(3, "math", ""),
+        OTHER(4, "other", "");
 
+        private int code;
         private String name;
         private String filename;
 
-        QuestionType(String s, String f) {
+        QuestionType(int code, String s, String f) {
+            this.code = code;
             name = s;
             filename = f;
         }
@@ -45,6 +47,22 @@ public class QuestionAnswer {
                 }
             }
             return OTHER;
+        }
+
+        public int getPreamble() {
+            switch (code) {
+                case 0:
+                    return R.string.fun_question_preamble;
+                case 1:
+                    return R.string.riddle_preamble;
+                case 2:
+                    return R.string.trivia_preamble;
+                case 3:
+                    return R.string.math_question_preamble;
+                case 4:
+                default:
+                    return R.string.other_question_preamble;
+            }
         }
     }
 
@@ -90,6 +108,10 @@ public class QuestionAnswer {
     public String getAnswer() { return answer; }
     public QuestionType getType() { return type; }
     public List<Set<String>> getAllAnswers() { return allAnswers; }
+
+    public int getPreamble() {
+        return type.getPreamble();
+    }
 
     public boolean checkAnswer(List<String> userAnswers) {
         for (Set<String> answer : allAnswers) {

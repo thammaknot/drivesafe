@@ -97,7 +97,7 @@ public class CheckpointManager implements Serializable {
                     }
                     questions.add(
                             new QuestionAnswer(tokens[0], tokens[1],
-                                    QuestionAnswer.QuestionType.FUNNY, tokens[2]));
+                                    type, tokens[2]));
                     ++count;
                 }
             } catch (IOException io) {

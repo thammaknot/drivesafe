@@ -54,6 +54,7 @@ public class Constants {
     public static final String CORRECT_KEYWORD_UTT_ID = "00000004";
     public static final String TRY_AGAIN_UTT_ID = "00000005";
     public static final String EXTEND_GRACE_PERIOD_UTT_ID = "00000006";
+    public static final String PREAMBLE_UTT_ID = "00000007";
 
     public static final String ANSWER_KEYWORD = "เฉลย";
     public static final List<String> CORRECT_KEYWORDS = new ArrayList<>();
