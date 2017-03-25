@@ -127,6 +127,8 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         Log.d(TAG, "##########################");
         Log.d(TAG, "#### Connection failed !!! ########");
         Log.d(TAG, "##########################");
+        Toast.makeText(LogInActivity.this, "Connection failed",
+                Toast.LENGTH_SHORT).show();
     }
 
     private void signIn() {
@@ -151,13 +153,11 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount account = result.getSignInAccount();
             firebaseAuthWithGoogle(account);
-            Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>");
-            Log.d(TAG, ">>> Google LogIn successful !: " + account.getDisplayName() + " >>>>>>>");
-            Log.d(TAG, ">>>>>>>>>>>>>>>>>>>>>");
-            // startMainActivity();
         } else {
             // Signed out, show unauthenticated UI.
             Log.d(TAG, "Failed!!!");
+            Toast.makeText(LogInActivity.this, "Sign-in failed",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
