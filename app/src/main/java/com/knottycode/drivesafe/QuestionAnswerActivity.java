@@ -74,7 +74,10 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                         tts.setVoice(v);
                     }
                 }
-                startQuestion(true);
+
+                currentQuestion = getQuestionAnswer();
+                speakPreamble();
+                startQuestion();
             }
         });
         tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
@@ -132,7 +135,8 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                             tts.setSpeechRate(1.0f);
                             stopQuestion();
                             startDriveMode();
-                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)) {
+                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)
+                                || uttId.equals(Constants.PREAMBLE_UTT_ID)) {
                             // Nothing.
                         } else if (uttId.equals(Constants.EXTEND_GRACE_PERIOD_UTT_ID)) {
                             asrListener.startRecognition();
@@ -145,10 +149,11 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         };
     }
 
-    private void startQuestion(boolean getNewQuestion) {
-        if (currentQuestion == null || getNewQuestion) {
-            currentQuestion = getQuestionAnswer();
-        }
+    private void speakPreamble() {
+        tts.speak(getString(currentQuestion.getPreamble()), TextToSpeech.QUEUE_ADD, null, Constants.PREAMBLE_UTT_ID);
+    }
+
+    private void startQuestion() {
         tts.speak(currentQuestion.getQuestion(), TextToSpeech.QUEUE_ADD, null, Constants.QUESTION_UTT_ID);
     }
 
@@ -282,7 +287,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             // If not, just go straight to answer.
             if (getTimeRemainingInMillis() >= Constants.MIN_TIME_TO_RESTART_ASR_MILLIS) {
                 tryAgain();
-                startQuestion(false);
+                startQuestion();
             } else {
                 speakAnswer();
             }
