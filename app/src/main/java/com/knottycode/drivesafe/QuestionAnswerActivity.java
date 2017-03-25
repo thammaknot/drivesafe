@@ -174,6 +174,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         int index = random.nextInt(Constants.CORRECT_KEYWORDS.size());
         String correctKeyword = Constants.CORRECT_KEYWORDS.get(index);
         tts.speak(correctKeyword, TextToSpeech.QUEUE_ADD, null, Constants.CORRECT_KEYWORD_UTT_ID);
+        tts.speak(correctKeyword, TextToSpeech.QUEUE_ADD, null, Constants.SCORE_UTT_ID);
     }
 
     private void tryAgain() {
