@@ -134,6 +134,8 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                             startDriveMode();
                         } else if (uttId.equals(Constants.CORRECT_KEYWORD_UTT_ID)) {
                             tts.setSpeechRate(1.0f);
+                            speakScore();
+                        } else if (uttId.equals(Constants.SCORE_UTT_ID)) {
                             stopQuestion();
                             startDriveMode();
                         } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)
@@ -175,7 +177,13 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         int index = random.nextInt(Constants.CORRECT_KEYWORDS.size());
         String correctKeyword = Constants.CORRECT_KEYWORDS.get(index);
         tts.speak(correctKeyword, TextToSpeech.QUEUE_ADD, null, Constants.CORRECT_KEYWORD_UTT_ID);
-        tts.speak(correctKeyword, TextToSpeech.QUEUE_ADD, null, Constants.SCORE_UTT_ID);
+    }
+
+    private void speakScore() {
+        String scorePhrase =
+                getString(R.string.score_preamble) + checkpointManager.getScore()
+                        + getString(R.string.score_unit) + getString(R.string.score_ending);
+        tts.speak(scorePhrase, TextToSpeech.QUEUE_ADD, null, Constants.SCORE_UTT_ID);
     }
 
     private void tryAgain() {
