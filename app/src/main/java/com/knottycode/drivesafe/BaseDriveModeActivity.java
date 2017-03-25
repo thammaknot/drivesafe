@@ -183,6 +183,9 @@ abstract public class BaseDriveModeActivity extends Activity {
         finish();
     }
 
+    private void saveScore() {
+    }
+
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)
@@ -191,6 +194,7 @@ abstract public class BaseDriveModeActivity extends Activity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        saveScore();
                         goBackToMainActivity();
                     }
                 })
