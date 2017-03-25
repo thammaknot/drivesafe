@@ -1,6 +1,22 @@
 <resources>
     <string name="app_name">Wake Up Thailand</string>
 
+    <string name="password_hint">Password</string>
+    <string name="email_hint">Email</string>
+    <string name="sign_up_button_label">Sign Up</string>
+    <string name="signup_error_message">Please make sure you enter an email address and password!</string>
+    <string name="signup_error_title">Error!</string>
+    <string name="signup_success">Account successfully created! You can now Login.</string>
+    <string name="login_error_message">Please make sure you enter an email address and password!</string>
+    <string name="login_error_title">Error!</string>
+    <string name="login_button_label">Login</string>
+    <string name="sign_up_text">Register</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="add_item">Add New Item</string>
+    <string name="action_logout">Logout</string>
+    <string name="or_sign_in_with_google">Or sign in with</string>
+    <string name="web_client_id">918024319393-q1uvlrin5lf7jcp56ghrblcf0kstv63m.apps.googleusercontent.com</string>
+
     <string name="title_activity_drive_mode">Drive Mode</string>
     <string name="drive_mode_exit_warning_title">Exit Drive Mode</string>
     <string name="drive_mode_exit_warning_text">Are you sure you want to exit drive mode?</string>

@@ -13,6 +13,9 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +34,21 @@ public class MainActivity extends Activity {
     protected List<String> availableAlarmTones;
     private SharedPreferences preferences;
 
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseUser mFirebaseUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize Firebase Auth
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+        if (mFirebaseUser == null) {
+            // Not logged in, launch the Log In activity
+            loadLogInView();
+        }
 
         {
             // Get the shared preferences
@@ -63,6 +78,13 @@ public class MainActivity extends Activity {
         settingsButton = (ImageButton) findViewById(R.id.settingsButton);
 
         checkAndShowTutorial();
+    }
+
+    private void loadLogInView() {
+        Intent intent = new Intent(this, LogInActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
     private void checkAndShowTutorial() {
