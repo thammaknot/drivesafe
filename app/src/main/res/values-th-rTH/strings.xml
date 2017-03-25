@@ -85,4 +85,6 @@
     <string name="score_preamble">คุณมี</string>
     <string name="score_unit">คะแนน</string>
     <string name="score_ending">แล้ว</string>
+
+    <string name="unable_to_save_stats">มีปัญหาในการบันทึกข้อมูลการเดินทาง</string>
 </resources>
