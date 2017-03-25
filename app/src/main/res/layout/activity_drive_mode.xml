@@ -14,7 +14,7 @@
     <ImageButton
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:background="@drawable/stop_button"
+        android:background="@drawable/stop_button_definition"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="165dp"
@@ -23,27 +23,27 @@
 
     <TextView
         android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="90dp"
-            android:textColor="#282965"
-            android:text="00:00"
-            android:fontFamily="sans-serif-condensed"
+        android:layout_height="wrap_content"
+        android:textSize="90sp"
+        android:textColor="#282965"
+        android:text="00:00"
+        android:fontFamily="sans-serif-condensed"
         android:id="@+id/checkpointCountdownTimer"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="76dp" />
+        android:layout_marginTop="65dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:textColor="#364B90"
-        android:textSize="20dp"
+        android:textSize="21sp"
         android:id="@+id/timeUntilNextCheckpointTextView"
         android:text="@string/time_until_next_checkpoint"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="63dp" />
+        android:layout_marginTop="30dp" />
 
     <TextView
         android:text=""
@@ -52,4 +52,15 @@
         android:layout_alignBottom="@+id/closeButton"
         android:layout_centerHorizontal="true"
         android:id="@+id/scoreTextView" />
+
+    <TextView
+        android:text="@string/touch_screen_for_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/touchScreenForQuestion"
+        android:textColor="#364B90"
+        android:textSize="18sp"
+        android:layout_below="@+id/timeUntilNextCheckpointTextView"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

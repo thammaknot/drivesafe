@@ -14,24 +14,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="70dp"
-        android:textColor="#F1F1F2"
-        android:text="00:00"
-        android:fontFamily="sans-serif-condensed"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="40dp"
-        android:id="@+id/checkpointCountdownTimer" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:fontFamily="sans-serif-bold"
-        android:textColor="#D1D2D4"
-        android:textSize="16dp"
-        android:id="@+id/timeUntilNextCheckpointTextView"
-        android:layout_alignParentBottom="true"
+        android:textColor="#00FF00"
+        android:textSize="25sp"
+        android:id="@+id/touchToStopAlarmTextView"
+        android:text="@string/please_touch_to_stop_alarm"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="30dp"
-        android:text="@string/time_until_next_checkpoint" />
+        android:layout_marginTop="94dp" />
 </RelativeLayout>

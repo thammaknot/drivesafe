@@ -3,6 +3,8 @@ package com.knottycode.drivesafe;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,9 +37,13 @@ public class DriveModeActivity extends BaseDriveModeActivity {
         });
 
         checkpointCountdownTimer = (TextView) findViewById(R.id.checkpointCountdownTimer);
-        TextView scoreTextView = (TextView) findViewById(R.id.scoreTextView);
-        String scoreText = checkpointManager.getAllScores();
-        scoreTextView.setText(scoreText);
+        if (!checkpointManager.getVolumeAdjusted()) {
+            validateSystemLoudness();
+            checkpointManager.setVolumeAdjusted(true);
+        }
+        TextView touchScreenForQuestionTextView = (TextView) findViewById(R.id.touchScreenForQuestion);
+        Animation fadeInOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_out);
+        touchScreenForQuestionTextView.startAnimation(fadeInOutAnimation);
     }
 
     @Override

@@ -5,6 +5,8 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -12,6 +14,7 @@ import java.util.Set;
  */
 
 public class Constants {
+    public static final Random RANDOM = new Random();
     public static final String SAFE_PHRASE = "ระนองระยองยะลา";
 
     public static final int TIMER_INTERVAL_MILLIS = 100;
@@ -20,9 +23,11 @@ public class Constants {
     public static final int QUESTION_ANSWER_MAX_GRACE_PERIOD_MILLIS = 25 * 1000;
     public static final int GRACE_PERIOD_EXTENSION_SECONDS = 20;
     public static final int MIN_TIME_TO_RESTART_ASR_MILLIS = 4 * 1000;
-    public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 10;
+    public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 60;
     public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SOUND;
     public static final int UNIT_SILENCE_DURATION_MILLIS = 500;
+    public static final Locale THAI_LOCALE = new Locale("th", "TH");
+    public static final int MAX_ASR_RESULTS = 10;
 
     public static final String DEFAULT_ALERT_SOUND = "alert/glitchy-tone.mp3";
     public static final String RECORDED_TONE_FILENAME = "recorded_tone.3gp";
@@ -49,6 +54,7 @@ public class Constants {
     public static final String CORRECT_KEYWORD_UTT_ID = "00000004";
     public static final String TRY_AGAIN_UTT_ID = "00000005";
     public static final String EXTEND_GRACE_PERIOD_UTT_ID = "00000006";
+    public static final String PREAMBLE_UTT_ID = "00000007";
 
     public static final String ANSWER_KEYWORD = "เฉลย";
     public static final List<String> CORRECT_KEYWORDS = new ArrayList<>();
@@ -83,6 +89,19 @@ public class Constants {
         EXTENSION_WORDS.add("ขอเวลาอีกหน่อยได้ไหม");
         EXTENSION_WORDS.add("ขอเวลาเพิ่ม");
         EXTENSION_WORDS.add("อีกแป๊บนึง");
+    }
+
+    public static final Set<String> ALL_QUESTION_TYPES = new HashSet<String>();
+    public static final int NUM_MATH_QUESTIONS = 50;
+    public static final String MATH_ADDITION = "บวก";
+    public static final String MATH_MULTIPLICATION = "คูณ";
+    public static final String MATH_QUESTION_ENDING = "เท่ากับเท่าไหร่";
+
+    static {
+        ALL_QUESTION_TYPES.add("funny");
+        ALL_QUESTION_TYPES.add("math");
+        ALL_QUESTION_TYPES.add("trivia");
+        ALL_QUESTION_TYPES.add("riddles");
     }
 
     public static final long[] VIBRATION_PATTERN = {0, 700, 100, 400};

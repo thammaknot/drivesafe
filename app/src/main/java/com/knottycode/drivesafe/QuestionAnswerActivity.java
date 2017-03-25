@@ -1,11 +1,11 @@
 package com.knottycode.drivesafe;
 
-import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,11 +13,6 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -36,7 +31,6 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     private long qaModeStartTime;
     private long answerPhaseStartTime = -1;
-    private List<QuestionAnswer> questions;
     private QuestionAnswer currentQuestion;
 
     private Random random = new Random();
@@ -63,8 +57,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                 return QuestionAnswerActivity.this.onTouch(v, me);
             }
         });
-        asrOutputTextView = (TextView) findViewById(R.id.asrOutputTextView);
-        loadQuestions();
+        // asrOutputTextView = (TextView) findViewById(R.id.asrOutputTextView);
         initTTS();
     }
 
@@ -73,40 +66,21 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
-                tts.setLanguage(new Locale("th", "TH"));
-                startQuestion(true);
+                tts.setLanguage(Constants.THAI_LOCALE);
+                Set<Voice> voices = tts.getVoices();
+                for (Voice v : voices) {
+                    if (v.isNetworkConnectionRequired() && v.getQuality() >= Voice.QUALITY_HIGH &&
+                            v.getLocale().equals(Constants.THAI_LOCALE)) {
+                        tts.setVoice(v);
+                    }
+                }
+
+                currentQuestion = getQuestionAnswer();
+                speakPreamble();
+                startQuestion();
             }
         });
         tts.setOnUtteranceProgressListener(getOnUtteranceProgressListener());
-    }
-
-    private void loadQuestions() {
-        AssetManager am = getAssets();
-        InputStream is;
-        questions = new ArrayList<QuestionAnswer>();
-        try {
-            is = am.open(Constants.QUESTION_PATH_PREFIX + "/fun_questions.txt");
-        } catch (IOException io) {
-            // Leave the set empty.
-            return;
-        }
-        BufferedReader r = new BufferedReader(new InputStreamReader(is));
-        String line;
-        try {
-            while ((line = r.readLine()) != null) {
-                String[] tokens = line.split("\t");
-                if (tokens.length != 3) {
-                    Log.w(TAG, "Malformed line in question file: " + line);
-                    continue;
-                }
-                questions.add(
-                        new QuestionAnswer(tokens[0], tokens[1],
-                                QuestionAnswer.QuestionType.FUNNY, tokens[2]));
-            }
-        } catch (IOException io) {
-            Log.e(TAG, "Exception while reading question file.");
-            io.printStackTrace();
-        }
     }
 
     @Override
@@ -134,8 +108,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     }
 
     private QuestionAnswer getQuestionAnswer() {
-        int r = random.nextInt(questions.size());
-        return questions.get(r);
+        return checkpointManager.getNextQuestion();
     }
 
     protected UtteranceProgressListener getOnUtteranceProgressListener() {
@@ -163,7 +136,8 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                             tts.setSpeechRate(1.0f);
                             stopQuestion();
                             startDriveMode();
-                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)) {
+                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)
+                                || uttId.equals(Constants.PREAMBLE_UTT_ID)) {
                             // Nothing.
                         } else if (uttId.equals(Constants.EXTEND_GRACE_PERIOD_UTT_ID)) {
                             asrListener.startRecognition();
@@ -176,10 +150,11 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         };
     }
 
-    private void startQuestion(boolean getNewQuestion) {
-        if (currentQuestion == null || getNewQuestion) {
-            currentQuestion = getQuestionAnswer();
-        }
+    private void speakPreamble() {
+        tts.speak(getString(currentQuestion.getPreamble()), TextToSpeech.QUEUE_ADD, null, Constants.PREAMBLE_UTT_ID);
+    }
+
+    private void startQuestion() {
         tts.speak(currentQuestion.getQuestion(), TextToSpeech.QUEUE_ADD, null, Constants.QUESTION_UTT_ID);
     }
 
@@ -219,11 +194,12 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     @Override
     protected void updateDisplay(long now) {
         if (answerPhaseStartTime == -1) { return; }
+        /*
         TextView debugTime = (TextView) findViewById(R.id.debugTime);
         long elapsed = (now - answerPhaseStartTime) / 1000;
         long seconds = elapsed % 60;
-        // long minutes = elapsed / 60;
         debugTime.setText(String.format("00:%02d [%s]", seconds, asrListener.isListening() ? "listen" : "not listen"));
+        */
     }
 
     @Override
@@ -281,22 +257,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     }
 
     private boolean hasCorrectAnswer(List<String> results) {
-        List<Set<String>> allAnswers = currentQuestion.getAllAnswers();
-        for (Set<String> answer : allAnswers) {
-            for (String result : results) {
-                boolean match = true;
-                for (String key : answer) {
-                    if (!result.contains(key)) {
-                        match = false;
-                        break;
-                    }
-                }
-                if (match) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return currentQuestion.checkAnswer(results);
     }
 
     private long getTimeRemainingInMillis() {
@@ -315,7 +276,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         }
         hasSpeechAnswer = true;
         String topResult = results.get(0);
-        asrOutputTextView.setText(topResult);
+        // asrOutputTextView.setText(topResult);
         if (isSkipWord(results)) {
             Log.d(TAG, "******* SKIP WORD FOUND ==========");
             checkpointManager.updateScore(ScoreMode.SKIP);
@@ -333,7 +294,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             // If not, just go straight to answer.
             if (getTimeRemainingInMillis() >= Constants.MIN_TIME_TO_RESTART_ASR_MILLIS) {
                 tryAgain();
-                startQuestion(false);
+                startQuestion();
             } else {
                 checkpointManager.updateScore(ScoreMode.INCORRECT);
                 speakAnswer();

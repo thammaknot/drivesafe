@@ -80,7 +80,7 @@ abstract public class BaseDriveModeActivity extends Activity {
 
     @Override
     public void onPause() {
-        audioManager.setStreamVolume(ALARM_STREAM, initialVolume, 0);
+        // audioManager.setStreamVolume(ALARM_STREAM, initialVolume, 0);
         if (recognizer != null) {
             Log.d(TAG, "ASR Listener:: calling stopRecognition from onPause");
             asrListener.stopRecognition();
@@ -90,8 +90,8 @@ abstract public class BaseDriveModeActivity extends Activity {
 
     @Override
     public void onResume() {
-        initialVolume = audioManager.getStreamVolume(ALARM_STREAM);
-        validateSystemLoudness();
+        // initialVolume = audioManager.getStreamVolume(ALARM_STREAM);
+        // validateSystemLoudness();
         super.onResume();
     }
 
@@ -128,6 +128,7 @@ abstract public class BaseDriveModeActivity extends Activity {
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "th-TH");
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "th-TH");
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, Constants.MAX_ASR_RESULTS);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
                 this.getPackageName());
         recognizer = SpeechRecognizer.createSpeechRecognizer(this);
@@ -143,7 +144,10 @@ abstract public class BaseDriveModeActivity extends Activity {
     protected void validateSystemLoudness() {
         int volume = audioManager.getStreamVolume(ALARM_STREAM);
         int maxVolume = audioManager.getStreamMaxVolume(ALARM_STREAM);
-        audioManager.setStreamVolume(ALARM_STREAM, maxVolume, 0);
+        if (volume < maxVolume * 4 / 5) {
+            volume = maxVolume * 4 / 5;
+        }
+        audioManager.setStreamVolume(ALARM_STREAM, volume, 0);
     }
 
     protected void startAlarmMode() {
@@ -151,13 +155,7 @@ abstract public class BaseDriveModeActivity extends Activity {
         Intent intent = new Intent(this, AlarmModeActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-    }
-
-    protected void startCheckpointMode() {
-        stopTimer();
-        Intent intent = new Intent(this, CheckpointModeActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
     }
 
     protected void startQuestionAnswerMode() {
@@ -165,6 +163,7 @@ abstract public class BaseDriveModeActivity extends Activity {
         Intent intent = new Intent(this, QuestionAnswerActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
     }
 
     protected void startDriveMode() {
@@ -172,6 +171,7 @@ abstract public class BaseDriveModeActivity extends Activity {
         Intent intent = new Intent(this, DriveModeActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
     }
 
     private void goBackToMainActivity() {
@@ -180,6 +180,7 @@ abstract public class BaseDriveModeActivity extends Activity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
     }
 
     @Override
