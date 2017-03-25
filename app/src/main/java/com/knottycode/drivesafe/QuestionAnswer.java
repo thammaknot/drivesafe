@@ -56,20 +56,20 @@ public class QuestionAnswer {
             // 0: addition, 1: multiplication
             int operator = random.nextInt(2);
             if (operator == 0) {
-                int r1 = random.nextInt(50);
-                int r2 = random.nextInt(50);
+                int r1 = random.nextInt(50) + 2;
+                int r2 = random.nextInt(50) + 2;
                 question = r1 + " " + Constants.MATH_ADDITION + " "
                         + r2 + " " + Constants.MATH_QUESTION_ENDING;;
-                answer = String.valueOf(r1 + r2);
+                answer = "<" + String.valueOf(r1 + r2) + ">";
                 Set<String> s = new HashSet<>();
                 s.add(answer);
                 allAnswers.add(s);
             } else {
-                int r1 = random.nextInt(12);
-                int r2 = random.nextInt(12);
+                int r1 = random.nextInt(10) + 2;
+                int r2 = random.nextInt(10) + 2;
                 question = r1 + " " + Constants.MATH_MULTIPLICATION + " "
                         + r2 + " " + Constants.MATH_QUESTION_ENDING;
-                answer = String.valueOf(r1 * r2);
+                answer = "<" + String.valueOf(r1 * r2) + ">";
                 Set<String> s = new HashSet<>();
                 s.add(answer);
                 allAnswers.add(s);
@@ -96,9 +96,17 @@ public class QuestionAnswer {
             for (String result : userAnswers) {
                 boolean match = true;
                 for (String key : answer) {
-                    if (!result.contains(key)) {
-                        match = false;
-                        break;
+                    if (key.charAt(0) == '<' && key.charAt(key.length() - 1) == '>') {
+                        key = key.substring(1, key.length() - 1);
+                        if (!result.equals(key)) {
+                            match = false;
+                            break;
+                        }
+                    } else {
+                        if (!result.contains(key)) {
+                            match = false;
+                            break;
+                        }
                     }
                 }
                 if (match) {

@@ -87,6 +87,7 @@ public class CheckpointManager implements Serializable {
             }
             BufferedReader r = new BufferedReader(new InputStreamReader(is));
             String line;
+            int count = 0;
             try {
                 while ((line = r.readLine()) != null) {
                     String[] tokens = line.split("\t");
@@ -97,11 +98,13 @@ public class CheckpointManager implements Serializable {
                     questions.add(
                             new QuestionAnswer(tokens[0], tokens[1],
                                     QuestionAnswer.QuestionType.FUNNY, tokens[2]));
+                    ++count;
                 }
             } catch (IOException io) {
                 Log.e(TAG, "Exception while reading question file.");
                 io.printStackTrace();
             }
+            Log.d(TAG, "##### Loaded " + count + " questions from " + type.getFilename());
         }
         Collections.shuffle(questions);
     }
