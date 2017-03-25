@@ -11,6 +11,7 @@ import java.util.Set;
  * Created by thammaknot on 2/26/17.
  */
 public class QuestionAnswer {
+    private String questionId;
     private String question;
     private String answer;
     private QuestionType type;
@@ -66,7 +67,8 @@ public class QuestionAnswer {
         }
     }
 
-    public QuestionAnswer(String q, String a, QuestionType type, String keywords) {
+    public QuestionAnswer(String id, String q, String a, QuestionType type, String keywords) {
+        questionId = id;
         this.type = type;
         allAnswers = new ArrayList<>();
         if (type == QuestionType.MATH) {
@@ -106,6 +108,7 @@ public class QuestionAnswer {
 
     public String getQuestion() { return question; }
     public String getAnswer() { return answer; }
+    public String getId() { return questionId; }
     public QuestionType getType() { return type; }
     public List<Set<String>> getAllAnswers() { return allAnswers; }
 

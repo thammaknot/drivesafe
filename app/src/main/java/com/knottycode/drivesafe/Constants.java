@@ -35,6 +35,8 @@ public class Constants {
     public static final String ALARM_PATH_PREFIX = "alarm";
     public static final String QUESTION_PATH_PREFIX = "questions";
 
+    public static final String MATH_QUESITON_ID = "MX";
+
     public static final Set<String> allAlarmTones = new HashSet<String>();
 
     static {

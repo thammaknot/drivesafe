@@ -18,6 +18,8 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.knottycode.drivesafe.CheckpointManager.ScoreMode;
 
 /**
@@ -277,6 +279,19 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                 (System.currentTimeMillis() - answerPhaseStartTime);
     }
 
+    private void uploadResultsToFirebase(List<String> results, boolean correct) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        String qid = currentQuestion.getId();
+        if (qid.equals(Constants.MATH_QUESITON_ID)) {
+            return;
+        }
+        if (correct) {
+            ref.child("questions").child(qid).child("correct").push().setValue(results);
+        } else {
+            ref.child("questions").child(qid).child("incorrect").push().setValue(results);
+        }
+    }
+
     @Override
     public void onASRResultsReady(List<String> results) {
         delayedAnswer = false;
@@ -285,6 +300,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         }
         hasSpeechAnswer = true;
         String topResult = results.get(0);
+
         // asrOutputTextView.setText(topResult);
         if (isSkipWord(results)) {
             Log.d(TAG, "******* SKIP WORD FOUND ==========");
@@ -295,12 +311,14 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             checkpointManager.addResponseTime(responseTimeMillis);
             checkpointManager.updateScore(ScoreMode.CORRECT);
             acknowledgeCorrectAnswer();
+            uploadResultsToFirebase(results, true);
         } else if (!gracePeriodExtension && isExtensionWord(results)) {
             extendGracePeriod();
         } else {
             // Incorrect answer.
             // If there is sufficient time, start ASR again.
             // If not, just go straight to answer.
+            uploadResultsToFirebase(results, false);
             if (getTimeRemainingInMillis() >= Constants.MIN_TIME_TO_RESTART_ASR_MILLIS) {
                 tryAgain();
                 startQuestion();

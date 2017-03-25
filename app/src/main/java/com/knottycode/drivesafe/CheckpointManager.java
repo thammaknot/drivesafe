@@ -86,7 +86,8 @@ public class CheckpointManager implements Serializable {
         for (QuestionType type : qTypes) {
             if (type == QuestionType.MATH) {
                 for (int i = 0; i < Constants.NUM_MATH_QUESTIONS; ++i) {
-                    questions.add(new QuestionAnswer("", "", QuestionType.MATH, ""));
+                    questions.add(new QuestionAnswer(Constants.MATH_QUESITON_ID,
+                            "", "", QuestionType.MATH, ""));
                 }
                 continue;
             }
@@ -102,13 +103,13 @@ public class CheckpointManager implements Serializable {
             try {
                 while ((line = r.readLine()) != null) {
                     String[] tokens = line.split("\t");
-                    if (tokens.length != 3) {
+                    if (tokens.length != 4) {
                         Log.w(TAG, "Malformed line in question file: " + line);
                         continue;
                     }
                     questions.add(
-                            new QuestionAnswer(tokens[0], tokens[1],
-                                    type, tokens[2]));
+                            new QuestionAnswer(tokens[0], tokens[1], tokens[2],
+                                    type, tokens[3]));
                     ++count;
                 }
             } catch (IOException io) {
