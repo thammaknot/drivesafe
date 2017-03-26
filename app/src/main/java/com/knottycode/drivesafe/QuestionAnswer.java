@@ -80,18 +80,18 @@ public class QuestionAnswer {
                 int r2 = random.nextInt(50) + 2;
                 question = r1 + " " + Constants.MATH_ADDITION + " "
                         + r2 + " " + Constants.MATH_QUESTION_ENDING;;
-                answer = "<" + String.valueOf(r1 + r2) + ">";
+                answer = String.valueOf(r1 + r2);
                 Set<String> s = new HashSet<>();
-                s.add(answer);
+                s.add("<" + answer + ">");
                 allAnswers.add(s);
             } else {
                 int r1 = random.nextInt(10) + 2;
                 int r2 = random.nextInt(10) + 2;
                 question = r1 + " " + Constants.MATH_MULTIPLICATION + " "
                         + r2 + " " + Constants.MATH_QUESTION_ENDING;
-                answer = "<" + String.valueOf(r1 * r2) + ">";
+                answer = String.valueOf(r1 * r2);
                 Set<String> s = new HashSet<>();
-                s.add(answer);
+                s.add("<" + answer + ">");
                 allAnswers.add(s);
             }
         } else {
@@ -107,7 +107,9 @@ public class QuestionAnswer {
     }
 
     public String getQuestion() { return question; }
-    public String getAnswer() { return answer; }
+    public String getAnswer() {
+        return answer;
+    }
     public String getId() { return questionId; }
     public QuestionType getType() { return type; }
     public List<Set<String>> getAllAnswers() { return allAnswers; }
