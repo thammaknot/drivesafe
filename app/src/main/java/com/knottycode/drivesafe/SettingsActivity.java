@@ -42,7 +42,9 @@ import java.util.Set;
 import static com.knottycode.drivesafe.R.id.alarmTones;
 import static com.knottycode.drivesafe.R.id.checkpointFrequency;
 import static com.knottycode.drivesafe.R.id.logout;
+import static com.knottycode.drivesafe.R.id.questionTypes;
 import static com.knottycode.drivesafe.R.id.recordTone;
+import static com.knottycode.drivesafe.R.id.selectQuestionTypeValue;
 
 public class SettingsActivity extends Activity implements View.OnTouchListener {
 
@@ -171,6 +173,9 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         RelativeLayout checkpointFrequency = (RelativeLayout) findViewById(R.id.checkpointFrequency);
         checkpointFrequency.setOnTouchListener(this);
 
+        RelativeLayout questionTypes = (RelativeLayout) findViewById(R.id.questionTypes);
+        questionTypes.setOnTouchListener(this);
+
         RelativeLayout alarmTones = (RelativeLayout) findViewById(R.id.alarmTones);
         alarmTones.setOnTouchListener(this);
 
@@ -192,7 +197,10 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         Set<String> savedTones = prefs.getStringSet(getString(R.string.alarm_tones_key),
                 Constants.allAlarmTones);
         alarmTonesValueTextView.setText(getSelectedTonesMessage(savedTones.size()));
-
+        TextView questionTypeTextView = (TextView) findViewById(R.id.selectQuestionTypeValue);
+        Set<String> savedTypes = prefs.getStringSet(getString(R.string.question_types_key),
+                Constants.ALL_QUESTION_TYPES);
+        questionTypeTextView.setText(getSelectedQuestionTypesMessage(savedTypes.size()));
     }
 
     protected static String getNaturalLanguageText(int frequencySeconds, Context context) {
@@ -227,6 +235,12 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
                                    getString(R.string.tone_text_plural));
     }
 
+    private String getSelectedQuestionTypesMessage(int numTypes) {
+        return String.valueOf(numTypes) + " "
+                + (numTypes == 1 ? getString(R.string.type_text_singular) :
+                getString(R.string.type_text_plural));
+    }
+
     public void onClose(View v) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
@@ -241,6 +255,9 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         switch (v.getId()) {
             case checkpointFrequency:
                 showCheckpointFrequencyMenu();
+                break;
+            case questionTypes:
+                showQuestionTypesMenu();
                 break;
             case alarmTones:
                 showAlarmTonesMenu();
@@ -302,6 +319,73 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
                     }
                 }).show();
 
+    }
+
+    private void showQuestionTypesMenu() {
+        final List<String> availableTypes = new ArrayList();
+        availableTypes.addAll(Constants.ALL_QUESTION_TYPES);
+        Set<String> savedTypes = prefs.getStringSet(getString(R.string.question_types_key),
+                new HashSet<String>());
+
+        final boolean[] selectedBoolean = new boolean[availableTypes.size()];
+        int i = 0;
+        final String[] questionTypeLocalizedDisplayStrings = new String[availableTypes.size()];
+        for (String type : availableTypes) {
+            if (savedTypes.contains(type)) {
+                selectedBoolean[i] = true;
+            }
+            QuestionAnswer.QuestionType typeEnum = QuestionAnswer.QuestionType.fromString(type);
+            String displayString = getString(typeEnum.getResId());
+            questionTypeLocalizedDisplayStrings[i] = displayString;
+            ++i;
+        }
+        final List<String> selected = new ArrayList<>(savedTypes);
+        final TextView selectQuestionTypeTextView = (TextView) findViewById(R.id.selectQuestionTypeValue);
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.select_question_type_label)
+                .setMultiChoiceItems(questionTypeLocalizedDisplayStrings, selectedBoolean,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which,
+                                                boolean isChecked) {
+                                String type = availableTypes.get(which);
+                                if (isChecked) {
+                                    // If the user checked the item, add it to the selected items
+                                    selected.add(type);
+                                } else if (selected.contains(type)) {
+                                    if (selected.size() == 1) {
+                                        selectedBoolean[which] = true;
+                                        Toast.makeText(SettingsActivity.this, R.string.zero_question_type_warning,
+                                                Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        // Else, if the item is already in the array, remove it
+                                        selected.remove(type);
+                                    }
+                                }
+                            }
+                        })
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        SharedPreferences prefs =
+                                getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putStringSet(getString(R.string.question_types_key), new HashSet(selected));
+                        editor.commit();
+                        selectQuestionTypeTextView.setText(getSelectedQuestionTypesMessage(selected.size()));
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Nothing
+                    }
+                })
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {}
+                })
+                .show();
     }
 
     private void showAlarmTonesMenu() {

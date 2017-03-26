@@ -65,6 +65,22 @@ public class QuestionAnswer {
                     return R.string.other_question_preamble;
             }
         }
+
+        public int getResId() {
+            switch (code) {
+                case 0:
+                    return R.string.fun_question_name;
+                case 1:
+                    return R.string.riddle_name;
+                case 2:
+                    return R.string.trivia_name;
+                case 3:
+                    return R.string.math_question_name;
+                case 4:
+                default:
+                    return R.string.other_question_name;
+            }
+        }
     }
 
     public QuestionAnswer(String id, String q, String a, QuestionType type, String keywords) {

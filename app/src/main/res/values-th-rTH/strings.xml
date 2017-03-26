@@ -48,6 +48,7 @@
     <string name="record_new_tone_menu_title">บันทึกเสียงปลุกใหม่</string>
     <string name="recorded_tone_display_name">เสียงที่คุณบันทึก</string>
     <string name="logout_menu_title">ออกจากระบบ</string>
+    <string name="select_question_type_label">ประเภทคำถาม</string>
 
     <string name="time_until_next_checkpoint">เวลาก่อนถึงคำถามถัดไป</string>
     <string name="time_until_alarm">เวลาก่อนเข้าโหมดปลุก</string>
@@ -67,9 +68,11 @@
     <string name="setting_checkpoint_alert_style_sound">ส่งเสียง</string>
 
     <string name="setting_alarm_title">การปลุก</string>
-    <string name="setting_alarm_tones">เลือกเสียง</string>
+    <string name="setting_alarm_tones">เลือกเสียงปลุก</string>
     <string name="tone_text_singular">เสียง</string>
     <string name="tone_text_plural">เสียง</string>
+    <string name="type_text_singular">ประเภท</string>
+    <string name="type_text_plural">ประเภท</string>
     <string name="setting_alarm_adaptive_loudness">ระดับเสียงดังขึ้นเรื่อยๆ</string>
 
     <string name="seconds_abbrev">วิ</string>
@@ -85,6 +88,7 @@
     <string name="done">เสร็จ</string>
     <string name="skip">ข้ามการแนะนำแอพ</string>
     <string name="got_it">เข้าใจแล้ว</string>
+    <string name="zero_question_type_warning">ต้องเลือกอย่างน้อย 1 ประเภท</string>
 
     <string name="tone_best_wake_up_sound">ตื่นๆๆ</string>
     <string name="tone_car_alarm">กันขโมยรถ</string>
@@ -101,6 +105,12 @@
     <string name="trivia_preamble">คำถามความรู้รอบตัว</string>
     <string name="math_question_preamble">คำถามคณิตศาสตร์</string>
     <string name="other_question_preamble">คำถามทั่วไป</string>
+
+    <string name="fun_question_name">คำถามกวนๆ</string>
+    <string name="riddle_name">ปัญหาเชาว์</string>
+    <string name="trivia_name">คำถามความรู้รอบตัว</string>
+    <string name="math_question_name">คำถามคณิตศาสตร์</string>
+    <string name="other_question_name">คำถามทั่วไป</string>
 
     <string name="score_preamble">คุณมี</string>
     <string name="score_unit">คะแนน</string>

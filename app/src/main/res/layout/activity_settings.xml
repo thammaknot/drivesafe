@@ -68,6 +68,26 @@
 
         <RelativeLayout
             style="@style/SettingsRow"
+            android:id="@+id/questionTypes">
+
+            <ImageView
+                style="@style/SettingsIcon"
+                android:src="@drawable/record_new_tone_icon_big"
+                android:id="@+id/questionTypesIcon"/>
+
+            <TextView
+                android:text="@string/select_question_type_label"
+                style="@style/SettingsLabel"
+                android:id="@+id/selectQuestionTypeLabel" />
+
+            <TextView
+                android:text=""
+                style="@style/SettingsValue"
+                android:id="@+id/selectQuestionTypeValue" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            style="@style/SettingsRow"
             android:id="@+id/alarmTones">
 
             <ImageView
