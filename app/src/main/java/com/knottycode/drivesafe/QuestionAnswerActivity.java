@@ -1,5 +1,6 @@
 package com.knottycode.drivesafe;
 
+import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -13,6 +14,9 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -28,8 +32,6 @@ import com.knottycode.drivesafe.CheckpointManager.ScoreMode;
 public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     private MediaPlayer mediaPlayer;
-    CountDownTimer adaptiveLoudnessTimer;
-    TextView asrOutputTextView;
 
     private long qaModeStartTime;
     private long answerPhaseStartTime = -1;
@@ -88,6 +90,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     @Override
     public void onPause() {
         super.onPause();
+        stopBackgroundMusic();
         stopQuestion();
     }
 
@@ -131,6 +134,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                                 answerPhaseStartTime = System.currentTimeMillis();
                             }
                             startVoiceRecognitionActivity();
+                            playQuestionBackgroundMusic();
                         } else if (uttId.equals(Constants.ANSWER_UTT_ID)) {
                             stopQuestion();
                             startDriveMode();
@@ -298,6 +302,8 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         if (results.size() == 0) {
             return;
         }
+        stopBackgroundMusic();
+
         hasSpeechAnswer = true;
         String topResult = results.get(0);
 
@@ -329,4 +335,39 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         }
     }
 
+    private void playQuestionBackgroundMusic() {
+        if (mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer();
+        }
+
+        try {
+            AssetFileDescriptor afd =
+                    getAssets().openFd(Constants.BACKGROUND_MUSTIC_PATH_PREFIX
+                            + "/" + Constants.QUESTION_TONE_FILENAME);
+            mediaPlayer.setDataSource(afd.getFileDescriptor(),
+                    afd.getStartOffset(), afd.getLength());
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        try {
+            mediaPlayer.setAudioStreamType(ALARM_STREAM);
+            mediaPlayer.prepare();
+            mediaPlayer.setLooping(true);
+            mediaPlayer.setVolume(1, 1);
+            mediaPlayer.start();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    private void stopBackgroundMusic() {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = new MediaPlayer();
+            }
+        }
+    }
 }
