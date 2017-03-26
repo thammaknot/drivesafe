@@ -49,6 +49,7 @@
     <string name="record_new_tone_menu_title">Record a new alarm</string>
     <string name="recorded_tone_display_name">Your recording</string>
     <string name="logout_menu_title">Logout</string>
+    <string name="select_question_type_label">Select question types</string>
 
     <string name="time_until_next_checkpoint">Time until next question</string>
     <string name="time_until_alarm">Time until alarm</string>
@@ -71,6 +72,8 @@
     <string name="setting_alarm_tones">Choose tones</string>
     <string name="tone_text_singular">tone</string>
     <string name="tone_text_plural">tones</string>
+    <string name="type_text_singular">types</string>
+    <string name="type_text_plural">types</string>
     <string name="setting_alarm_adaptive_loudness">Adaptive loudness</string>
 
     <string name="seconds_abbrev">secs</string>
@@ -86,6 +89,7 @@
     <string name="done">Done</string>
     <string name="skip">Skip tutorial</string>
     <string name="got_it">Got it</string>
+    <string name="zero_question_type_warning">Must select at least one question type</string>
 
     <string name="tone_best_wake_up_sound">Wake Me Up</string>
     <string name="tone_car_alarm">Car Alarm</string>
@@ -102,6 +106,12 @@
     <string name="trivia_preamble">คำถามความรู้รอบตัว</string>
     <string name="math_question_preamble">คำถามคณิตศาสตร์</string>
     <string name="other_question_preamble">คำถามทั่วไป</string>
+
+    <string name="fun_question_name">Fun questions</string>
+    <string name="riddle_name">Riddles</string>
+    <string name="trivia_name">Trivia</string>
+    <string name="math_question_name">Math questions</string>
+    <string name="other_question_name">General questions</string>
 
     <string name="score_preamble">คุณมี</string>
     <string name="score_unit">คะแนน</string>
