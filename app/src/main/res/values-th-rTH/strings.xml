@@ -4,6 +4,9 @@
     <string name="drive_mode_exit_warning_title">ออกจากโหมดขับขี่</string>
     <string name="drive_mode_exit_warning_text">แน่ใจนะว่าจะออกจากโหมดขับขี่?</string>
 
+    <string name="logout_warning_title">ออกจากระบบ</string>
+    <string name="logout_warning_text">คุณแน่ใจแล้วหรือว่าจะออกจากระบบ?</string>
+
     <string name="password_hint">Password</string>
     <string name="email_hint">Email</string>
     <string name="sign_up_button_label">Sign Up</string>
@@ -44,6 +47,7 @@
     <string name="alert_style_menu_title">เลือกรูปแบบการเตือน</string>
     <string name="record_new_tone_menu_title">บันทึกเสียงปลุกใหม่</string>
     <string name="recorded_tone_display_name">เสียงที่คุณบันทึก</string>
+    <string name="logout_menu_title">ออกจากระบบ</string>
 
     <string name="time_until_next_checkpoint">เวลาก่อนถึงคำถามถัดไป</string>
     <string name="time_until_alarm">เวลาก่อนเข้าโหมดปลุก</string>

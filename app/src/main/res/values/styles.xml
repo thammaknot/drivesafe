@@ -59,7 +59,7 @@
         <item name="android:layout_alignParentTop">true</item>
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_marginLeft">80dp</item>
-        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginTop">5dp</item>
     </style>
 
     <style name="SettingsValue">
@@ -70,7 +70,7 @@
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_marginLeft">80dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
     </style>
 
     <style name="IntroImage">

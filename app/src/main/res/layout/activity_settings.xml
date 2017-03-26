@@ -87,25 +87,39 @@
         </RelativeLayout>
 
         <RelativeLayout
-            style="@style/SettingsRow"
-            android:id="@+id/recordTone">
+        style="@style/SettingsRow"
+        android:id="@+id/recordTone">
 
-            <ImageView
-                style="@style/SettingsIcon"
-                android:src="@drawable/record_new_tone_icon_big"
-                android:id="@+id/recordNewToneIcon"/>
+        <ImageView
+            style="@style/SettingsIcon"
+            android:src="@drawable/record_new_tone_icon_big"
+            android:id="@+id/recordNewToneIcon"/>
 
-            <TextView
-                android:text="@string/record_new_tone_menu_title"
-                style="@style/SettingsLabel"
-                android:id="@+id/recordNewToneLabel" />
+        <TextView
+            android:text="@string/record_new_tone_menu_title"
+            style="@style/SettingsLabel"
+            android:id="@+id/recordNewToneLabel" />
 
-            <TextView
-                android:text=""
-                style="@style/SettingsValue"
-                android:id="@+id/recordNewToneValue" />
-        </RelativeLayout>
+        <TextView
+            android:text=""
+            style="@style/SettingsValue"
+            android:id="@+id/recordNewToneValue" />
+    </RelativeLayout>
 
+    <RelativeLayout
+        style="@style/SettingsRow"
+        android:id="@+id/logout">
+
+        <ImageView
+            style="@style/SettingsIcon"
+            android:src="@drawable/log_out_icon"
+            android:id="@+id/logoutIcon"/>
+
+        <TextView
+            android:text="@string/logout_menu_title"
+            style="@style/SettingsLabel"
+            android:id="@+id/logoutLabel" />
+    </RelativeLayout>
     </LinearLayout>
 
 </RelativeLayout>

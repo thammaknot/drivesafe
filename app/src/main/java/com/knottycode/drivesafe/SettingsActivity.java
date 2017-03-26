@@ -21,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileDescriptor;
@@ -39,6 +41,7 @@ import java.util.Set;
 
 import static com.knottycode.drivesafe.R.id.alarmTones;
 import static com.knottycode.drivesafe.R.id.checkpointFrequency;
+import static com.knottycode.drivesafe.R.id.logout;
 import static com.knottycode.drivesafe.R.id.recordTone;
 
 public class SettingsActivity extends Activity implements View.OnTouchListener {
@@ -173,6 +176,9 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
 
         RelativeLayout recordTone = (RelativeLayout) findViewById(R.id.recordTone);
         recordTone.setOnTouchListener(this);
+
+        RelativeLayout logout = (RelativeLayout) findViewById(R.id.logout);
+        logout.setOnTouchListener(this);
     }
 
     private void displayCurrentPreferences() {
@@ -232,6 +238,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         if (me.getActionMasked() != MotionEvent.ACTION_UP) {
             return false;
         }
+        Log.d(TAG, "++++ ONTOUCH: " + v.getId());
         switch (v.getId()) {
             case checkpointFrequency:
                 showCheckpointFrequencyMenu();
@@ -242,10 +249,35 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
             case recordTone:
                 showRecordNewToneDialog();
                 break;
+            case logout:
+                logout();
+                break;
             default:
                 break;
         }
         return false;
+    }
+
+    private void logout() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.logout_warning_title)
+                .setMessage(R.string.logout_warning_text)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // Logout here.
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent = new Intent(SettingsActivity.this, LogInActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) { }})
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     private void showCheckpointFrequencyMenu() {
