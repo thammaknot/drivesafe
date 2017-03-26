@@ -42,6 +42,9 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     private boolean delayedAnswer = false;
     private boolean hasSpeechAnswer = false;
     private boolean gracePeriodExtension = false;
+    private boolean isSpeaking = false;
+    private long speakingStart = 0;
+    private long speakingTime = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,6 +136,10 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                             if (answerPhaseStartTime == -1) {
                                 answerPhaseStartTime = System.currentTimeMillis();
                             }
+                            if (speakingStart > 0) {
+                                speakingTime += System.currentTimeMillis() - speakingStart;
+                                speakingStart = 0;
+                            }
                             startVoiceRecognitionActivity();
                             playQuestionBackgroundMusic();
                         } else if (uttId.equals(Constants.ANSWER_UTT_ID)) {
@@ -142,6 +149,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                             tts.setSpeechRate(1.0f);
                             speakScore();
                         } else if (uttId.equals(Constants.SCORE_UTT_ID)) {
+                            isSpeaking = false;
                             stopQuestion();
                             startDriveMode();
                         } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)
@@ -182,6 +190,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         tts.setSpeechRate(2.0f);
         int index = random.nextInt(Constants.CORRECT_KEYWORDS.size());
         String correctKeyword = Constants.CORRECT_KEYWORDS.get(index);
+        isSpeaking = true;
         tts.speak(correctKeyword, TextToSpeech.QUEUE_ADD, null, Constants.CORRECT_KEYWORD_UTT_ID);
     }
 
@@ -195,6 +204,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     private void tryAgain() {
         int index = random.nextInt(Constants.TRY_AGAIN_KEYWORDS.size());
         String tryAgainKeyword = Constants.TRY_AGAIN_KEYWORDS.get(index);
+        speakingStart = System.currentTimeMillis();
         tts.speak(tryAgainKeyword, TextToSpeech.QUEUE_ADD, null, Constants.TRY_AGAIN_UTT_ID);
     }
 
@@ -219,8 +229,8 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     @Override
     protected boolean proceedToNextStep(long now) {
-        if (answerPhaseStartTime == -1) { return false; }
-        long checkpointElapsed = now - answerPhaseStartTime;
+        if (answerPhaseStartTime == -1 || isSpeaking) { return false; }
+        long checkpointElapsed = now - answerPhaseStartTime - speakingTime;
         long extension = 0;
         if (gracePeriodExtension) {
             extension += Constants.GRACE_PERIOD_EXTENSION_SECONDS * 1000;
@@ -280,7 +290,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             return Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS;
         }
         return Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS -
-                (System.currentTimeMillis() - answerPhaseStartTime);
+                (System.currentTimeMillis() - answerPhaseStartTime) + speakingTime;
     }
 
     private void uploadResultsToFirebase(List<String> results, boolean correct) {
