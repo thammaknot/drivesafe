@@ -75,11 +75,34 @@ public class Constants {
         CORRECT_KEYWORDS.add("ถูกต้องนะค้า");
         CORRECT_KEYWORDS.add("ยอดเยี่ยมไปเลย");
         CORRECT_KEYWORDS.add("เก่งมากนะค้า");
+        CORRECT_KEYWORDS.add("เก่งจัง");
+        CORRECT_KEYWORDS.add("เก่งจังเลย");
+        CORRECT_KEYWORDS.add("เก่งจังเลยค่ะ");
+        CORRECT_KEYWORDS.add("สุดยอดไปเลย");
+        CORRECT_KEYWORDS.add("สุดยอดไปเลยค่ะ");
+        CORRECT_KEYWORDS.add("สุดยอดเลยค่ะ");
+        CORRECT_KEYWORDS.add("เยี่ยมมาก");
+        CORRECT_KEYWORDS.add("เยี่ยมมากค่ะ");
+        CORRECT_KEYWORDS.add("เก่งจริงๆ");
+        CORRECT_KEYWORDS.add("เก่งจริงๆ เลยนะ");
+        CORRECT_KEYWORDS.add("เก่งจริงๆ เลยนะเนี่ย");
 
         TRY_AGAIN_KEYWORDS.add("ลองอีกทีนะ");
         TRY_AGAIN_KEYWORDS.add("ยังไม่ถูกนะค้า");
         TRY_AGAIN_KEYWORDS.add("ให้โอกาสอีกทีค่ะ");
         TRY_AGAIN_KEYWORDS.add("ให้ลองอีกทีนะ");
+        TRY_AGAIN_KEYWORDS.add("ลองตอบอีกทีนะ");
+        TRY_AGAIN_KEYWORDS.add("ลองตอบอีกทีนะคะ");
+        TRY_AGAIN_KEYWORDS.add("ยังไม่ถูกค่ะ");
+        TRY_AGAIN_KEYWORDS.add("คิดไม่ออกล่ะสิ, ให้ตอบอีกทีก็ได้");
+        TRY_AGAIN_KEYWORDS.add("ให้ตอบอีกทีก็ได้");
+        TRY_AGAIN_KEYWORDS.add("ให้ตอบอีกทีก็ได้นะ");
+        TRY_AGAIN_KEYWORDS.add("ตอบอีกทีก็ได้นะ");
+        TRY_AGAIN_KEYWORDS.add("ยังไม่ถูก, ให้ตอบอีกทีดีกว่า");
+        TRY_AGAIN_KEYWORDS.add("ยังไม่ถูก, ให้ตอบอีกทีนะคะ");
+        TRY_AGAIN_KEYWORDS.add("ยังไม่ถูกค่ะ, ตอบอีกทีนะคะ");
+        TRY_AGAIN_KEYWORDS.add("ยังไม่ถูกนะ, ให้ตอบอีกทีดีกว่า");
+        TRY_AGAIN_KEYWORDS.add("ยังไม่ถูกนะคะ, ให้ตอบอีกทีดีกว่า");
 
         EXTEND_GRACE_PERIOD_KEYWORDS.add("ต่อเวลาให้");
         EXTEND_GRACE_PERIOD_KEYWORDS.add("เพิ่มเวลาให้");
