@@ -238,7 +238,6 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         if (me.getActionMasked() != MotionEvent.ACTION_UP) {
             return false;
         }
-        Log.d(TAG, "++++ ONTOUCH: " + v.getId());
         switch (v.getId()) {
             case checkpointFrequency:
                 showCheckpointFrequencyMenu();
