@@ -33,6 +33,7 @@ public class Constants {
     public static final String RECORDED_TONE_FILENAME = "recorded_tone.3gp";
     public static final String BACKGROUND_MUSTIC_PATH_PREFIX = "background_music";
     public static final String QUESTION_TONE_FILENAME = "question_tone.mp3";
+    public static final String SPLASH_MUSIC_FILENAME = "splash_music.mp3";
     public static final float ALERT_VOLUME = 0.8f;
     public static final String ALARM_PATH_PREFIX = "alarm";
     public static final String QUESTION_PATH_PREFIX = "questions";
