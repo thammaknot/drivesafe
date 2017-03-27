@@ -4,7 +4,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#26ad8b"
+    android:background="#9FD3B8"
     android:gravity="center_horizontal">
 
     <ImageView
@@ -14,6 +14,7 @@
 
     <TextView
         style="@style/IntroText"
+        android:textColor="#444444"
         android:text="@string/wake_up_intro2"/>
 
 </LinearLayout>
