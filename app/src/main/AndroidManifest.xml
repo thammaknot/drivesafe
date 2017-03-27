@@ -44,6 +44,9 @@
             android:name=".SettingsActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".TTSSupportActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".CheckpointModeActivity"
             android:screenOrientation="portrait" />
         <activity

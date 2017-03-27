@@ -118,4 +118,10 @@
     <string name="score_ending">แล้ว</string>
 
     <string name="unable_to_save_stats">Unable to save trip stats</string>
+
+    <string name="thai_tts_not_supported">This app requires a Thai text-to-speech engine, but this device does not support it</string>
+    <string name="please_update_tts_app">Please update Google Text-to-speech to the latest version</string>
+    <string name="update_tts_app_button_label">Update now</string>
+    <string name="please_select_google_tts_engine">Please make sure Google text-to-speech is selected as default engine</string>
+    <string name="select_google_tts_engine_button_label">Open settings now</string>
 </resources>

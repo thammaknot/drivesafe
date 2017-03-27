@@ -37,6 +37,9 @@ public class Constants {
     public static final float ALERT_VOLUME = 0.8f;
     public static final String ALARM_PATH_PREFIX = "alarm";
     public static final String QUESTION_PATH_PREFIX = "questions";
+    public static final String PLAY_STORE_PREFIX = "market://details?id=";
+    public static final String PLAY_STORE_URL_PREFIX = "https://play.google.com/store/apps/details?id=";
+    public static final String TTS_PACKAGE_NAME = "com.google.android.tts";
 
     public static final String MATH_QUESITON_ID = "MX";
 
