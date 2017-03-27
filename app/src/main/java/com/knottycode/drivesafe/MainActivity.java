@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
         if (mFirebaseUser == null) {
             // Not logged in, launch the Log In activity
             loadLogInView();
+            return;
         }
 
         {
@@ -85,6 +86,7 @@ public class MainActivity extends Activity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        finish();
     }
 
     private void checkAndShowTutorial() {
