@@ -117,4 +117,10 @@
     <string name="score_ending">แล้ว</string>
 
     <string name="unable_to_save_stats">มีปัญหาในการบันทึกข้อมูลการเดินทาง</string>
+
+    <string name="thai_tts_not_supported">เพื่อให้แอพนี้ออกเสียงได้ถูกต้อง คุณต้องอัพเดทแอพ \"การอ่านออกเสียงข้อความ Google\" เป็นเวอร์ชั่นล่าสุด</string>
+    <string name="please_update_tts_app">กรุณาอัพเดทแอพ \"การอ่านออกเสียงข้อความ Google\"</string>
+    <string name="update_tts_app_button_label">อัพเดทที่ Play Store</string>
+    <string name="please_select_google_tts_engine">กรุณาเลือกใช้ \"เครื่องมืออ่านออกเสียงข้อความของ Google\" เป็นแอพอ่านออกเสียง</string>
+    <string name="select_google_tts_engine_button_label">ตั้งค่าตัวอ่านออกเสียง</string>
 </resources>
