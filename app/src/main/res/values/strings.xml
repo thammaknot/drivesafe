@@ -41,7 +41,7 @@
     <string name="wake_up_intro4">Please use bluetooth headset and turn down music volume, so that the app can hear your voice better.</string>
 
     <string name="checkpoint_frequency_tutorial">This shows the pause time between questions. Click it to change question frequency.</string>
-    <string name="settings_button_tutorial">Click the settings button for advanced options, including alarm tone selection.</string>
+    <string name="settings_button_tutorial">Click the settings button for options, including question frequency, question types, and alarm tone selection</string>
     <string name="drive_button_tutorial">To start driving, simply click the start button.</string>
 
     <string name="checkpoint_frequency_menu_title">Set Question Frequency (s)</string>
