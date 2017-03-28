@@ -75,8 +75,8 @@
 
     <style name="IntroImage">
         <item name="android:layout_width">300dp</item>
-        <item name="android:layout_height">400dp</item>
-        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_height">300dp</item>
+        <item name="android:layout_marginTop">50dp</item>
     </style>
 
     <style name="IntroText">
