@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 
 import java.io.IOException;
@@ -12,15 +13,31 @@ import static com.knottycode.drivesafe.BaseDriveModeActivity.ALARM_STREAM;
 
 public class SplashActivity extends AppCompatActivity {
 
+    TextToSpeech tts;
+    private boolean ttsSupported = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                ttsSupported = tts.isLanguageAvailable(Constants.THAI_LOCALE) >= 0;
+            }
+        });
 
         playSplashMusic();
     }
 
     private void startMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToTTSSupportActivity() {
+        Intent intent = new Intent(this, TTSSupportActivity.class);
         startActivity(intent);
         finish();
     }
@@ -41,7 +58,11 @@ public class SplashActivity extends AppCompatActivity {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer player) {
-                startMainActivity();
+                if (ttsSupported) {
+                    startMainActivity();
+                } else {
+                    goToTTSSupportActivity();
+                }
             }
         });
 

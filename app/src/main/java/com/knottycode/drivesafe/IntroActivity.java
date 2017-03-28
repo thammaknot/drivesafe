@@ -93,15 +93,10 @@ public class IntroActivity extends FragmentActivity {
         });
     }
 
-    private void goToMainActivity() {
-
-    }
-
-
     private void finishOnboarding() {
         // Launch the main Activity, called MainActivity.
-        Intent tts = new Intent(this, TTSSupportActivity.class);
-        startActivity(tts);
+        Intent main = new Intent(this, MainActivity.class);
+        startActivity(main);
 
         // Close this Activity.
         finish();
