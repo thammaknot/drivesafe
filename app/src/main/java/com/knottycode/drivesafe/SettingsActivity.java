@@ -8,12 +8,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -76,6 +74,8 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
     private View menuView;
     private View historyView;
     private ImageButton recordButton;
+
+    private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -292,6 +292,47 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         return false;
     }
 
+    private TextView createDateView(Date date) {
+        TextView dateView = new TextView(SettingsActivity.this);
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        llp.setMargins(0, 0, 20, 0);
+        dateView.setLayoutParams(llp);
+        dateView.setTextAppearance(SettingsActivity.this, R.style.DateView);
+        dateView.setText(format.format(date));
+        return dateView;
+    }
+
+    private TextView createScoreView(int score) {
+        TextView scoreView = new TextView(SettingsActivity.this);
+        scoreView.setText(getString(R.string.score) + " " + String.valueOf(score));
+        scoreView.setTextAppearance(SettingsActivity.this, R.style.ScoreView);
+        return scoreView;
+    }
+
+    private TextView createDurationView(long duration) {
+        TextView durationView = new TextView(SettingsActivity.this);
+        int seconds = (int) duration / 1000;
+        int hours = seconds / 3600;
+        int minutes = (seconds / 60) % 60;
+        seconds = seconds % 60;
+        String durationString = getString(R.string.duration) + " ";
+        if (hours > 0) {
+            durationString = hours + "h ";
+        }
+        if (minutes > 0) {
+            durationString += minutes + "m ";
+        }
+        durationString += seconds + "s";
+        durationView.setText(durationString);
+        durationView.setTextAppearance(SettingsActivity.this, R.style.DurationView);
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        llp.setMargins(0, 0, 20, 0);
+        durationView.setLayoutParams(llp);
+        return durationView;
+    }
+
     private void showHistoryPopup() {
         historyView = getLayoutInflater().inflate(R.layout.history_view, null);
 
@@ -300,43 +341,48 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(mFirebaseUser.getUid());
 
-        final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         // Attach a listener to read the data at our posts reference
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 LinearLayout list = (LinearLayout) historyView.findViewById(R.id.historyList);
                 DataSnapshot statsRoot = dataSnapshot.child("stats");
+                historyView.findViewById(R.id.loadingHistoryTextview).setVisibility(View.GONE);
+                List<TripStats> allTrips = new ArrayList<>();
+                int maxScore = -1;
+                long totalDuration = 0;
                 for (DataSnapshot entry : statsRoot.getChildren()) {
-                    TripStats stats = entry.getValue(TripStats.class);
+                    TripStats trip = entry.getValue(TripStats.class);
+                    allTrips.add(trip);
+                    if (maxScore < trip.score) {
+                        maxScore = trip.score;
+                    }
+                    totalDuration += trip.tripDuration;
+                }
+
+                LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                llp.setMargins(30, 30, 30, 0);
+                LinearLayout summaryEntry = new LinearLayout(SettingsActivity.this);
+                TextView v = new TextView(SettingsActivity.this);
+                v.setText(getString(R.string.total_trips) + " " + allTrips.size() + " "
+                        + getString(R.string.trip_unit) + " " + getString(R.string.max_score)
+                        + maxScore + " " + getString(R.string.score_unit_display) + " "
+                        + getString(R.string.total_duration) + " " + totalDuration / 1000
+                        + " " + getString(R.string.duration_unit));
+                v.setTextAppearance(SettingsActivity.this, R.style.HistorySummary);
+                summaryEntry.addView(v);
+                summaryEntry.setLayoutParams(llp);
+                list.addView(summaryEntry);
+                for (int i = allTrips.size() - 1; i >= 0; --i) {
+                    TripStats stats = allTrips.get(i);
                     LinearLayout listEntry = new LinearLayout(SettingsActivity.this);
+                    listEntry.setLayoutParams(llp);
+
                     Date date = new Date(stats.tripStartTimestampMillis);
-                    TextView dateView = new TextView(SettingsActivity.this);
-                    dateView.setText(format.format(date));
-                    dateView.setTextColor(Color.GRAY);
-                    dateView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-
-                    TextView scoreView = new TextView(SettingsActivity.this);
-                    scoreView.setText("score: " + String.valueOf(stats.score));
-                    scoreView.setTextColor(Color.RED);
-                    scoreView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-
-                    TextView durationView = new TextView(SettingsActivity.this);
-                    int seconds = (int) stats.tripDuration / 1000;
-                    int hours = seconds / 3600;
-                    int minutes = (seconds / 60) % 60;
-                    seconds = seconds % 60;
-                    String durationString = "";
-                    if (hours > 0) {
-                        durationString = hours + "h ";
-                    }
-                    if (minutes > 0) {
-                        durationString += minutes + "m ";
-                    }
-                    durationString += seconds + "s";
-                    durationView.setText(durationString);
-                    durationView.setTextColor(Color.BLACK);
-                    durationView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+                    TextView dateView = createDateView(date);
+                    TextView scoreView = createScoreView(stats.score);
+                    TextView durationView = createDurationView(stats.tripDuration);
 
                     listEntry.addView(dateView);
                     listEntry.addView(durationView);

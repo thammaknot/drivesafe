@@ -91,4 +91,27 @@
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_drawable</item>
     </style>
+
+    <style name="DateView">
+        <item name="android:textColor">#888888</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="ScoreView">
+        <item name="android:textColor">#FF3300</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="DurationView">
+        <item name="android:textColor">#333344</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="HistorySummary">
+        <item name="android:textColor">#223344</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

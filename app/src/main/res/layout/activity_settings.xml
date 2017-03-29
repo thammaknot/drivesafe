@@ -132,7 +132,7 @@
 
         <ImageView
             style="@style/SettingsIcon"
-            android:src="@drawable/log_out_icon"
+            android:src="@drawable/history_icon"
             android:id="@+id/historyIcon"/>
 
         <TextView
