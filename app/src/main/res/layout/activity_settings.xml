@@ -128,6 +128,21 @@
 
     <RelativeLayout
         style="@style/SettingsRow"
+        android:id="@+id/history">
+
+        <ImageView
+            style="@style/SettingsIcon"
+            android:src="@drawable/history_icon"
+            android:id="@+id/historyIcon"/>
+
+        <TextView
+            android:text="@string/history_menu_title"
+            style="@style/SettingsLabel"
+            android:id="@+id/historyLabel" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/SettingsRow"
         android:id="@+id/logout">
 
         <ImageView

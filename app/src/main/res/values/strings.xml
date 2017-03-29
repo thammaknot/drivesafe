@@ -50,6 +50,7 @@
     <string name="recorded_tone_display_name">Your recording</string>
     <string name="logout_menu_title">Logout</string>
     <string name="select_question_type_label">Select question types</string>
+    <string name="history_menu_title">History</string>
 
     <string name="time_until_next_checkpoint">Time until next question</string>
     <string name="time_until_alarm">Time until alarm</string>
@@ -124,4 +125,14 @@
     <string name="update_tts_app_button_label">Update now</string>
     <string name="please_select_google_tts_engine">Please make sure Google text-to-speech is selected as default engine</string>
     <string name="select_google_tts_engine_button_label">Open settings now</string>
+
+    <string name="loading_history">Loading history...please wait</string>
+    <string name="score">Score</string>
+    <string name="duration">Duration</string>
+    <string name="total_trips">Total usage</string>
+    <string name="trip_unit">trip</string>
+    <string name="max_score">best score</string>
+    <string name="score_unit_display">points</string>
+    <string name="total_duration">Total duration</string>
+    <string name="duration_unit">seconds</string>
 </resources>

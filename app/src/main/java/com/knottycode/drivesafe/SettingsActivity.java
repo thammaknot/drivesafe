@@ -17,11 +17,18 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,7 +39,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,10 +50,10 @@ import java.util.Set;
 
 import static com.knottycode.drivesafe.R.id.alarmTones;
 import static com.knottycode.drivesafe.R.id.checkpointFrequency;
+import static com.knottycode.drivesafe.R.id.history;
 import static com.knottycode.drivesafe.R.id.logout;
 import static com.knottycode.drivesafe.R.id.questionTypes;
 import static com.knottycode.drivesafe.R.id.recordTone;
-import static com.knottycode.drivesafe.R.id.selectQuestionTypeValue;
 
 public class SettingsActivity extends Activity implements View.OnTouchListener {
 
@@ -63,7 +72,10 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
     private boolean isPlaying = false;
 
     private View menuView;
+    private View historyView;
     private ImageButton recordButton;
+
+    private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,6 +194,9 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         RelativeLayout recordTone = (RelativeLayout) findViewById(R.id.recordTone);
         recordTone.setOnTouchListener(this);
 
+        RelativeLayout history = (RelativeLayout) findViewById(R.id.history);
+        history.setOnTouchListener(this);
+
         RelativeLayout logout = (RelativeLayout) findViewById(R.id.logout);
         logout.setOnTouchListener(this);
     }
@@ -208,7 +223,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         int seconds = frequencySeconds % 60;
         String output = "";
         if (minutes > 0) {
-            output = String.valueOf(minutes) + " " + context.getString(R.string.minutes) + " ";
+            output = String.valueOf(minutes) + " " + context.getString(minutes) + " ";
         }
         if (seconds > 0) {
             String unit = minutes > 0 ?
@@ -223,7 +238,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         if (frequencySeconds > 60) {
             int minutes = frequencySeconds / 60;
             int seconds = frequencySeconds % 60;
-            minutePart = String.format(" (%d:%02d " + context.getString(R.string.minutes)
+            minutePart = String.format(" (%d:%02d " + context.getString(minutes)
                     + ")", minutes, seconds);
         }
         return String.valueOf(frequencySeconds) + " " + context.getString(R.string.seconds) + minutePart;
@@ -265,6 +280,9 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
             case recordTone:
                 showRecordNewToneDialog();
                 break;
+            case history:
+                showHistoryPopup();
+                break;
             case logout:
                 logout();
                 break;
@@ -272,6 +290,123 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
                 break;
         }
         return false;
+    }
+
+    private TextView createDateView(Date date) {
+        TextView dateView = new TextView(SettingsActivity.this);
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        llp.setMargins(0, 0, 20, 0);
+        dateView.setLayoutParams(llp);
+        dateView.setTextAppearance(SettingsActivity.this, R.style.DateView);
+        dateView.setText(format.format(date));
+        return dateView;
+    }
+
+    private TextView createScoreView(int score) {
+        TextView scoreView = new TextView(SettingsActivity.this);
+        scoreView.setText(getString(R.string.score) + " " + String.valueOf(score));
+        scoreView.setTextAppearance(SettingsActivity.this, R.style.ScoreView);
+        return scoreView;
+    }
+
+    private TextView createDurationView(long duration) {
+        TextView durationView = new TextView(SettingsActivity.this);
+        int seconds = (int) duration / 1000;
+        int hours = seconds / 3600;
+        int minutes = (seconds / 60) % 60;
+        seconds = seconds % 60;
+        String durationString = getString(R.string.duration) + " ";
+        if (hours > 0) {
+            durationString = hours + "h ";
+        }
+        if (minutes > 0) {
+            durationString += minutes + "m ";
+        }
+        durationString += seconds + "s";
+        durationView.setText(durationString);
+        durationView.setTextAppearance(SettingsActivity.this, R.style.DurationView);
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        llp.setMargins(0, 0, 20, 0);
+        durationView.setLayoutParams(llp);
+        return durationView;
+    }
+
+    private void showHistoryPopup() {
+        historyView = getLayoutInflater().inflate(R.layout.history_view, null);
+
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        final FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                .child("users").child(mFirebaseUser.getUid());
+
+        // Attach a listener to read the data at our posts reference
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                LinearLayout list = (LinearLayout) historyView.findViewById(R.id.historyList);
+                DataSnapshot statsRoot = dataSnapshot.child("stats");
+                historyView.findViewById(R.id.loadingHistoryTextview).setVisibility(View.GONE);
+                List<TripStats> allTrips = new ArrayList<>();
+                int maxScore = -1;
+                long totalDuration = 0;
+                for (DataSnapshot entry : statsRoot.getChildren()) {
+                    TripStats trip = entry.getValue(TripStats.class);
+                    allTrips.add(trip);
+                    if (maxScore < trip.score) {
+                        maxScore = trip.score;
+                    }
+                    totalDuration += trip.tripDuration;
+                }
+
+                LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                llp.setMargins(30, 30, 30, 0);
+                LinearLayout summaryEntry = new LinearLayout(SettingsActivity.this);
+                TextView v = new TextView(SettingsActivity.this);
+                v.setText(getString(R.string.total_trips) + " " + allTrips.size() + " "
+                        + getString(R.string.trip_unit) + " " + getString(R.string.max_score)
+                        + maxScore + " " + getString(R.string.score_unit_display) + " "
+                        + getString(R.string.total_duration) + " " + totalDuration / 1000
+                        + " " + getString(R.string.duration_unit));
+                v.setTextAppearance(SettingsActivity.this, R.style.HistorySummary);
+                summaryEntry.addView(v);
+                summaryEntry.setLayoutParams(llp);
+                list.addView(summaryEntry);
+                for (int i = allTrips.size() - 1; i >= 0; --i) {
+                    TripStats stats = allTrips.get(i);
+                    LinearLayout listEntry = new LinearLayout(SettingsActivity.this);
+                    listEntry.setLayoutParams(llp);
+
+                    Date date = new Date(stats.tripStartTimestampMillis);
+                    TextView dateView = createDateView(date);
+                    TextView scoreView = createScoreView(stats.score);
+                    TextView durationView = createDurationView(stats.tripDuration);
+
+                    listEntry.addView(dateView);
+                    listEntry.addView(durationView);
+                    listEntry.addView(scoreView);
+                    listEntry.setOrientation(LinearLayout.HORIZONTAL);
+
+                    list.addView(listEntry);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, "The read failed: " + databaseError.getCode());
+            }
+        });
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.history_menu_title)
+                .setView(historyView)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                })
+                .show();
     }
 
     private void logout() {
