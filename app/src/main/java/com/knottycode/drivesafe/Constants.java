@@ -23,7 +23,7 @@ public class Constants {
     public static final int QUESTION_ANSWER_MAX_GRACE_PERIOD_MILLIS = 25 * 1000;
     public static final int GRACE_PERIOD_EXTENSION_SECONDS = 20;
     public static final int MIN_TIME_TO_RESTART_ASR_MILLIS = 4 * 1000;
-    public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 60;
+    public static final int DEFAULT_CHECKPOINT_FREQUENCY_SECONDS = 30;
     public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SOUND;
     public static final int UNIT_SILENCE_DURATION_MILLIS = 500;
     public static final Locale THAI_LOCALE = new Locale("th", "TH");
@@ -43,16 +43,16 @@ public class Constants {
 
     public static final String MATH_QUESITON_ID = "MX";
 
-    public static final Set<String> allAlarmTones = new HashSet<String>();
+    public static final Set<String> ALL_ALARM_TONES = new HashSet<String>();
 
     static {
-        allAlarmTones.add("best_wake_up_sound.mp3");
-        allAlarmTones.add("car_alarm.mp3");
-        allAlarmTones.add("emergency_alert.mp3");
-        allAlarmTones.add("fore_truck_siren.mp3");
-        allAlarmTones.add("funny_alarm.mp3");
-        allAlarmTones.add("pager_tone_112.mp3");
-        allAlarmTones.add("rooster_alarm.mp3");
+        ALL_ALARM_TONES.add("best_wake_up_sound.mp3");
+        ALL_ALARM_TONES.add("car_alarm.mp3");
+        ALL_ALARM_TONES.add("emergency_alert.mp3");
+        ALL_ALARM_TONES.add("fore_truck_siren.mp3");
+        ALL_ALARM_TONES.add("funny_alarm.mp3");
+        ALL_ALARM_TONES.add("pager_tone_112.mp3");
+        ALL_ALARM_TONES.add("rooster_alarm.mp3");
     }
 
     public static final String QUESTION_UTT_ID = "00000000";
