@@ -223,7 +223,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         int seconds = frequencySeconds % 60;
         String output = "";
         if (minutes > 0) {
-            output = String.valueOf(minutes) + " " + context.getString(minutes) + " ";
+            output = String.valueOf(minutes) + " " + context.getString(R.string.minutes) + " ";
         }
         if (seconds > 0) {
             String unit = minutes > 0 ?
