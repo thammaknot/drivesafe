@@ -1,6 +1,7 @@
 package com.knottycode.drivesafe;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -94,6 +95,10 @@ public class IntroActivity extends FragmentActivity {
     }
 
     private void finishOnboarding() {
+        SharedPreferences preferences =
+                getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+        preferences.edit()
+             .putBoolean(getString(R.string.onboarding_complete_key), true).apply();
         // Launch the main Activity, called MainActivity.
         Intent main = new Intent(this, MainActivity.class);
         startActivity(main);
