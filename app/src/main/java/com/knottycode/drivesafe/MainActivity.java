@@ -131,7 +131,7 @@ public class MainActivity extends Activity {
                         Constants.DEFAULT_CHECKPOINT_FREQUENCY_SECONDS) * 1000;
         availableAlarmTones =
                 new ArrayList<String>(prefs.getStringSet(getString(R.string.alarm_tones_key),
-                        Constants.allAlarmTones));
+                        Constants.ALL_ALARM_TONES));
     }
 
     private void displayPreferences() {

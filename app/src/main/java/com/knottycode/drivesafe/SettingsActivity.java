@@ -210,7 +210,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
 
         TextView alarmTonesValueTextView = (TextView) findViewById(R.id.alarmTonesValue);
         Set<String> savedTones = prefs.getStringSet(getString(R.string.alarm_tones_key),
-                Constants.allAlarmTones);
+                Constants.ALL_ALARM_TONES);
         alarmTonesValueTextView.setText(getSelectedTonesMessage(savedTones.size()));
         TextView questionTypeTextView = (TextView) findViewById(R.id.selectQuestionTypeValue);
         Set<String> savedTypes = prefs.getStringSet(getString(R.string.question_types_key),
@@ -460,7 +460,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         final List<String> availableTypes = new ArrayList();
         availableTypes.addAll(Constants.ALL_QUESTION_TYPES);
         Set<String> savedTypes = prefs.getStringSet(getString(R.string.question_types_key),
-                new HashSet<String>());
+                Constants.ALL_QUESTION_TYPES);
 
         final boolean[] selectedBoolean = new boolean[availableTypes.size()];
         int i = 0;
@@ -527,7 +527,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         // List of (mp3) filenames found in asset directory.
         final List<String> availableAlarmTones = new ArrayList<>();
         Set<String> savedTones = prefs.getStringSet(getString(R.string.alarm_tones_key),
-                new HashSet<String>());
+                Constants.ALL_ALARM_TONES);
         try {
             String[] allTones = getAssets().list(Constants.ALARM_PATH_PREFIX);
             for (int i = 0; i < allTones.length; ++i) {
