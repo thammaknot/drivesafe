@@ -1,5 +1,6 @@
 package com.knottycode.drivesafe;
 
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -38,6 +39,7 @@ public class DriveModeActivity extends BaseDriveModeActivity {
     private long lastTipSpokenTime = -1;
     private List<String> tipList = null;
     private boolean isSpeaking = false;
+    private int tipIndex = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,11 +71,23 @@ public class DriveModeActivity extends BaseDriveModeActivity {
     }
 
     @Override
+    public void onResume() {
+        SharedPreferences preferences =
+                getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+        tipIndex = preferences.getInt(getString(R.string.tip_index_key), 0);
+        super.onResume();
+    }
+
+    @Override
     public void onPause() {
         if (tts != null && tts.isSpeaking()) {
             tts.stop();
             tts.shutdown();
         }
+        SharedPreferences preferences =
+                getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
+        preferences.edit()
+                .putInt(getString(R.string.tip_index_key), tipIndex).apply();
         super.onPause();
     }
 
@@ -145,34 +159,12 @@ public class DriveModeActivity extends BaseDriveModeActivity {
             });
     }
 
-    private void loadTips() {
-        InputStream is = null;
-        AssetManager am = getAssets();
-        try {
-            is = am.open(Constants.TIP_FILE_PATH);
-        } catch (IOException io) {
-            Toast.makeText(this, "Unable to load tips", Toast.LENGTH_SHORT).show();
-            io.printStackTrace();
-        }
-        BufferedReader r = new BufferedReader(new InputStreamReader(is));
-        String line;
-        tipList = new ArrayList<>();
-        try {
-            while ((line = r.readLine()) != null) {
-                tipList.add(line);
-            }
-        } catch (IOException io) {
-            Log.e(TAG, "Exception while reading question file.");
-            io.printStackTrace();
-        }
-    }
-
     private void speakTip() {
-        if (tipList == null) {
-            loadTips();
+        List<String> tipList = checkpointManager.getTipList();
+        if (tipIndex >= tipList.size()) {
+            return;
         }
-        int index = new Random().nextInt(tipList.size());
-        String phrase = tipList.get(index);
+        String phrase = tipList.get(tipIndex++);
         isSpeaking = true;
         tts.speak(phrase, TextToSpeech.QUEUE_ADD, null, Constants.TIP_UTT_ID);
     }

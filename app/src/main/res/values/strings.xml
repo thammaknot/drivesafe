@@ -34,6 +34,7 @@
     <string name="tutorial_complete_key">tutorial_complete</string>
     <string name="tutorial_id_key">tutorial_id</string>
     <string name="question_types_key">question_types</string>
+    <string name="tip_index_key">tip_index</string>
 
     <string name="wake_up_intro1">This app periodically asks you questions to energize your brain and wake you up during your drive.</string>
     <string name="wake_up_intro2">Answer each question with your voice after the beep under the time limit to earn points.</string>
@@ -135,4 +136,7 @@
     <string name="score_unit_display">points</string>
     <string name="total_duration">Total duration</string>
     <string name="duration_unit">seconds</string>
+
+    <string name="loading_question_please_wait">Preparing a question, please wait...</string>
+    <string name="no_asr_result">(cannot understand)</string>
 </resources>

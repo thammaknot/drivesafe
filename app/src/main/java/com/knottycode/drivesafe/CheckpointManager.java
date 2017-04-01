@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
 
@@ -41,6 +42,8 @@ public class CheckpointManager implements Serializable {
     private int numSkip = 0;
     private int numNoResponse = 0;
 
+    private List<String> tipList;
+
     private List<QuestionAnswer> questions;
     private int nextQuestionIndex = 0;
     private boolean volumeAdjusted = false;
@@ -56,6 +59,7 @@ public class CheckpointManager implements Serializable {
         this.initFrequencyMillis = initFrequencyMillis;
         this.nextFrequencyMillis = initFrequencyMillis;
         this.driveModeStartTime = startTime;
+        loadTips(context);
         loadQuestions(context);
     }
 
@@ -65,6 +69,28 @@ public class CheckpointManager implements Serializable {
             singletonInstance = new CheckpointManager(initFrequencyMillis, startTime, context);
         }
         return singletonInstance;
+    }
+
+    private void loadTips(Context context) {
+        InputStream is = null;
+        AssetManager am = context.getAssets();
+        try {
+            is = am.open(Constants.TIP_FILE_PATH);
+        } catch (IOException io) {
+            Toast.makeText(context, "Unable to load tips", Toast.LENGTH_SHORT).show();
+            io.printStackTrace();
+        }
+        BufferedReader r = new BufferedReader(new InputStreamReader(is));
+        String line;
+        tipList = new ArrayList<>();
+        try {
+            while ((line = r.readLine()) != null) {
+                tipList.add(line);
+            }
+        } catch (IOException io) {
+            Log.e(TAG, "Exception while reading question file.");
+            io.printStackTrace();
+        }
     }
 
     private void loadQuestions(Context context) {
@@ -125,6 +151,10 @@ public class CheckpointManager implements Serializable {
         int i = nextQuestionIndex % questions.size();
         ++nextQuestionIndex;
         return questions.get(i);
+    }
+
+    public List<String> getTipList() {
+        return tipList;
     }
 
     public static void invalidateSingletonInstance() {
