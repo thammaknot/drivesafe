@@ -46,6 +46,8 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     private long speakingStart = 0;
     private long speakingTime = 0;
 
+    private TextView asrResultTextView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +66,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                 return QuestionAnswerActivity.this.onTouch(v, me);
             }
         });
-        // asrOutputTextView = (TextView) findViewById(R.id.asrOutputTextView);
+        asrResultTextView = (TextView) findViewById(R.id.asrResultTextView);
         initTTS();
     }
 
@@ -152,9 +154,11 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                             isSpeaking = false;
                             stopQuestion();
                             startDriveMode();
-                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)
-                                || uttId.equals(Constants.PREAMBLE_UTT_ID)) {
+                        } else if (uttId.equals(Constants.TRY_AGAIN_UTT_ID)) {
                             // Nothing.
+                        } else if (uttId.equals(Constants.PREAMBLE_UTT_ID)) {
+                            TextView loadingQuestionTextView = (TextView) findViewById(R.id.loadingQuestionTextView);
+                            loadingQuestionTextView.setVisibility(View.GONE);
                         } else if (uttId.equals(Constants.EXTEND_GRACE_PERIOD_UTT_ID)) {
                             asrListener.startRecognition();
                         } else {
@@ -311,14 +315,18 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     public void onASRResultsReady(List<String> results) {
         delayedAnswer = false;
         if (results.size() == 0) {
+            asrResultTextView.setText(getString(R.string.no_asr_result));
             return;
         }
         stopBackgroundMusic();
 
         hasSpeechAnswer = true;
-        String topResult = results.get(0);
 
-        // asrOutputTextView.setText(topResult);
+        String allResults = "";
+        for (String s : results) {
+            allResults += s + "\n";
+        }
+        asrResultTextView.setText(allResults);
         if (isSkipWord(results)) {
             Log.d(TAG, "******* SKIP WORD FOUND ==========");
             checkpointManager.updateScore(ScoreMode.SKIP);

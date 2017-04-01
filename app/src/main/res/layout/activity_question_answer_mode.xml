@@ -11,6 +11,31 @@
     android:background="@drawable/alert_mode_background"
     tools:context="com.knottycode.drivesafe.DriveModeActivity">
 
+    <TextView
+        android:gravity="center"
+        android:text="@string/loading_question_please_wait"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:id="@+id/loadingQuestionTextView"
+        android:textColor="#BB3355FF"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="140dp" />
+
+    <TextView
+        android:gravity="center"
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:id="@+id/asrResultTextView"
+        android:textColor="#BB3355FF"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="140dp" />
 
     <!--TextView
         android:text=""
