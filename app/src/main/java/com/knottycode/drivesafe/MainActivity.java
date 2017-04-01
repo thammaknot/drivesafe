@@ -72,9 +72,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         checkpointFrequencyTextView = (TextView) findViewById(checkpointFrequencyDisplay);
-        // checkpointFrequencyTextView.setVisibility(View.INVISIBLE);
         TextView checkpointFrequencyLabel = (TextView) findViewById(R.id.checkpointFrequencyLabel);
-        // checkpointFrequencyLabel.setVisibility(View.INVISIBLE);
         driveButton = (ImageButton) findViewById(R.id.driveButton);
         settingsButton = (ImageButton) findViewById(R.id.settingsButton);
 

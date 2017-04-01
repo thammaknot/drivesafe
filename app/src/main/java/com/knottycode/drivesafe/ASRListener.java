@@ -6,6 +6,8 @@ import android.speech.RecognitionListener;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.util.List;
 
 /**
@@ -30,6 +32,7 @@ public class ASRListener implements RecognitionListener {
     public void onResults(Bundle bundle) {
         Log.d(TAG, "onResults inside ASR Listener");
         results = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        FirebaseCrash.log("ASRListener: onResults size = " + results.size());
         for (int i = 0; i < results.size(); i++)
         {
             Log.d(TAG, "result " + results.get(i));
@@ -38,23 +41,28 @@ public class ASRListener implements RecognitionListener {
     }
 
     public void onBeginningOfSpeech() {
+        FirebaseCrash.log("ASRListener: onBeginningOfSpeech");
         isListening = true;
     }
 
     public void onReadyForSpeech(Bundle params) {
+        FirebaseCrash.log("ASRListener: onReadyForSpeech");
         Log.d(TAG, "onReadyForSpeech");
     }
 
     public void onRmsChanged(float rmsdB) {}
 
     public void onBufferReceived(byte[] buffer) {
+        FirebaseCrash.log("ASRListener: onBufferReceived");
     }
 
     public void onEndOfSpeech() {
+        FirebaseCrash.log("ASRListener: onEndOfSpeech");
         isListening = false;
     }
 
     public void onError(int error) {
+        FirebaseCrash.log("ASRListener: onError. Code = " + error);
         Log.d(TAG,  "error " +  error);
         if (error == SpeechRecognizer.ERROR_NO_MATCH) {
             // Possibly empty input audio, restart ASR.
@@ -67,6 +75,7 @@ public class ASRListener implements RecognitionListener {
     }
 
     public void onEvent(int eventType, Bundle params) {
+        FirebaseCrash.log("ASRListener: onEvent: " + eventType);
         Log.d(TAG, "onEvent " + eventType);
     }
 
@@ -80,20 +89,20 @@ public class ASRListener implements RecognitionListener {
     }
 
     public void startRecognition() {
+        FirebaseCrash.log("ASRListener: Starting recognition");
+        FirebaseCrash.log("ASRListener: Recognition available? " + recognizer.isRecognitionAvailable(activity));
         if (asrActive) {
             recognizer.stopListening();
         }
         asrActive = true;
+        FirebaseCrash.log("ASRListener: Start listening");
         recognizer.startListening(intent);
     }
 
     public void stopRecognition() {
+        FirebaseCrash.log("ASRListener: Stop recognition called");
         asrActive = false;
         recognizer.stopListening();
         recognizer.cancel();
-    }
-
-    public boolean isAsrActive() {
-        return asrActive;
     }
 }

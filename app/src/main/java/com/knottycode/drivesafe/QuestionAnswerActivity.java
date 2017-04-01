@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.knottycode.drivesafe.CheckpointManager.ScoreMode;
@@ -175,6 +176,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     }
 
     private void startQuestion() {
+        FirebaseCrash.log("Starting a question!");
         tts.speak(currentQuestion.getQuestion(), TextToSpeech.QUEUE_ADD, null, Constants.QUESTION_UTT_ID);
     }
 
