@@ -107,12 +107,16 @@
     <string name="trivia_preamble">คำถามความรู้รอบตัว</string>
     <string name="math_question_preamble">คำถามคณิตศาสตร์</string>
     <string name="other_question_preamble">คำถามทั่วไป</string>
+    <string name="science_question_preamble">คำถามวิทยาศาสตร์</string>
+    <string name="sports_question_preamble">คำถามกีฬา</string>
 
     <string name="fun_question_name">คำถามกวนๆ</string>
     <string name="riddle_name">ปัญหาเชาว์</string>
     <string name="trivia_name">คำถามความรู้รอบตัว</string>
     <string name="math_question_name">คำถามคณิตศาสตร์</string>
     <string name="other_question_name">คำถามทั่วไป</string>
+    <string name="science_question_name">คำถามวิทยาศาสตร์</string>
+    <string name="sports_question_name">คำถามกีฬา</string>
 
     <string name="score_preamble">คุณมี</string>
     <string name="score_unit">คะแนน</string>
