@@ -7,8 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +35,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
 
     protected EditText emailEditText;
     protected EditText passwordEditText;
-    protected Button logInButton;
+    protected ImageButton logInButton;
     protected TextView signUpTextView;
     private FirebaseAuth mFirebaseAuth;
 
@@ -42,6 +44,9 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_log_in);
 
         // Initialize FirebaseAuth
@@ -50,9 +55,9 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         signUpTextView = (TextView) findViewById(R.id.signUpText);
         emailEditText = (EditText) findViewById(R.id.emailField);
         passwordEditText = (EditText) findViewById(R.id.passwordField);
-        logInButton = (Button) findViewById(R.id.loginButton);
+        logInButton = (ImageButton) findViewById(R.id.loginButton);
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.googleSigninButton).setOnClickListener(this);
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -116,8 +121,8 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
+            case R.id.googleSigninButton:
+                signInGoogle();
                 break;
         }
     }
@@ -131,7 +136,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void signIn() {
+    private void signInGoogle() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
