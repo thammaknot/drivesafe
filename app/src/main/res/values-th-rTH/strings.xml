@@ -7,20 +7,20 @@
     <string name="logout_warning_title">ออกจากระบบ</string>
     <string name="logout_warning_text">คุณแน่ใจแล้วหรือว่าจะออกจากระบบ?</string>
 
-    <string name="password_hint">Password</string>
-    <string name="email_hint">Email</string>
-    <string name="sign_up_button_label">Sign Up</string>
-    <string name="signup_error_message">Please make sure you enter an email address and password!</string>
-    <string name="signup_error_title">Error!</string>
-    <string name="signup_success">Account successfully created! You can now Login.</string>
-    <string name="login_error_message">Please make sure you enter an email address and password!</string>
-    <string name="login_error_title">Error!</string>
-    <string name="login_button_label">Login</string>
-    <string name="sign_up_text">Register</string>
-    <string name="title_activity_login">Sign in</string>
-    <string name="add_item">Add New Item</string>
-    <string name="action_logout">Logout</string>
-    <string name="or_sign_in_with_google">Or sign in with</string>
+    <string name="password_hint">รหัสผ่าน</string>
+    <string name="email_hint">อีเมล</string>
+    <string name="sign_up_button_label">ลงทะเบียน</string>
+    <string name="signup_error_message">โปรดกรอกอีเมลและรหัสผ่าน</string>
+    <string name="signup_error_title">พบข้อผิดพลาด</string>
+    <string name="signup_success">สร้างบัญชีใหม่เสร็จแล้ว คุณสามารถลงชื่อเข้าใช้ได้</string>
+    <string name="login_error_message">โปรดกรอกอีเมลและรหัสผ่าน</string>
+    <string name="login_error_title">พบข้อผิดพลาด</string>
+    <string name="login_button_label">ลงชื่อเข้าใช้</string>
+    <string name="sign_up_text">ลงทะเบียน</string>
+    <string name="title_activity_login">ลงชื่อเข้าใช้</string>
+    <string name="action_logout">ออกจากระบบ</string>
+    <string name="or_sign_in_with_google">หรือจะลงชื่อเข้าใช้ด้วย</string>
+    <string name="no_account">ยังไม่มีบัญชี?</string>
     <string name="web_client_id">918024319393-q1uvlrin5lf7jcp56ghrblcf0kstv63m.apps.googleusercontent.com</string>
 
     <string name="preference_file_key">com.knottycode.DriveSafe</string>
