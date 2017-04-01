@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -130,6 +131,7 @@ abstract public class BaseDriveModeActivity extends Activity {
      * Fire an intent to start the voice recognition activity.
      */
     protected void startVoiceRecognitionActivity() {
+        FirebaseCrash.log("Starting voice recognition");
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -159,6 +161,7 @@ abstract public class BaseDriveModeActivity extends Activity {
 
     protected void startAlarmMode() {
         stopTimer();
+        FirebaseCrash.report(new Exception("Starting Alarm Mode"));
         Intent intent = new Intent(this, AlarmModeActivity.class);
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
