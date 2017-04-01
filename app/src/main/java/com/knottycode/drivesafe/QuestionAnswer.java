@@ -25,7 +25,9 @@ public class QuestionAnswer {
         RIDDLE(1, "riddles", "riddles"),
         TRIVIA(2, "trivia", "trivia"),
         MATH(3, "math", ""),
-        OTHER(4, "other", "");
+        OTHER(4, "other", ""),
+        SPORTS(5, "sports", "sports"),
+        SCIENCE(6, "science", "science");
 
         private int code;
         private String name;
@@ -60,6 +62,10 @@ public class QuestionAnswer {
                     return R.string.trivia_preamble;
                 case 3:
                     return R.string.math_question_preamble;
+                case 5:
+                    return R.string.sports_question_preamble;
+                case 6:
+                    return R.string.science_question_preamble;
                 case 4:
                 default:
                     return R.string.other_question_preamble;
@@ -76,6 +82,10 @@ public class QuestionAnswer {
                     return R.string.trivia_name;
                 case 3:
                     return R.string.math_question_name;
+                case 5:
+                    return R.string.sports_question_name;
+                case 6:
+                    return R.string.science_question_name;
                 case 4:
                 default:
                     return R.string.other_question_name;

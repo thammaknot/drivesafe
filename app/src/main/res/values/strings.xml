@@ -114,6 +114,8 @@
     <string name="trivia_name">Trivia</string>
     <string name="math_question_name">Math questions</string>
     <string name="other_question_name">General questions</string>
+    <string name="science_question_name">Science questions</string>
+    <string name="sports_question_name">Sports questions</string>
 
     <string name="score_preamble">คุณมี</string>
     <string name="score_unit">คะแนน</string>
