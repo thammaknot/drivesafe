@@ -90,6 +90,7 @@ abstract public class BaseDriveModeActivity extends Activity {
         if (recognizer != null) {
             Log.d(TAG, "ASR Listener:: calling stopRecognition from onPause");
             asrListener.stopRecognition();
+            recognizer.destroy();
         }
         super.onPause();
     }
