@@ -3,6 +3,7 @@ package com.knottycode.drivesafe;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -36,6 +37,7 @@ public class DriveModeActivity extends BaseDriveModeActivity {
     private boolean ttsReady = false;
     private long lastTipSpokenTime = -1;
     private List<String> tipList = null;
+    private boolean isSpeaking = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,6 +98,7 @@ public class DriveModeActivity extends BaseDriveModeActivity {
 
     @Override
     protected boolean proceedToNextStep(long now) {
+        if (isSpeaking) { return false; }
         long millis = now - lastCheckpointTime;
 
         if (millis >= checkpointFrequencyMillis) {
@@ -119,6 +122,24 @@ public class DriveModeActivity extends BaseDriveModeActivity {
                         }
                     }
                     tts.setSpeechRate(0.9f);
+                    tts.setOnUtteranceProgressListener(
+                            new UtteranceProgressListener() {
+                                @Override
+                                public void onStart(String s) {}
+                                @Override
+                                public void onError(String error) {}
+                                @Override
+                                public void onDone(final String uttId) {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (uttId.equals(Constants.TIP_UTT_ID)) {
+                                                isSpeaking = false;
+                                            }
+                                        }
+                                    });
+                                }
+                               });
                     ttsReady = true;
                 }
             });
@@ -152,6 +173,7 @@ public class DriveModeActivity extends BaseDriveModeActivity {
         }
         int index = new Random().nextInt(tipList.size());
         String phrase = tipList.get(index);
+        isSpeaking = true;
         tts.speak(phrase, TextToSpeech.QUEUE_ADD, null, Constants.TIP_UTT_ID);
     }
 
