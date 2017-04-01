@@ -29,11 +29,15 @@ public class Constants {
     public static final Locale THAI_LOCALE = new Locale("th", "TH");
     public static final int MAX_ASR_RESULTS = 10;
 
+    public static final int MIN_TIME_TO_SPEAK_TIP_MILLIS = 6 * 1000;
+    public static final int TIP_FREQUENCY_MILLIS = 20 * 1000;
+
     public static final String DEFAULT_ALERT_SOUND = "alert/glitchy-tone.mp3";
     public static final String RECORDED_TONE_FILENAME = "recorded_tone.3gp";
     public static final String BACKGROUND_MUSTIC_PATH_PREFIX = "background_music";
     public static final String QUESTION_TONE_FILENAME = "question_tone.mp3";
     public static final String SPLASH_MUSIC_FILENAME = "splash_music.mp3";
+    public static final String TIP_FILE_PATH = "tips/tips.txt";
     public static final float ALERT_VOLUME = 0.8f;
     public static final String ALARM_PATH_PREFIX = "alarm";
     public static final String QUESTION_PATH_PREFIX = "questions";
@@ -64,6 +68,7 @@ public class Constants {
     public static final String EXTEND_GRACE_PERIOD_UTT_ID = "00000006";
     public static final String PREAMBLE_UTT_ID = "00000007";
     public static final String SCORE_UTT_ID = "00000008";
+    public static final String TIP_UTT_ID = "00000009";
 
     public static final String ANSWER_KEYWORD = "เฉลย";
     public static final List<String> CORRECT_KEYWORDS = new ArrayList<>();

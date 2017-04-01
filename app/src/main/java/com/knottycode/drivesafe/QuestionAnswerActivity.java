@@ -177,6 +177,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     private void stopQuestion() {
         if (tts != null && tts.isSpeaking()) {
             tts.stop();
+            tts.shutdown();
         }
     }
 
