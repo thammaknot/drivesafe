@@ -225,13 +225,14 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
 
     @Override
     protected void updateDisplay(long now) {
-        if (answerPhaseStartTime == -1) { return; }
-        /*
-        TextView debugTime = (TextView) findViewById(R.id.debugTime);
-        long elapsed = (now - answerPhaseStartTime) / 1000;
-        long seconds = elapsed % 60;
-        debugTime.setText(String.format("00:%02d [%s]", seconds, asrListener.isListening() ? "listen" : "not listen"));
-        */
+        long asrStart = asrListener.getAsrListeningStartTime();
+        if (asrStart == -1) {
+            return;
+        }
+        long elapsed = (now - asrStart);
+        if (elapsed > Constants.MAX_ASR_LISTENING_MILLIS) {
+            asrListener.forceStopListening();
+        }
     }
 
     @Override
@@ -254,6 +255,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
         } else if (checkpointElapsed >= Constants.QUESTION_ANSWER_GRACE_PERIOD_MILLIS + extension) {
             if (asrListener.isListening()) {
                 delayedAnswer = true;
+                asrListener.forceStopListening();
                 return false;
             }
             if (!delayedAnswer) {
