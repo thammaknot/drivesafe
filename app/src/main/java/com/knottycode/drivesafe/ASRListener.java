@@ -31,6 +31,7 @@ public class ASRListener implements RecognitionListener {
     }
 
     public void onResults(Bundle bundle) {
+        asrListeningStartTime = -1;
         results = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         FirebaseCrash.log("ASRListener: onResults size = " + results.size());
         for (int i = 0; i < results.size(); i++)
@@ -42,8 +43,8 @@ public class ASRListener implements RecognitionListener {
 
     public void onBeginningOfSpeech() {
         FirebaseCrash.log("ASRListener: onBeginningOfSpeech");
+        Log.d(TAG, "####################  onBeginning of speech");
         isListening = true;
-        asrListeningStartTime = System.currentTimeMillis();
     }
 
     public void onReadyForSpeech(Bundle params) {
@@ -63,7 +64,7 @@ public class ASRListener implements RecognitionListener {
 
     public void onError(int error) {
         FirebaseCrash.log("ASRListener: onError. Code = " + error);
-        Log.d(TAG,  "error " +  error);
+        Log.d(TAG,  "!!!!!!! error " +  error);
         if (error == SpeechRecognizer.ERROR_NO_MATCH ||
                 error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT) {
             // Possibly empty input audio, restart ASR.
@@ -81,6 +82,7 @@ public class ASRListener implements RecognitionListener {
 
     public void forceStopListening() {
         FirebaseCrash.log("ASRListener: Forced stop listening called.");
+        Log.d(TAG, ">>>>>forceStopListening");
         if (!asrActive) {
             return;
         }
@@ -110,6 +112,7 @@ public class ASRListener implements RecognitionListener {
         }
         asrActive = true;
         FirebaseCrash.log("ASRListener: Start listening");
+        asrListeningStartTime = System.currentTimeMillis();
         recognizer.startListening(intent);
     }
 
