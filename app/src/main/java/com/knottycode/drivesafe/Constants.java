@@ -140,6 +140,7 @@ public class Constants {
         ALL_QUESTION_TYPES.add("trivia");
         ALL_QUESTION_TYPES.add("sports");
         ALL_QUESTION_TYPES.add("science");
+        ALL_QUESTION_TYPES.add("songs");
     }
 
     public static final long[] VIBRATION_PATTERN = {0, 700, 100, 400};
