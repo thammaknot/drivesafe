@@ -230,18 +230,9 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             return;
         }
         long elapsed = (now - asrStart);
-        Log.d(TAG, "*************** asr start: " + asrStart + " [" + elapsed + " vs " + Constants.MAX_ASR_LISTENING_MILLIS + "]");
         if (elapsed > Constants.MAX_ASR_LISTENING_MILLIS) {
-            Log.d(TAG, "  !!! calling force stop listening!");
             asrListener.forceStopListening();
         }
-    }
-
-    private boolean forcedStopASR = false;
-
-    private void forceStopASR() {
-        forcedStopASR = true;
-        asrListener.forceStopListening();
     }
 
     @Override
@@ -257,7 +248,6 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                 checkpointManager.updateScore(ScoreMode.INCORRECT);
                 speakAnswer();
             } else {
-                // forceStopASR();
                 checkpointManager.updateScore(ScoreMode.NO_RESPONSE);
                 startAlarmMode();
             }
@@ -273,7 +263,6 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                     checkpointManager.updateScore(ScoreMode.INCORRECT);
                     speakAnswer();
                 } else {
-                    // forceStopASR();
                     checkpointManager.updateScore(ScoreMode.NO_RESPONSE);
                     startAlarmMode();
                 }

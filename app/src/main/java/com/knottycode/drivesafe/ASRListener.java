@@ -31,7 +31,6 @@ public class ASRListener implements RecognitionListener {
     }
 
     public void onResults(Bundle bundle) {
-        Log.d(TAG, "onResults inside ASR Listener");
         results = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
         FirebaseCrash.log("ASRListener: onResults size = " + results.size());
         for (int i = 0; i < results.size(); i++)
@@ -49,12 +48,9 @@ public class ASRListener implements RecognitionListener {
 
     public void onReadyForSpeech(Bundle params) {
         FirebaseCrash.log("ASRListener: onReadyForSpeech");
-        Log.d(TAG, "onReadyForSpeech");
     }
 
-    public void onRmsChanged(float rmsdB) {
-        Log.d(TAG, ">>>> onRMSChanged: " + rmsdB);
-    }
+    public void onRmsChanged(float rmsdB) {}
 
     public void onBufferReceived(byte[] buffer) {
         FirebaseCrash.log("ASRListener: onBufferReceived");
@@ -81,12 +77,10 @@ public class ASRListener implements RecognitionListener {
 
     public void onEvent(int eventType, Bundle params) {
         FirebaseCrash.log("ASRListener: onEvent: " + eventType);
-        Log.d(TAG, "onEvent " + eventType);
     }
 
     public void forceStopListening() {
         FirebaseCrash.log("ASRListener: Forced stop listening called.");
-        Log.d(TAG, "### FORCED STOP: " + asrActive);
         if (!asrActive) {
             return;
         }
