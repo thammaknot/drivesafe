@@ -18,6 +18,7 @@ public class ASRListener implements RecognitionListener {
 
     private List<String> results;
     private BaseDriveModeActivity activity;
+    private long asrListeningStartTime = -1;
     private boolean asrActive = false;
     private boolean isListening = false;
     // Whether to continue listening for ASR.
@@ -43,6 +44,7 @@ public class ASRListener implements RecognitionListener {
     public void onBeginningOfSpeech() {
         FirebaseCrash.log("ASRListener: onBeginningOfSpeech");
         isListening = true;
+        asrListeningStartTime = System.currentTimeMillis();
     }
 
     public void onReadyForSpeech(Bundle params) {
@@ -50,7 +52,9 @@ public class ASRListener implements RecognitionListener {
         Log.d(TAG, "onReadyForSpeech");
     }
 
-    public void onRmsChanged(float rmsdB) {}
+    public void onRmsChanged(float rmsdB) {
+        Log.d(TAG, ">>>> onRMSChanged: " + rmsdB);
+    }
 
     public void onBufferReceived(byte[] buffer) {
         FirebaseCrash.log("ASRListener: onBufferReceived");
@@ -64,7 +68,8 @@ public class ASRListener implements RecognitionListener {
     public void onError(int error) {
         FirebaseCrash.log("ASRListener: onError. Code = " + error);
         Log.d(TAG,  "error " +  error);
-        if (error == SpeechRecognizer.ERROR_NO_MATCH) {
+        if (error == SpeechRecognizer.ERROR_NO_MATCH ||
+                error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT) {
             // Possibly empty input audio, restart ASR.
             startRecognition();
         }
@@ -79,8 +84,23 @@ public class ASRListener implements RecognitionListener {
         Log.d(TAG, "onEvent " + eventType);
     }
 
+    public void forceStopListening() {
+        FirebaseCrash.log("ASRListener: Forced stop listening called.");
+        Log.d(TAG, "### FORCED STOP: " + asrActive);
+        if (!asrActive) {
+            return;
+        }
+        asrActive = false;
+        asrListeningStartTime = -1;
+        recognizer.stopListening();
+    }
+
     public boolean isListening() {
         return isListening;
+    }
+
+    public long getAsrListeningStartTime() {
+        return asrListeningStartTime;
     }
 
     public void setRecognizer(SpeechRecognizer recognizer, Intent intent) {
@@ -102,7 +122,6 @@ public class ASRListener implements RecognitionListener {
     public void stopRecognition() {
         FirebaseCrash.log("ASRListener: Stop recognition called");
         asrActive = false;
-        recognizer.stopListening();
         recognizer.cancel();
     }
 }
