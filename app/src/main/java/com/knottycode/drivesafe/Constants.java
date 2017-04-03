@@ -27,6 +27,7 @@ public class Constants {
     public static final AlertMode DEFAULT_ALERT_STYLE = AlertMode.SOUND;
     public static final int UNIT_SILENCE_DURATION_MILLIS = 500;
     public static final int MAX_ASR_LISTENING_MILLIS = 6 * 1000;
+    public static final int MAX_SONG_ASR_LISTENING_MILLIS = 12 * 1000;
     public static final Locale THAI_LOCALE = new Locale("th", "TH");
     public static final int MAX_ASR_RESULTS = 10;
 
@@ -141,6 +142,7 @@ public class Constants {
         ALL_QUESTION_TYPES.add("trivia");
         ALL_QUESTION_TYPES.add("sports");
         ALL_QUESTION_TYPES.add("science");
+        ALL_QUESTION_TYPES.add("songs");
     }
 
     public static final long[] VIBRATION_PATTERN = {0, 700, 100, 400};

@@ -21,13 +21,15 @@ public class QuestionAnswer {
     private static final String ANSWER_SYLLABLE_DELIM = ",";
 
     public enum QuestionType {
+        // code, name, filename
         FUNNY(0, "funny", "fun_questions"),
         RIDDLE(1, "riddles", "riddles"),
         TRIVIA(2, "trivia", "trivia"),
         MATH(3, "math", ""),
         OTHER(4, "other", ""),
         SPORTS(5, "sports", "sports"),
-        SCIENCE(6, "science", "science");
+        SCIENCE(6, "science", "science"),
+        SONGS(7, "songs", "songs");
 
         private int code;
         private String name;
@@ -66,6 +68,8 @@ public class QuestionAnswer {
                     return R.string.sports_question_preamble;
                 case 6:
                     return R.string.science_question_preamble;
+                case 7:
+                    return R.string.songs_question_preamble;
                 case 4:
                 default:
                     return R.string.other_question_preamble;
@@ -86,6 +90,8 @@ public class QuestionAnswer {
                     return R.string.sports_question_name;
                 case 6:
                     return R.string.science_question_name;
+                case 7:
+                    return R.string.songs_question_name;
                 case 4:
                 default:
                     return R.string.other_question_name;

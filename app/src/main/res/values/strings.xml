@@ -110,6 +110,7 @@
     <string name="other_question_preamble">คำถามทั่วไป</string>
     <string name="science_question_preamble">คำถามวิทยาศาสตร์</string>
     <string name="sports_question_preamble">คำถามกีฬา</string>
+    <string name="songs_question_preamble">คำถามเพลง</string>
 
     <string name="fun_question_name">Fun questions</string>
     <string name="riddle_name">Riddles</string>
@@ -118,6 +119,7 @@
     <string name="other_question_name">General questions</string>
     <string name="science_question_name">Science questions</string>
     <string name="sports_question_name">Sports questions</string>
+    <string name="songs_question_name">Song questions</string>
 
     <string name="score_preamble">คุณมี</string>
     <string name="score_unit">คะแนน</string>
