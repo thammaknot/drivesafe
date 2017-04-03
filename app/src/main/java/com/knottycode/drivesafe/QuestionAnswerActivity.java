@@ -46,6 +46,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
     private boolean isSpeaking = false;
     private long speakingStart = 0;
     private long speakingTime = 0;
+    private int maxAnswerListeningTimeMillis = Constants.MAX_ASR_LISTENING_MILLIS;
 
     private TextView asrResultTextView;
 
@@ -86,6 +87,9 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                 }
 
                 currentQuestion = getQuestionAnswer();
+                if (currentQuestion.getType() == QuestionAnswer.QuestionType.SONGS) {
+                    maxAnswerListeningTimeMillis = Constants.MAX_SONG_ASR_LISTENING_MILLIS;
+                }
                 speakPreamble();
                 startQuestion();
             }
@@ -230,7 +234,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             return;
         }
         long elapsed = (now - asrStart);
-        if (elapsed > Constants.MAX_ASR_LISTENING_MILLIS) {
+        if (elapsed > maxAnswerListeningTimeMillis) {
             asrListener.forceStopListening();
         }
     }
