@@ -53,7 +53,8 @@ import static com.knottycode.drivesafe.R.id.checkpointFrequency;
 import static com.knottycode.drivesafe.R.id.history;
 import static com.knottycode.drivesafe.R.id.logout;
 import static com.knottycode.drivesafe.R.id.questionTypes;
-import static com.knottycode.drivesafe.R.id.recordTone;
+// import static com.knottycode.drivesafe.R.id.recordButton;
+// import static com.knottycode.drivesafe.R.id.recordTone;
 
 public class SettingsActivity extends Activity implements View.OnTouchListener {
 
@@ -67,13 +68,13 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
     // "filename (e.g., .mp3)" -> "string resource name"
     private Map<String, String> toneDisplayNames;
 
-    private MediaRecorder mediaRecorder;
+    // private MediaRecorder mediaRecorder;
     private boolean isRecording = false;
     private boolean isPlaying = false;
 
-    private View menuView;
+    // private View menuView;
     private View historyView;
-    private ImageButton recordButton;
+    // private ImageButton recordButton;
 
     private static final SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
@@ -126,9 +127,10 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         }
     }
 
+    /*
     private void setupRecordNewToneMenu() {
         menuView = getLayoutInflater().inflate(R.layout.menu_record_new_tone, null);
-        recordButton = (ImageButton) menuView.findViewById(R.id.recordButton);
+        recordButton = (ImageButton) menuView.findViewById(recordButton);
         final ImageButton playButton = (ImageButton) menuView.findViewById(R.id.playButton);
 
         playButton.setEnabled(false);
@@ -180,6 +182,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
             }
         });
     }
+    */
 
     private void setOnTouchListeners() {
         RelativeLayout checkpointFrequency = (RelativeLayout) findViewById(R.id.checkpointFrequency);
@@ -191,8 +194,8 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         RelativeLayout alarmTones = (RelativeLayout) findViewById(R.id.alarmTones);
         alarmTones.setOnTouchListener(this);
 
-        RelativeLayout recordTone = (RelativeLayout) findViewById(R.id.recordTone);
-        recordTone.setOnTouchListener(this);
+        // RelativeLayout recordTone = (RelativeLayout) findViewById(R.id.recordTone);
+        // recordTone.setOnTouchListener(this);
 
         RelativeLayout history = (RelativeLayout) findViewById(R.id.history);
         history.setOnTouchListener(this);
@@ -238,7 +241,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         if (frequencySeconds > 60) {
             int minutes = frequencySeconds / 60;
             int seconds = frequencySeconds % 60;
-            minutePart = String.format(" (%d:%02d " + context.getString(minutes)
+            minutePart = String.format(" (%d:%02d " + context.getString(R.string.minutes)
                     + ")", minutes, seconds);
         }
         return String.valueOf(frequencySeconds) + " " + context.getString(R.string.seconds) + minutePart;
@@ -277,9 +280,9 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
             case alarmTones:
                 showAlarmTonesMenu();
                 break;
-            case recordTone:
-                showRecordNewToneDialog();
-                break;
+            // case recordTone:
+            // showRecordNewToneDialog();
+            // break;
             case history:
                 showHistoryPopup();
                 break;
@@ -349,7 +352,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
                 DataSnapshot statsRoot = dataSnapshot.child("stats");
                 historyView.findViewById(R.id.loadingHistoryTextview).setVisibility(View.GONE);
                 List<TripStats> allTrips = new ArrayList<>();
-                int maxScore = -1;
+                int maxScore = 0;
                 long totalDuration = 0;
                 for (DataSnapshot entry : statsRoot.getChildren()) {
                     TripStats trip = entry.getValue(TripStats.class);
@@ -615,6 +618,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
                 .show();
     }
 
+    /*
     private void stopRecording() {
         if (mediaRecorder != null) {
             mediaRecorder.stop();
@@ -623,6 +627,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         }
         isRecording = false;
     }
+    */
 
     private void copyFile(File src, File dst) throws IOException {
         InputStream in = new FileInputStream(src);
@@ -642,6 +647,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         return getFilesDir() + File.separator + Constants.RECORDED_TONE_FILENAME;
     }
 
+    /*
     private void showRecordNewToneDialog() {
         setupRecordNewToneMenu();
         new AlertDialog.Builder(this)
@@ -671,6 +677,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
                 })
                 .show();
     }
+    */
 
     private void resetMediaPlayer() {
         mediaPlayer.stop();
@@ -680,7 +687,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 isPlaying = false;
-                recordButton.setEnabled(true);
+                // recordButton.setEnabled(true);
             }
         });
     }
@@ -697,6 +704,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
         }
     }
 
+    /*
     private void playSound(String path) {
         if (mediaPlayer.isPlaying()) {
             resetMediaPlayer();
@@ -711,6 +719,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
 
         }
     }
+    */
 
     private void playTone(String name) {
         if (mediaPlayer.isPlaying()) {
