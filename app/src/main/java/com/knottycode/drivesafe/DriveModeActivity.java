@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import static com.knottycode.drivesafe.R.id.checkpointFrequency;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -99,6 +101,8 @@ public class DriveModeActivity extends BaseDriveModeActivity {
         int minutes = seconds / 60;
         seconds = seconds % 60;
 
+        seconds = Math.max(seconds, 0);
+        minutes = Math.max(minutes, 0);
         checkpointCountdownTimer.setText(String.format("%d:%02d", minutes, seconds));
 
         long timeSinceLastTip = now - lastTipSpokenTime;
@@ -112,8 +116,13 @@ public class DriveModeActivity extends BaseDriveModeActivity {
 
     @Override
     protected boolean proceedToNextStep(long now) {
-        if (isSpeaking) { return false; }
         long millis = now - lastCheckpointTime;
+        // If the app is speaking and the overtime is still not too much,
+        // stay in this Activity.
+        if (isSpeaking
+                && millis - checkpointFrequencyMillis <= Constants.DRIVE_MODE_MAX_OVERTIME) {
+            return false;
+        }
 
         if (millis >= checkpointFrequencyMillis) {
             // startCheckpointMode();
