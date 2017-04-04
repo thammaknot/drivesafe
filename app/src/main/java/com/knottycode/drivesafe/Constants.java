@@ -28,6 +28,7 @@ public class Constants {
     public static final int UNIT_SILENCE_DURATION_MILLIS = 500;
     public static final int MAX_ASR_LISTENING_MILLIS = 6 * 1000;
     public static final int MAX_SONG_ASR_LISTENING_MILLIS = 12 * 1000;
+    public static final int DRIVE_MODE_MAX_OVERTIME = 5 * 1000;
     public static final Locale THAI_LOCALE = new Locale("th", "TH");
     public static final int MAX_ASR_RESULTS = 10;
 
