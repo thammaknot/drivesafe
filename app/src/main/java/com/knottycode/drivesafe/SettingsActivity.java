@@ -53,7 +53,7 @@ import static com.knottycode.drivesafe.R.id.checkpointFrequency;
 import static com.knottycode.drivesafe.R.id.history;
 import static com.knottycode.drivesafe.R.id.logout;
 import static com.knottycode.drivesafe.R.id.questionTypes;
-import static com.knottycode.drivesafe.R.id.recordButton;
+// import static com.knottycode.drivesafe.R.id.recordButton;
 // import static com.knottycode.drivesafe.R.id.recordTone;
 
 public class SettingsActivity extends Activity implements View.OnTouchListener {
@@ -352,7 +352,7 @@ public class SettingsActivity extends Activity implements View.OnTouchListener {
                 DataSnapshot statsRoot = dataSnapshot.child("stats");
                 historyView.findViewById(R.id.loadingHistoryTextview).setVisibility(View.GONE);
                 List<TripStats> allTrips = new ArrayList<>();
-                int maxScore = -1;
+                int maxScore = 0;
                 long totalDuration = 0;
                 for (DataSnapshot entry : statsRoot.getChildren()) {
                     TripStats trip = entry.getValue(TripStats.class);
