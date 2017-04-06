@@ -133,6 +133,7 @@
     <string name="select_google_tts_engine_button_label">ตั้งค่าตัวอ่านออกเสียง</string>
 
     <string name="loading_history">กำลังโหลดประวัติ...</string>
+    <string name="login_loading_message">กำลังลงชื่อเช้าใช้...</string>
     <string name="score">คะแนน</string>
     <string name="duration">ระยะเวลา</string>
     <string name="total_trips">การใช้งานรวม</string>

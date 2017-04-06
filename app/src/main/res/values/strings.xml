@@ -134,6 +134,7 @@
     <string name="select_google_tts_engine_button_label">Open settings now</string>
 
     <string name="loading_history">Loading history...please wait</string>
+    <string name="login_loading_message">Loading...please wait</string>
     <string name="score">Score</string>
     <string name="duration">Duration</string>
     <string name="total_trips">Total usage</string>

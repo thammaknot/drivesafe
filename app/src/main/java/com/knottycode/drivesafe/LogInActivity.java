@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,9 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_log_in);
+
+        TextView loadingMessage = (TextView) findViewById(R.id.loadingMessage);
+        loadingMessage.setVisibility(View.GONE);
 
         // Initialize FirebaseAuth
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -110,12 +114,28 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                                                 .setPositiveButton(android.R.string.ok, null);
                                         AlertDialog dialog = builder.create();
                                         dialog.show();
+                                        hideLoading();
                                     }
                                 }
                             });
+                    showLoading();
                 }
             }
         });
+    }
+
+    private void showLoading() {
+        RelativeLayout wholePage = (RelativeLayout) findViewById(R.id.wholeLoginPage);
+        wholePage.setVisibility(View.GONE);
+        TextView loadingMessage = (TextView) findViewById(R.id.loadingMessage);
+        loadingMessage.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoading() {
+        RelativeLayout wholePage = (RelativeLayout) findViewById(R.id.wholeLoginPage);
+        wholePage.setVisibility(View.VISIBLE);
+        TextView loadingMessage = (TextView) findViewById(R.id.loadingMessage);
+        loadingMessage.setVisibility(View.GONE);
     }
 
     @Override
@@ -190,10 +210,12 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(LogInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
+                            hideLoading();
                         } else {
                             startMainActivity();
                         }
                     }
                 });
+        showLoading();
     }
 }
