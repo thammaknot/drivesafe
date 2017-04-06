@@ -69,7 +69,9 @@ public class ASRListener implements RecognitionListener {
         FirebaseCrash.log("ASRListener: onError. Code = " + error);
         Log.d(TAG,  "!!!!!!! error " +  error);
         if (error == SpeechRecognizer.ERROR_NO_MATCH ||
-                error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT) {
+                error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT ||
+                error == SpeechRecognizer.ERROR_AUDIO ||
+                error == SpeechRecognizer.ERROR_CLIENT) {
             // Possibly empty input audio, restart ASR.
             startRecognition();
         }
