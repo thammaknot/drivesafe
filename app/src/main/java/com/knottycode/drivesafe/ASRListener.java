@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.google.firebase.crash.FirebaseCrash;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,12 +34,14 @@ public class ASRListener implements RecognitionListener {
     public void onResults(Bundle bundle) {
         asrListeningStartTime = -1;
         results = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        List<String> trimmedResults = new ArrayList<String>();
         FirebaseCrash.log("ASRListener: onResults size = " + results.size());
         for (int i = 0; i < results.size(); i++)
         {
+            trimmedResults.add(results.get(i).trim());
             Log.d(TAG, "result " + results.get(i));
         }
-        activity.onASRResultsReady(results);
+        activity.onASRResultsReady(trimmedResults);
     }
 
     public void onBeginningOfSpeech() {
