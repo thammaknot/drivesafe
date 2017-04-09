@@ -88,6 +88,7 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
                     }
                 } catch (Exception e) {
                     // Something went wrong.
+                    FirebaseCrash.log("Exception while getting voices.");
                 }
 
                 currentQuestion = getQuestionAnswer();

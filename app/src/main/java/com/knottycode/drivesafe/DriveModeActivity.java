@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -137,12 +139,17 @@ public class DriveModeActivity extends BaseDriveModeActivity {
                 @Override
                 public void onInit(int i) {
                     tts.setLanguage(Constants.THAI_LOCALE);
-                    Set<Voice> voices = tts.getVoices();
-                    for (Voice v : voices) {
-                        if (v.isNetworkConnectionRequired() && v.getQuality() >= Voice.QUALITY_HIGH &&
-                                v.getLocale().equals(Constants.THAI_LOCALE)) {
-                            tts.setVoice(v);
+                    try {
+                        Set<Voice> voices = tts.getVoices();
+                        for (Voice v : voices) {
+                            if (v.isNetworkConnectionRequired() && v.getQuality() >= Voice.QUALITY_HIGH &&
+                                    v.getLocale().equals(Constants.THAI_LOCALE)) {
+                                tts.setVoice(v);
+                            }
                         }
+                    } catch (Exception e) {
+                        // Something went wrong.
+                        FirebaseCrash.log("Exception while getting voices.");
                     }
                     tts.setSpeechRate(0.9f);
                     tts.setOnUtteranceProgressListener(
