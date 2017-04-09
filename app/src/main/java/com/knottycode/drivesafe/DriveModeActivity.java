@@ -158,6 +158,7 @@ public class DriveModeActivity extends BaseDriveModeActivity {
                                         public void run() {
                                             if (uttId.equals(Constants.TIP_UTT_ID)) {
                                                 isSpeaking = false;
+                                                tipIndex++;
                                             }
                                         }
                                     });
@@ -173,7 +174,7 @@ public class DriveModeActivity extends BaseDriveModeActivity {
         if (tipIndex >= tipList.size()) {
             return;
         }
-        String phrase = tipList.get(tipIndex++);
+        String phrase = tipList.get(tipIndex);
         isSpeaking = true;
         tts.speak(phrase, TextToSpeech.QUEUE_ADD, null, Constants.TIP_UTT_ID);
     }

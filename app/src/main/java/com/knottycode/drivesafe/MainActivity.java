@@ -167,7 +167,7 @@ public class MainActivity extends Activity {
     }
 
     public void showCheckpointFrequencyMenu(View v) {
-        final int[] timeOptions = {5, 10, 30, 45, 60, 90, 120, 180, 240, 300};
+        final int[] timeOptions = {5, 10, 15, 30, 45, 60, 90, 120, 180, 240, 300};
         final String[] timeOptionsString = new String[timeOptions.length];
         for (int i = 0; i < timeOptions.length; ++i) {
             timeOptionsString[i] = String.valueOf(timeOptions[i]);
