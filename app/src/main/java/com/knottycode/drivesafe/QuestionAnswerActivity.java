@@ -78,12 +78,16 @@ public class QuestionAnswerActivity extends BaseDriveModeActivity {
             @Override
             public void onInit(int i) {
                 tts.setLanguage(Constants.THAI_LOCALE);
-                Set<Voice> voices = tts.getVoices();
-                for (Voice v : voices) {
-                    if (v.isNetworkConnectionRequired() && v.getQuality() >= Voice.QUALITY_HIGH &&
-                            v.getLocale().equals(Constants.THAI_LOCALE)) {
-                        tts.setVoice(v);
+                try {
+                    Set<Voice> voices = tts.getVoices();
+                    for (Voice v : voices) {
+                        if (v.isNetworkConnectionRequired() && v.getQuality() >= Voice.QUALITY_HIGH &&
+                                v.getLocale().equals(Constants.THAI_LOCALE)) {
+                                tts.setVoice(v);
+                        }
                     }
+                } catch (Exception e) {
+                    // Something went wrong.
                 }
 
                 currentQuestion = getQuestionAnswer();
